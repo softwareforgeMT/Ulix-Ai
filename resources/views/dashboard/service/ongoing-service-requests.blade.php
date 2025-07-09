@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ongoing Service Requests</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #dbeafe 100%);
+    }
+    
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+    
+    .card-hover {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+    }
+    
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+  .filter-active {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white !important;
+  transform: scale(1.05);
+}
+
+    
+    .stats-counter {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .category-education { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+    .category-tech { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+    .category-health { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+    .category-business { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+    
+    .search-glow:focus {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white">
+   @include('includes.header')
+     @include('pages.popup')
+  <!-- Animated background elements -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-100 opacity-30 rounded-full floating"></div>
+    <div class="absolute top-3/4 right-1/4 w-32 h-32 bg-blue-200 opacity-40 rounded-full floating" style="animation-delay: -2s;"></div>
+    <div class="absolute top-1/2 left-3/4 w-48 h-48 bg-blue-50 opacity-50 rounded-full floating" style="animation-delay: -4s;"></div>
+  </div>
+
+  <div class="relative z-10 min-h-screen p-4 md:">
+    <!-- PHP Header Include -->
+  
+  
+
+    <!-- Header Section -->
+    <div class="max-w-7xl mx-auto">
+      <!-- Title with animated counter -->
+      <div class="text-center mb-12 mt-8">
+        <h1 class="text-4xl md:text-6xl font-bold text-blue-900 mb-4">
+          Service Requests
+        </h1>
+        <div class="flex items-center justify-center space-x-4">
+          <div class="glass-effect rounded-2xl px-6 py-3 border border-blue-200">
+            <span class="text-blue-800 text-lg font-medium">Active Requests:</span>
+            <span class="text-3xl font-bold stats-counter ml-2" id="counter">0</span>
+          </div>
+          <div class="w-3 h-3 bg-blue-500 rounded-full pulse-animation"></div>
+          <!-- <span class="text-blue-600 text-sm opacity-75">Live Updates</span> -->
+        </div>
+      </div>
+           <!-- Social Media Share Card (below, right side) -->
+        <div class="flex justify-end mt-4">
+          <div class="flex items-center bg-gradient-to-r from-blue-500 to-blue-700 rounded-2xl px-6 py-3 shadow-lg space-x-4">
+            <span class="text-white font-semibold flex items-center text-base">
+              <span class="mr-2">🚀</span>Share this sheet to help your friends
+            </span>
+            <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-400 hover:bg-white transition">
+              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" class="w-5 h-5" />
+            </a>
+            <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-pink-400 hover:bg-white transition">
+              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" class="w-5 h-5" />
+            </a>
+            <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-white hover:bg-white transition">
+              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok" class="w-5 h-5" />
+            </a>
+            <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-red-600 hover:bg-white transition">
+              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" class="w-5 h-5" />
+            </a>
+            <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-300 hover:bg-white transition">
+              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg" alt="Twitter" class="w-5 h-5" />
+            </a>
+          </div>
+        </div>
+
+      <!-- Search and Filters Section -->
+      <div class="glass-effect rounded-3xl p-8 mb-12 border border-blue-200">
+        <!-- Filter Row (replace pills and search) -->
+        <div class="flex flex-wrap gap-4 justify-center mb-8">
+          <select class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
+            <option>Country</option>
+            <!-- Add country options here -->
+          </select>
+          <select class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
+            <option>Language</option>
+            <!-- Add language options here -->
+          </select>
+          <select class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
+            <option>Category</option>
+            <!-- Add category options here -->
+          </select>
+          <select class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
+            <option>Sub-category</option>
+            <!-- Add sub-category options here -->
+          </select>
+          <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-150">
+            Filter
+          </button>
+        </div>
+
+        <!-- Service Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="serviceGrid">
+          <!-- Dynamic cards will be inserted here -->
+        </div>
+      </div>
+  </div>
+
+  <script>
+    // Sample data for service requests
+    const serviceData = [
+      {
+        title: "Private English Lessons for Children",
+        category: "Education",
+        subcategory: "Language Learning",
+        location: "New York, USA",
+        language: "English",
+        requester: "Sarah Johnson",
+        urgent: false,
+        categoryClass: "category-education"
+      },
+      {
+        title: "Web Development Project",
+        category: "Technology",
+        subcategory: "Programming",
+        location: "London, UK",
+        language: "English",
+        requester: "Tech Startup Ltd",
+        urgent: true,
+        categoryClass: "category-tech"
+      },
+      {
+        title: "Personal Fitness Training",
+        category: "Health & Wellness",
+        subcategory: "Fitness",
+        location: "Los Angeles, USA",
+        language: "Spanish",
+        requester: "Maria Rodriguez",
+        urgent: false,
+        categoryClass: "category-health"
+      },
+      {
+        title: "Business Consultation",
+        category: "Business",
+        subcategory: "Strategy",
+        location: "Toronto, Canada",
+        language: "French",
+        requester: "Innovation Corp",
+        urgent: true,
+        categoryClass: "category-business"
+      },
+      {
+        title: "Graphic Design Services",
+        category: "Creative",
+        subcategory: "Design",
+        location: "Berlin, Germany",
+        language: "German",
+        requester: "Creative Agency",
+        urgent: false,
+        categoryClass: "category-tech"
+      },
+      {
+        title: "Math Tutoring Sessions",
+        category: "Education",
+        subcategory: "Mathematics",
+        location: "Sydney, Australia",
+        language: "English",
+        requester: "Parents Association",
+        urgent: false,
+        categoryClass: "category-education"
+      }
+    ];
+
+    // Generate service cards
+    function generateServiceCards(data = serviceData) {
+      const grid = document.getElementById('serviceGrid');
+      grid.innerHTML = '';
+
+      // Update the active request counter
+      document.getElementById('counter').textContent = data.length;
+
+      data.forEach((service, index) => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-3xl p-8 card-hover relative overflow-hidden shadow-xl border border-blue-100';
+
+        card.innerHTML = `
+          <div class="absolute top-0 right-0 w-24 h-24 ${service.categoryClass} rounded-bl-3xl opacity-20"></div>
+          ${service.urgent ? '<div class="absolute top-4 right-4 w-3 h-3 bg-blue-500 rounded-full pulse-animation"></div>' : ''}
+          <div class="relative z-10">
+            <div class="flex items-start justify-between mb-6">
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-blue-900 mb-3 leading-tight">${service.title}</h3>
+                <div class="space-y-2">
+                  <div class="flex items-center space-x-2">
+                    <span class="inline-block w-3 h-3 ${service.categoryClass} rounded-full"></span>
+                    <span class="text-sm font-medium text-blue-700">${service.category}</span>
+                  </div>
+                  <p class="text-sm text-blue-600">${service.subcategory}</p>
+                  <div class="flex items-center space-x-1 text-sm text-blue-500">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>${service.location}</span>
+                  </div>
+                  <div class="flex items-center space-x-1 text-sm text-blue-500">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>${service.language}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="ml-4 flex items-center justify-center">
+                <div class="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg animate-pulse-glow hover:shadow-yellow-300">✈️</div>
+              </div>
+            </div>
+            <div class="border-t border-blue-100 pt-4 flex items-center justify-between">
+              <div class="text-sm text-blue-600">
+                <span class="font-medium">Requested by:</span> ${service.requester}
+              </div>
+              <a href="/serviceannouncemnet" class="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-2 rounded-full font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                SEE 
+              </a>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      generateServiceCards();
+      // Remove animateCounter and filter/search logic since those UI elements are gone
+    });
+  </script>
+@include('dashboard.bottomnavbar')
+</body>
+</html>
