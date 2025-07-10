@@ -42,7 +42,7 @@
       <a href="aboutUS.php" class="block py-2 hover:text-blue-600">📘 About</a>
       <a href="serviceProvider.php" class="block py-2 hover:text-blue-600">💼 Services</a>
       <a href="sos.php" class="block py-2 hover:text-blue-600">🚨 SOS</a>
-      <a href="requestForHelp.php" class="block py-2 hover:text-blue-600">📝 Request for Help</a>
+      <a href="request-for-help.php" class="block py-2 hover:text-blue-600">📝 Request for Help</a>
       <a href="legalNotice.php" class="block py-2 hover:text-blue-600">📄 Legal Notice</a>
       <a href="becomepartner.php" class="block py-2 hover:text-blue-600">🤝 Become Partner</a>
       <a href="termsNcondition.php" class="block py-2 hover:text-blue-600">📜 Terms</a>
@@ -65,7 +65,7 @@
     <a href="aboutUS.php" class="block hover:text-blue-600">About</a>
     <a href="serviceProvider.php" class="block hover:text-blue-600">Services</a>
     <a href="sos.php" class="block hover:text-blue-600">SOS</a>
-    <a href="requestForHelp.php" class="block hover:text-blue-600">Request for Help</a>
+    <a href="request-for-help.php" class="block hover:text-blue-600">Request for Help</a>
     <a href="legalNotice.php" class="block hover:text-blue-600">Legal Notice</a>
     <a href="becomepartner.php" class="block hover:text-blue-600">Become Partner</a>
     <a href="termsNcondition.php" class="block hover:text-blue-600">Terms</a>

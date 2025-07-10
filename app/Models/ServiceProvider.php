@@ -14,6 +14,7 @@ class ServiceProvider extends Model
         'native_language',
         'spoken_language',
         'services_to_offer',
+        'services_to_offer_category',
         'provider_address',
         'operational_countries',
         'communication_online',

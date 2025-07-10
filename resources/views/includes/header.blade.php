@@ -92,7 +92,7 @@
       <!-- Desktop Buttons -->
      
 <div class="hidden lg:flex items-center space-x-3 group">
-  <button onclick="openSearchPopup()" class="nav-button bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-full text-sm font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 hover-glow transform hover:scale-105 shadow-lg">
+  <button onclick="openHelpPopup()" class="nav-button bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-full text-sm font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 hover-glow transform hover:scale-105 shadow-lg">
   <span class="flex items-center space-x-2">
     <i class="fas fa-lock text-white-600 text-xl"></i>
     <span>Request Help</span>
@@ -133,7 +133,7 @@
         <div class="category-card bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex items-center group">
           <div class="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>
           <div class="flex-grow font-semibold text-gray-800">
-           <a href="requestForHelp.php"> Autres protections sociales </a></div>
+           <a href="request-for-help.php"> Autres protections sociales </a></div>
           <div class="text-gray-400 group-hover:text-gray-600 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <polyline points="9,18 15,12 9,6"></polyline>
@@ -144,7 +144,7 @@
         <div class="category-card bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex items-center group">
           <div class="w-14 h-14 bg-yellow-200 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>
           <div class="flex-grow font-semibold text-gray-800">
-           <a href="requestForHelp.php"> Je cherche une assurance invalidité freelance </a></div>
+           <a href="request-for-help.php"> Je cherche une assurance invalidité freelance </a></div>
           <div class="text-gray-400 group-hover:text-gray-600 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <polyline points="9,18 15,12 9,6"></polyline>
@@ -156,7 +156,7 @@
         <div class="category-card bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex items-center group">
           <div class="w-14 h-14 bg-peach-200 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>
           <div class="flex-grow font-semibold text-gray-800">
-           <a href="requestForHelp.php"> Je veux une assurance retraite internationale </a></div>
+           <a href="request-for-help.php"> Je veux une assurance retraite internationale </a></div>
           <div class="text-gray-400 group-hover:text-gray-600 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <polyline points="9,18 15,12 9,6"></polyline>
@@ -198,7 +198,7 @@
         <div class="category-card bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex items-center group">
           <div class="w-14 h-14 bg-green-200 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>
           <div class="flex-grow font-semibold text-gray-800">
-           <a href="requestForHelp.php"> Autres recherches d’emploi ou missions </a></div>
+           <a href="request-for-help.php"> Autres recherches d’emploi ou missions </a></div>
           <div class="text-gray-400 group-hover:text-gray-600 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <polyline points="9,18 15,12 9,6"></polyline>
@@ -209,7 +209,7 @@
         <div class="category-card bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex items-center group">
           <div class="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>
           <div class="flex-grow font-semibold text-gray-800">
-           <a href="requestForHelp.php"> Je cherche des agences de recrutement </a></div>
+           <a href="request-for-help.php"> Je cherche des agences de recrutement </a></div>
           <div class="text-gray-400 group-hover:text-gray-600 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <polyline points="9,18 15,12 9,6"></polyline>
@@ -222,7 +222,7 @@
         <div class="category-card bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex items-center group">
           <div class="w-14 h-14 bg-purple-200 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>
           <div class="flex-grow font-semibold text-gray-800">
-           <a href="requestForHelp.php"> Je veux trouver des missions freelance en ligne </a></div>
+           <a href="request-for-help.php"> Je veux trouver des missions freelance en ligne </a></div>
           <div class="text-gray-400 group-hover:text-gray-600 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <polyline points="9,18 15,12 9,6"></polyline>
@@ -263,7 +263,7 @@
         <div class="category-card bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex items-center group">
           <div class="w-14 h-14 bg-purple-300 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>
           <div class="flex-grow font-semibold text-gray-800">
-           <a href="requestForHelp.php"> Autres démarches de visas et permis </a></div>
+           <a href="request-for-help.php"> Autres démarches de visas et permis </a></div>
           <div class="text-gray-400 group-hover:text-gray-600 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <polyline points="9,18 15,12 9,6"></polyline>
@@ -275,7 +275,7 @@
         <div class="category-card bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex items-center group">
           <div class="w-14 h-14 bg-cyan-200 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>
           <div class="flex-grow font-semibold text-gray-800">
-           <a href="requestForHelp.php"> Je veux obtenir une carte professionnelle locale</a></div>
+           <a href="request-for-help.php"> Je veux obtenir une carte professionnelle locale</a></div>
           <div class="text-gray-400 group-hover:text-gray-600 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <polyline points="9,18 15,12 9,6"></polyline>
@@ -318,13 +318,15 @@
   </div>
 </div>
 
+      @if(Auth::check() && Auth::user()->user_role != 'service_provider' || Auth::check() === false)
         <a href="/serviceProvider" class="nav-button border-2 border-gradient-to-r from-purple-500 to-blue-500 bg-gradient-to-r from-purple-50 to-blue-50 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-3 rounded-full text-sm font-semibold hover:bg-gradient-to-r hover:from-purple-100 hover:to-blue-100 transition-all duration-300 transform hover:scale-105 shadow-lg border-blue-300">
           <span class="flex items-center space-x-2 text-blue-600">
             <!-- Simple Icon -->
-<i class="fas fa-file-signature text-blue-600 text-2xl"></i>
+            <i class="fas fa-file-signature text-blue-600 text-2xl"></i>
             <span>Become a Provider</span>
           </span>
         </a>
+      @endif
       </div>
 
       <!-- Desktop Right Side -->
@@ -357,6 +359,10 @@
 
  <!-- Auth Buttons -->
 <div class="flex items-center space-x-3">
+  @php 
+    $isActive = Auth::check();
+  @endphp
+  @if(!$isActive)
   <a href="/login" class="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-300 group">
    <i class="fas fa-user mr-2 text-lg text-blue-600"></i>
     <span class="font-medium text-blue-600"> Log in</span>
@@ -366,6 +372,7 @@
     <i class="fas fa-user-plus mr-2 text-lg "></i>
     <span>Sign Up</span>
   </button>
+  @endif
 </div>
 
 <!-- Popup Overlay -->
@@ -432,7 +439,7 @@
 			<p class="text-gray-600">Go check out the service requests in your area now</p>
 
 			<button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-full">
-			<a href="/ongoingservices"> CURRENT SERVICE REQUESTS </a></button>
+			<a href="{{ route('ongoing-requests') }}"> CURRENT SERVICE REQUESTS </a></button>
 
 			<p class="text-gray-600 text-sm mt-2">You can boost your profile to have more jobs to do</p>
 
@@ -466,11 +473,11 @@
 
 
   <!-- Request Help Button -->
-   <button id="mobileSearchButton" onclick="openSearchPopup()" class="nav-button bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-full text-sm font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 hover-glow transform hover:scale-105 shadow-lg">
-  <span class="flex items-center space-x-2">
-    <i class="fas fa-lock text-white-600 text-xl"></i>
-    <span>Request Help</span>
-  </span>
+   <button id="mobileSearchButton" onclick="openHelpPopup()" class="nav-button bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-full text-sm font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 hover-glow transform hover:scale-105 shadow-lg">
+    <span class="flex items-center space-x-2">
+      <i class="fas fa-lock text-white-600 text-xl"></i>
+      <span>Request Help</span>
+    </span>
 </button>
 
   <!-- Hamburger -->
@@ -533,6 +540,7 @@
   </a>
 </div>
 
+@include('pages.popup')
 </nav>
 <script>
 	function showComingSoonPopup(e) {
@@ -547,7 +555,6 @@
 		const popup = document.getElementById('signupPopup');
 		const closePopup = document.getElementById('closePopup');
 		const signupBtn = document.getElementById('signupBtn');
-		const progressBar = document.getElementById('progressBar');
 		const progressText = document.getElementById('progressText');
 
 		const steps = Array.from({ length: 16 }, (_, i) => document.getElementById('step' + (i + 1)));
@@ -624,7 +631,7 @@
 				alert("Please complete this step before finishing.");
 				return;
 			}
-			showStep(15); // Final step
+			showStep(15);
 		});
 
 		// Step 2: Language selection
@@ -676,6 +683,10 @@
 				btn.classList.toggle('ring-4');
 				btn.classList.toggle('ring-white');
 				btn.classList.toggle('ring-offset-2');
+
+
+
+        console.log("Newss", JSON.parse(localStorage.getItem('expats')));
 			});
 		});
 
@@ -840,7 +851,7 @@
       })
       .then(data => {
         console.log('Account created:', data);
-        toastr.success(data.message || 'Account created successfully!');
+        // toastr.success(data.message || 'Account created successfully!');
         // Optional: redirect after toast
       })
       .catch(async error => {
@@ -850,7 +861,7 @@
           errorMessage = errData.message || errorMessage;
         } catch (_) {}
         console.error('Error creating account:', errorMessage);
-        toastr.error(errorMessage);
+        // toastr.error(errorMessage);
       });
     }
 
@@ -924,7 +935,7 @@
 </script>
 
 <script>
-  // function openSearchPopup() {
+  // function openHelpPopup() {
   //   document.getElementById('searchPopup').classList.remove('hidden');
   // }
 
@@ -1081,153 +1092,11 @@
 
 
  <script>
-    // Open main popup
-    function openSearchPopup() {
-      document.getElementById('searchPopup').classList.remove('hidden');
-      document.getElementById('expatriesPopup').classList.add('hidden');
-      document.getElementById('vacanciersPopup').classList.add('hidden');
-    }
-   
-    // Show Expatriés subcategories popup
-    function showExpatriesSubcategories() {
-      document.getElementById('searchPopup').classList.add('hidden');
-      document.getElementById('expatriesPopup').classList.remove('hidden');
-      document.getElementById('vacanciersPopup').classList.add('hidden');
-    }
-    // Show Vacanciers subcategories popup
-    function showVacanciersSubcategories() {
-      document.getElementById('searchPopup').classList.add('hidden');
-      document.getElementById('vacanciersPopup').classList.remove('hidden');
-      document.getElementById('expatriesPopup').classList.add('hidden');
-    }
-    // Back to main categories
-    function goBackToMainCategories() {
-      closeAllPopups();
-      openSearchPopup();
-    }
-
-    function showExpatriesUrgenceSubcategories() {
-  document.getElementById('searchPopup').classList.add('hidden');
-  document.getElementById('expatriesPopup').classList.add('hidden');
-  document.getElementById('vacanciersPopup').classList.add('hidden');
-  document.getElementById('expatriesUrgencePopup').classList.remove('hidden');
-}
-
-function goBackToExpatriesSubcategories() {
-  document.getElementById('expatriesUrgencePopup').classList.add('hidden');
-  document.getElementById('expatriesPopup').classList.remove('hidden');
-}
-
-function showInvestisseursSubcategories() {
-  closeAllPopups();
-  document.getElementById('investisseursPopup').classList.remove('hidden');
-}
-function goBackToInvestisseursSubcategories() {
-  closeAllPopups();
-  document.getElementById('investisseursPopup').classList.remove('hidden');
-}
-
-
-function goBackToMainCategories() {
-  closeAllPopups();
-  document.getElementById('searchPopup').classList.remove('hidden');
-}
-
-
-
-function showExpatriesPreparationSubcategories() {
-  document.getElementById('searchPopup').classList.add('hidden');
-  document.getElementById('expatriesPopup').classList.add('hidden');
-  document.getElementById('vacanciersPopup').classList.add('hidden');
-  document.getElementById('expatriesUrgencePopup').classList.add('hidden');
-  document.getElementById('expatriesPreparationPopup').classList.remove('hidden');
-}
-
-function goBackToExpatriesSubcategories() {
-  // Hide all sub-sub popups too
-  document.getElementById('expatriesUrgencePopup').classList.add('hidden');
-  document.getElementById('expatriesPreparationPopup').classList.add('hidden');
-  document.getElementById('expatriesPopup').classList.remove('hidden');
-}
-
-function showExpatriesAssuranceSubcategories() {
-  document.getElementById('searchPopup').classList.add('hidden');
-  document.getElementById('expatriesPopup').classList.add('hidden');
-  document.getElementById('vacanciersPopup').classList.add('hidden');
-  document.getElementById('expatriesUrgencePopup').classList.add('hidden');
-  document.getElementById('expatriesPreparationPopup').classList.add('hidden');
-  document.getElementById('expatriesAssurancePopup').classList.remove('hidden');
-}
-
-function goBackToExpatriesSubcategories() {
-  // Hide all sub-sub popups
-  document.getElementById('expatriesUrgencePopup').classList.add('hidden');
-  document.getElementById('expatriesPreparationPopup').classList.add('hidden');
-  document.getElementById('expatriesAssurancePopup').classList.add('hidden');
-  document.getElementById('expatriesPopup').classList.remove('hidden');
-}
-
-function showExpatriesBesoinsSubcategories() {
-  document.getElementById('searchPopup').classList.add('hidden');
-  document.getElementById('expatriesPopup').classList.add('hidden');
-  document.getElementById('vacanciersPopup').classList.add('hidden');
-  document.getElementById('expatriesUrgencePopup').classList.add('hidden');
-  document.getElementById('expatriesPreparationPopup').classList.add('hidden');
-  document.getElementById('expatriesAssurancePopup').classList.add('hidden');
-  document.getElementById('expatriesBesoinsPopup').classList.remove('hidden');
-}
-
-function goBackToExpatriesSubcategories() {
-  // Hide all sub-sub popups
-  document.getElementById('expatriesUrgencePopup').classList.add('hidden');
-  document.getElementById('expatriesPreparationPopup').classList.add('hidden');
-  document.getElementById('expatriesAssurancePopup').classList.add('hidden');
-  document.getElementById('expatriesBesoinsPopup').classList.add('hidden');
-  document.getElementById('expatriesPopup').classList.remove('hidden');
-}
-
-function showVacanciersProblemesVoyagesSubcategories() {
-  closeAllPopups();
-  document.getElementById('vacanciersProblemesVoyagesPopup').classList.remove('hidden');
-}
-
-function goBackToVacanciersCategories() {
-  closeAllPopups();
-  document.getElementById('vacanciersPopup').classList.remove('hidden');
-}
-
-function showVacanciersAutresBesoinsSubcategories() {
-  closeAllPopups();
-  document.getElementById('vacanciersAutresBesoinsPopup').classList.remove('hidden');
-}
-
-function goBackToVacanciersSubcategories() {
-  closeAllPopups();
-  document.getElementById('vacanciersPopup').classList.remove('hidden');
-}
-
-
-
-
-
-
-function showExpatriesSanteSubcategories() {
-  document.getElementById('searchPopup').classList.add('hidden');
-  document.getElementById('expatriesPopup').classList.add('hidden');
-  document.getElementById('vacanciersPopup').classList.add('hidden');
-  document.getElementById('expatriesUrgencePopup').classList.add('hidden');
-  document.getElementById('expatriesPreparationPopup').classList.add('hidden');
-  document.getElementById('expatriesAssurancePopup').classList.add('hidden');
-  document.getElementById('expatriesBesoinsPopup').classList.add('hidden');
-  document.getElementById('expatriesSantePopup').classList.remove('hidden');
-}
-
-function showVacanciersPreparationSubcategories() {
-  document.getElementById('searchPopup').classList.add('hidden');
-  document.getElementById('expatriesPopup').classList.add('hidden');
-  document.getElementById('vacanciersPopup').classList.add('hidden');
-  document.getElementById('vacanciersPreparationPopup').classList.remove('hidden');
-}
+  // Back to main categories
+  function goBackToMainCategories() {
+    closeAllPopups();
+    openHelpPopup();
+  }
 
 function closeAllPopups() {
   document.getElementById('searchPopup').classList.add('hidden');
@@ -1235,123 +1104,6 @@ function closeAllPopups() {
   document.getElementById('vacanciersPopup').classList.add('hidden');
   document.getElementById('vacanciersPreparationPopup').classList.add('hidden');
   // Add other popups here as well if needed
-}
-
-function showVacanciersUrgenceSubcategories() {
-  closeAllPopups();
-  document.getElementById('vacanciersUrgencePopup').classList.remove('hidden');
-}
-
-function goBackToVacanciersCategories() {
-  closeAllPopups();
-  document.getElementById('vacanciersPopup').classList.remove('hidden');
-}
-
-function showInvestisseurBienImmobilierPopup() {
-  closeAllPopups();
-  document.getElementById('investisseurBienImmobilierPopup').classList.remove('hidden');
-}
-
-function Acheterunbienimmobilier() {
-  closeAllPopups(); // Hide all open popups first
-  document.getElementById('Acheter un bien immobilier').classList.remove('hidden');
-}
-
-function showInvestirMarchesFinanciersPopup() {
-  closeAllPopups(); // Hide all popups first
-  document.getElementById('investirMarchesFinanciersPopup').classList.remove('hidden');
-}
-
-function showInvestisseurSecuriserInvestissementsPopup() {
-  closeAllPopups(); // Hide all popups first
-  document.getElementById('investisseurSecuriserInvestissementsPopup').classList.remove('hidden');
-}
-
-function showInvestisseurOptimisationFiscalePopup() {
-  closeAllPopups(); // Hide all other popups
-  document.getElementById('investisseurOptimisationFiscalePopup').classList.remove('hidden');
-}
-
-function showInvestisseurObligationsLegalesPopup() {
-  closeAllPopups(); // Hide other popups first
-  document.getElementById('investisseurObligationsLegalesPopup').classList.remove('hidden');
-}
-function showTravailleursFreelancesSubcategories() {
-  closeAllPopups(); // Hide other popups first
-  document.getElementById('travailleursFreelancesPopup').classList.remove('hidden');
-}
-
-
-
-
-
-
-
-
-
-
-
-
-function showTravailleursCreerEntrepriseSubSubcategoriesPopup() {
-  closeAllPopups();
-  document.getElementById('travailleursCreerEntrepriseSubSubcategoriesPopup').classList.remove('hidden');
-}
-
-function goBackToTravailleursCreerEntrepriseSubcategories() {
-  closeAllPopups();
-  document.getElementById('travailleursCreerEntreprisePopup').classList.remove('hidden');
-}
-
-function showTravailleursDevelopperReseauSubSubcategoriesPopup() {
-  closeAllPopups();
-  document.getElementById('travailleursDevelopperReseauSubSubcategoriesPopup').classList.remove('hidden');
-}
-
-function goBackToTravailleursDevelopperReseauSubcategories() {
-  closeAllPopups();
-  document.getElementById('travailleursDevelopperReseauPopup').classList.remove('hidden');
-}
-
-function showTravailleursGestionFinanciereSubSubcategoriesPopup() {
-  closeAllPopups();
-  document.getElementById('travailleursGestionFinanciereSubSubcategoriesPopup').classList.remove('hidden');
-}
-
-function goBackToTravailleursGestionFinanciereSubcategories() {
-  closeAllPopups();
-  document.getElementById('travailleursGestionFinancierePopup').classList.remove('hidden');
-}
-
-
-function showTravailleursProtectionSocialeSubSubcategoriesPopup() {
-  closeAllPopups();
-  document.getElementById('travailleursProtectionSocialeSubSubcategoriesPopup').classList.remove('hidden');
-}
-
-function goBackToTravailleursProtectionSocialeSubcategories() {
-  closeAllPopups();
-  document.getElementById('travailleursProtectionSocialePopup').classList.remove('hidden');
-}
-
-
-function showTravailleursTrouverEmploiSubSubcategoriesPopup() {
-  closeAllPopups();
-  document.getElementById('travailleursTrouverEmploiSubSubcategoriesPopup').classList.remove('hidden');
-}
-
-function goBackToTravailleursTrouverEmploiSubcategories() {
-  closeAllPopups();
-  document.getElementById('travailleursTrouverEmploiPopup').classList.remove('hidden');
-}
-
-function showTravailleursVisaAutorisationsSubSubcategoriesPopup() {
-  closeAllPopups();
-  document.getElementById('travailleursVisaAutorisationsSubSubcategoriesPopup').classList.remove('hidden');
-}
-
-function goBackToTravailleursVisaAutorisationsSubcategories() {
-  closeAllPopups();
-  document.getElementById('travailleursVisaAutorisationsPopup').classList.remove('hidden');
 }
 
 
@@ -1390,25 +1142,15 @@ function closeAllPopups() {
     "travailleursProtectionSocialeSubSubcategoriesPopup",
     "travailleursTrouverEmploiSubSubcategoriesPopup",
     "travailleursVisaAutorisationsSubSubcategoriesPopup"
-
-  
-  
-
     // Add more popup IDs here if you have them
   ];
   popups.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add('hidden');
   });
+  localStorage.removeItem('create-request');
 }
 
-
-
-
-
-    // Open popup when clicking or focusing on search input
-    document.getElementById('searchInput').addEventListener('click', openSearchPopup);
-    document.getElementById('searchInput').addEventListener('focus', openSearchPopup);
 
     // Close popups when clicking outside
     document.addEventListener('click', function(event) {
@@ -1438,13 +1180,144 @@ function closeAllPopups() {
 
 
 <script>
-  function openSearchPopup() {
+  function openHelpPopup() {
     document.getElementById('searchPopup')?.classList.remove('hidden');
+    fetch('/api/categories')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          const category = document.querySelector('#searchPopup .main-categories');
+          category.innerHTML = '';
+
+          data.categories.forEach(cat => {
+            const div = document.createElement('div');
+            div.className = "category-card bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex flex-col items-center text-center group";
+            div.innerHTML = `
+              <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M14,6V4H10V6H9A2,2 0 0,0 7,8V19A2,2 0 0,0 9,21H15A2,2 0 0,0 17,19V8A2,2 0 0,0 15,6H14M12,7A2,2 0 0,1 14,9A2,2 0 0,1 12,11A2,2 0 0,1 10,9A2,2 0 0,1 12,7Z"/>
+                </svg>
+              </div>
+              <h3 class="text-sm font-semibold text-gray-800">${cat.name}</h3>
+            `;
+            div.addEventListener('click', () => handleCategoryClick(cat.id, cat.name));
+            category.appendChild(div);
+          });
+        }
+      })
+      .catch(err => console.error('Failed to load categories:', err));
   }
+
+  function handleCategoryClick(categoryId, categoryName) {
+    document.getElementById('searchPopup')?.classList.add('hidden');
+    document.getElementById('expatriesPopup')?.classList.remove('hidden');
+
+    const createRequest = JSON.parse(localStorage.getItem('create-request')) || {};
+
+    createRequest.category = JSON.stringify({
+      id: categoryId,
+      name: categoryName
+    });
+
+    localStorage.setItem('create-request', JSON.stringify(createRequest));
+
+    fetch(`/api/categories/${categoryId}/subcategories`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          const subcategory = document.querySelector('#expatriesPopup .sub-category');
+          subcategory.innerHTML = '';
+
+          data.subcategories.forEach(sub => {
+            const div = document.createElement('div');
+            div.className = "category-card bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex items-center group";
+            div.innerHTML = `
+              <div class="w-14 h-14 bg-cyan-400 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>
+              <div class="flex-grow font-semibold text-gray-800">${sub.name}</div>
+              <div class="text-gray-400 group-hover:text-gray-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <polyline points="9,18 15,12 9,6"></polyline>
+                </svg>
+              </div>
+            `;
+            div.addEventListener('click', () => handleSubcategoryClick(sub.id, sub.name));
+            subcategory.appendChild(div);
+          });
+
+          document.getElementById('expatriesPopup')?.classList.remove('hidden');
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching subcategories:', err);
+      });
+  }
+
+  function handleSubcategoryClick(parentId, categoryName) {
+    const createRequest = JSON.parse(localStorage.getItem('create-request')) || {};
+
+    createRequest.sub_category = JSON.stringify({
+      id: parentId,
+      name: categoryName
+    });
+
+
+    localStorage.setItem('create-request', JSON.stringify(createRequest));
+    fetch(`/api/categories/${parentId}/children`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          const grid = document.querySelector('#vacanciersAutresBesoinsPopup .child-categories');
+          grid.innerHTML = '';
+
+          data.subcategories.forEach(child => {
+            const div = document.createElement('div');
+            div.className = "category-card bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex items-center group";
+            div.innerHTML = `
+              <div class="w-14 h-14 bg-cyan-300 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>
+              <div class="flex-grow font-semibold text-gray-800">${child.name}</div>
+              <div class="text-gray-400 group-hover:text-gray-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <polyline points="9,18 15,12 9,6"></polyline>
+                </svg>
+              </div>
+            `;
+
+            div.addEventListener('click', () => requestForHelp(child.id, child.name));
+
+            grid.appendChild(div);
+          });
+
+          document.getElementById('vacanciersAutresBesoinsPopup')?.classList.remove('hidden');
+        }
+      })
+      .catch(err => {
+        console.error('Error loading child categories:', err);
+      });
+  }
+
+  function requestForHelp(childId, childName) {
+    const createRequest = JSON.parse(localStorage.getItem('create-request')) || {};
+    createRequest.child_category = JSON.stringify({
+      id: childId,
+      name: childName
+    });
+
+    localStorage.setItem('create-request', JSON.stringify(createRequest));
+
+    // Redirect to the request creation page
+    window.location.href = '/create-request';
+  }
+
 
   function closeSearchPopup() {
     document.getElementById('searchPopup')?.classList.add('hidden');
   }
+
+  function goBackToVacanciersSubcategories() {
+    document.getElementById('vacanciersAutresBesoinsPopup')?.classList.add('hidden');
+    document.getElementById('expatriesPopup')?.classList.remove('hidden');
+  }
+
 </script>
 
 

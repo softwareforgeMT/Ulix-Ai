@@ -155,139 +155,81 @@
 
         <!-- Service Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="serviceGrid">
-          <!-- Dynamic cards will be inserted here -->
-        </div>
-      </div>
-  </div>
-
-  <script>
-    // Sample data for service requests
-    const serviceData = [
-      {
-        title: "Private English Lessons for Children",
-        category: "Education",
-        subcategory: "Language Learning",
-        location: "New York, USA",
-        language: "English",
-        requester: "Sarah Johnson",
-        urgent: false,
-        categoryClass: "category-education"
-      },
-      {
-        title: "Web Development Project",
-        category: "Technology",
-        subcategory: "Programming",
-        location: "London, UK",
-        language: "English",
-        requester: "Tech Startup Ltd",
-        urgent: true,
-        categoryClass: "category-tech"
-      },
-      {
-        title: "Personal Fitness Training",
-        category: "Health & Wellness",
-        subcategory: "Fitness",
-        location: "Los Angeles, USA",
-        language: "Spanish",
-        requester: "Maria Rodriguez",
-        urgent: false,
-        categoryClass: "category-health"
-      },
-      {
-        title: "Business Consultation",
-        category: "Business",
-        subcategory: "Strategy",
-        location: "Toronto, Canada",
-        language: "French",
-        requester: "Innovation Corp",
-        urgent: true,
-        categoryClass: "category-business"
-      },
-      {
-        title: "Graphic Design Services",
-        category: "Creative",
-        subcategory: "Design",
-        location: "Berlin, Germany",
-        language: "German",
-        requester: "Creative Agency",
-        urgent: false,
-        categoryClass: "category-tech"
-      },
-      {
-        title: "Math Tutoring Sessions",
-        category: "Education",
-        subcategory: "Mathematics",
-        location: "Sydney, Australia",
-        language: "English",
-        requester: "Parents Association",
-        urgent: false,
-        categoryClass: "category-education"
-      }
-    ];
-
-    // Generate service cards
-    function generateServiceCards(data = serviceData) {
-      const grid = document.getElementById('serviceGrid');
-      grid.innerHTML = '';
-
-      // Update the active request counter
-      document.getElementById('counter').textContent = data.length;
-
-      data.forEach((service, index) => {
-        const card = document.createElement('div');
-        card.className = 'bg-white rounded-3xl p-8 card-hover relative overflow-hidden shadow-xl border border-blue-100';
-
-        card.innerHTML = `
-          <div class="absolute top-0 right-0 w-24 h-24 ${service.categoryClass} rounded-bl-3xl opacity-20"></div>
-          ${service.urgent ? '<div class="absolute top-4 right-4 w-3 h-3 bg-blue-500 rounded-full pulse-animation"></div>' : ''}
-          <div class="relative z-10">
-            <div class="flex items-start justify-between mb-6">
-              <div class="flex-1">
-                <h3 class="text-xl font-bold text-blue-900 mb-3 leading-tight">${service.title}</h3>
-                <div class="space-y-2">
-                  <div class="flex items-center space-x-2">
-                    <span class="inline-block w-3 h-3 ${service.categoryClass} rounded-full"></span>
-                    <span class="text-sm font-medium text-blue-700">${service.category}</span>
+          @if(isset($missions) && count($missions))
+            @foreach($missions as $index => $mission)
+              <div class="bg-white rounded-3xl p-8 card-hover relative overflow-hidden shadow-xl border border-blue-100">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-blue-100 rounded-bl-3xl opacity-20"></div>
+                @if($mission->urgent ?? false)
+                  <div class="absolute top-4 right-4 w-3 h-3 bg-blue-500 rounded-full pulse-animation"></div>
+                @endif
+                <div class="relative z-10">
+                  <div class="flex items-start justify-between mb-6">
+                    <div class="flex-1">
+                      <h3 class="text-xl font-bold text-blue-900 mb-3 leading-tight">
+                        {{ $mission->title ?? 'Service Request' }}
+                      </h3>
+                      <div class="space-y-2">
+                        <div class="flex items-center space-x-2">
+                          <span class="inline-block w-3 h-3 bg-blue-400 rounded-full"></span>
+                          <span class="text-sm font-medium text-blue-700">
+                            {{ $mission->category->name ?? 'Category' }}
+                          </span>
+                        </div>
+                        <p class="text-sm text-blue-600">
+                          {{ $mission->subcategory->name ?? 'Subcategory' }}
+                        </p>
+                        <div class="flex items-center space-x-1 text-sm text-blue-500">
+                          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                          </svg>
+                          <span>{{ $mission->location_country ?? ($mission->location_city ?? 'Unknown Location') }}</span>
+                        </div>
+                        <div class="flex items-center space-x-1 text-sm text-blue-500">
+                          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                          </svg>
+                          <span>{{ $mission->language ?? 'N/A' }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="ml-4 flex items-center justify-center">
+                      <div class="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg animate-pulse-glow hover:shadow-yellow-300">
+                        ✈️
+                      </div>
+                    </div>
                   </div>
-                  <p class="text-sm text-blue-600">${service.subcategory}</p>
-                  <div class="flex items-center space-x-1 text-sm text-blue-500">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span>${service.location}</span>
-                  </div>
-                  <div class="flex items-center space-x-1 text-sm text-blue-500">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span>${service.language}</span>
+                  <div class="border-t border-blue-100 pt-4 flex items-center justify-between">
+                    <div class="text-sm text-blue-600">
+                      <span class="font-medium">Requested by:</span>
+                      {{ $mission->requester->name ?? 'Unknown' }}
+                    </div>
+                    <a href="{{ route('view.request', ['id' => $mission->id]) }}"
+                       class="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-2 rounded-full font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                      SEE
+                    </a>
                   </div>
                 </div>
               </div>
-              <div class="ml-4 flex items-center justify-center">
-                <div class="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg animate-pulse-glow hover:shadow-yellow-300">✈️</div>
-              </div>
+            @endforeach
+          @else
+            <div class="col-span-full text-center text-gray-400 py-12">
+              No ongoing service requests found.
             </div>
-            <div class="border-t border-blue-100 pt-4 flex items-center justify-between">
-              <div class="text-sm text-blue-600">
-                <span class="font-medium">Requested by:</span> ${service.requester}
-              </div>
-              <a href="/serviceannouncemnet" class="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-2 rounded-full font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                SEE 
-              </a>
-            </div>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
+          @endif
+        </div>
+        <script>
+          // Update the active request counter
+          document.addEventListener('DOMContentLoaded', function() {
+            var counter = document.getElementById('counter');
+            if (counter) {
+              counter.textContent = "{{ isset($missions) ? count($missions) : 0 }}";
+            }
+          });
+        </script>
+      </div>
+  </div>
 
-    // Initialize the page
-    document.addEventListener('DOMContentLoaded', function() {
-      generateServiceCards();
-      // Remove animateCounter and filter/search logic since those UI elements are gone
-    });
-  </script>
-@include('dashboard.bottomnavbar')
+ 
+@include('dashboard.partials.dashboard-mobile-navbar')
 </body>
 </html>

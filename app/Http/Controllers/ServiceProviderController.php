@@ -4,13 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\ServiceProvider;
+
 class ServiceProviderController extends Controller
 {
     public function serviceproviders(Request $request) {
-        return view('dashboard.provider.service-providers');
+        // Fetch all service providers with their user info
+        $providers = ServiceProvider::with('user')->latest()->get();
+        return view('dashboard.provider.service-providers', compact('providers'));
     }
 
-    public function providerDetails(Request $request) {
-        return view('dashboard.provider.provider-details');
+    public function providerDetails(Request $request)
+    {
+        $id = $request->query('id') ?? $request->route('id');
+        $provider = null;
+        if ($id) {
+            $provider = ServiceProvider::with('user')->find($id);
+        }
+        if (!$provider) {
+            abort(404, 'Provider not found');
+        }
+        return view('dashboard.provider.provider-details', compact('provider'));
     }
 }

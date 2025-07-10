@@ -34,6 +34,7 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'
 Route::get('/signup', function() {
     return view('user-auth.signup');
 });
+
 // User Registeration
 Route::post('/register', [RegisterController::class, 'register'])->name('user.register');
 Route::post('/verify-email-otp', [RegisterController::class, 'verifyEmailOtp'])->name('user.verifyEmailOtp');
@@ -63,7 +64,7 @@ Route::middleware(['auth'])->group(function () {
     
     // Service Provider
     Route::get('/service-providers', [ServiceProviderController::class, 'serviceProviders'])->name('service-providers');
-    Route::get('/provider-details', [ServiceProviderController::class, 'providerDetails'])->name('provider-details');
+    Route::get('/provider-details/{id}', [ServiceProviderController::class, 'providerDetails'])->name('provider-details');
     
 
 
@@ -83,5 +84,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/photo', [AccountController::class, 'uploadProfilePicture'])->name('profile.photo.upload');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
+
+
+// Request Routes
+Route::get('/create-request', [ServiceRequestController::class, 'createRequest']);
+Route::post('/save-request', [ServiceRequestController::class, 'saveRequestForm'])->name('save-request-form');
 Route::get('/{slug?}', [PageController::class, 'show'])->where('slug', '.*');
 

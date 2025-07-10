@@ -61,36 +61,38 @@
                 <h2 class="text-xl font-bold text-gray-800">Hello shrek!</h2>
             </div>
         </div>
-
+        @php 
+            $user = Auth::user();
+        @endphp
         <!-- Navigation Menu -->
         <nav class="space-y-2 mb-8">
             {{-- Use Blade for active link highlighting --}}
             <a href="{{ route('dashboard')}}"
-               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('dashboardindex') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
+               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('dashboard') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
                 <i class="fa-solid fa-gauge-high w-5 h-5"></i>
                 <span class="font-medium">Dashboard</span>
             </a>
-
             <a href="{{ route('user.service.requests') }}"
-               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('myservicerequest') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
+               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('service-request') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
                 <i class="fa-solid fa-list-check w-5 h-5"></i>
                 <span>My services request</span>
             </a>
-
+            @if($user->user_role == 'service_provider')
             <a href="{{ route('user.joblist') }}"
-               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('joblist') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
+               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('job-list') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
                 <i class="fa-solid fa-briefcase w-5 h-5"></i>
                 <span>My job list</span>
             </a>
+            
 
             <a href="{{ route('user.earnings') }}"
-               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('myearnings') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
+               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('my-earnings') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
                 <i class="fa-solid fa-euro-sign w-5 h-5"></i>
                 <span>My earnings</span>
             </a>
-
+            @endif
             <a href="{{ route('user.conversation') }}"
-               class="flex items-center justify-between px-4 py-3 rounded-lg {{ request()->is('privatemsg') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
+               class="flex items-center justify-between px-4 py-3 rounded-lg {{ request()->is('conversations') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
                 <div class="flex items-center space-x-3">
                     <i class="fa-solid fa-envelope w-5 h-5"></i>
                     <span>Private messaging</span>
@@ -99,13 +101,13 @@
             </a>
 
             <a href="{{ route('user.account') }}"
-               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('myaccount') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
+               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('account') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
                 <i class="fa-solid fa-user w-5 h-5"></i>
                 <span>My account</span>
             </a>
 
             <a href="{{ route('user.payments') }}"
-               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('paymentsvalidate') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
+               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('payments') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
                 <i class="fa-solid fa-credit-card w-5 h-5"></i>
                 <span>Payments to be validated</span>
             </a>
@@ -113,25 +115,12 @@
 
         <!-- Promotional Cards -->
         <div class="space-y-4 mb-8">
-            <!-- <div class="promo-gradient-1 p-4 rounded-xl text-white">
-                <div class="flex items-start space-x-3">
-                    <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                    </div>
-                    <p class="text-sm font-medium leading-tight">
-                        I boost my profile to be among the first Service providers
-                    </p>
-                </div>
-            </div> -->
-            <a href="{{ route('user.affiliate.account') }}" class="block promo-gradient-2 p-3 rounded-lg text-white shadow-lg hover:scale-105 transition-transform duration-200">
+            <a href="{{ route('user.affiliate.account') }}" class="block bg-gradient-to-r from-pink-500 to-orange-500 p-3 rounded-lg text-white shadow-lg hover:scale-105 transition-transform duration-200">
                 <div class="flex flex-col items-center justify-center">
                     <div class="bg-white bg-opacity-20 p-2 rounded-full mb-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
                     </div>
                     <span class="text-base font-bold leading-tight">My Affiliation Account</span>

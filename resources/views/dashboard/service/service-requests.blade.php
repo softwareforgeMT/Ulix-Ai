@@ -1,4 +1,3 @@
-
 @extends('dashboard.layouts.master')
 
 @section('title', 'Service Cards')
@@ -14,7 +13,6 @@
       See service provider
     </a>
   </div>
-
   <!-- Tabs + Title -->
   <div class="flex flex-col gap-4 mb-6">
     <!-- Buttons -->
@@ -28,35 +26,35 @@
 
   <!-- Cards Grid -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <?php for ($i = 0; $i < 3; $i++): ?>
-    <div class="bg-white rounded-2xl shadow-md p-6 relative">
-      <!-- Right-side circular icon -->
-      <div class="absolute right-4 top-4 sm:top-1/3 transform sm:-translate-y-1/2 w-16 h-16 bg-<?= ['yellow','red','blue'][$i] ?>-400 rounded-full flex items-center justify-center">
-        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-          <path d="<?= [
-            'M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 5.5V10.5C15 11.9 14.1 13.1 12.8 13.6L12 14L11.2 13.6C9.9 13.1 9 11.9 9 10.5V5.5L3 7V9H1V7C1 6.4 1.4 5.9 2 5.8L8 4.3V2H9V4.3L15 5.8C15.6 6 16 6.4 16 7V9H21Z',
-            'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z',
-            'M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z'
-          ][$i] ?>"/>
-        </svg>
-      </div>
-      <div class="pr-0 sm:pr-20">
-        <h3 class="text-blue-900 font-bold mb-1 text-sm">NIGHT BABYSTILLING MOM</h3>
-        <p class="text-gray-700 text-sm">Duration : 23 jun 2024  1 hour</p>
-        <p class="text-gray-700 text-sm mb-1">France</p>
-        <!-- <p class="text-gray-700 text-sm mb-1">Lyon</p> -->
-        <p class="text-gray-700 text-sm mb-1">French</p>
-        <p class="text-gray-700 text-sm mb-2">Mission Ends In : 59:30</p>
-        <div class="space-y-2">
-          <a href="{{ route('view.request') }}" class="block border border-blue-400 text-blue-500 rounded-full px-4 py-2 text-sm font-medium text-center hover:bg-blue-50 transition">See my request</a>
+    @forelse($missions as $mission)
+      <div class="bg-white rounded-2xl shadow-md p-6 relative">
+        <!-- Right-side circular icon -->
+        <div class="absolute right-4 top-4 sm:top-1/3 transform sm:-translate-y-1/2 w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center">
+          <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/>
+          </svg>
         </div>
-        <div class="flex justify-between items-center mt-6">
-          <span></span>
-          <a href="{{ route('service-providers' )}}" class="bg-green-500 text-white px-4 py-2 text-sm rounded-full hover:bg-green-600 transition">See the Ulysses</a>
+        <div class="pr-0 sm:pr-20">
+          <h3 class="text-blue-900 font-bold mb-1 text-sm">{{ strtoupper($mission->title ?? 'Service Request') }}</h3>
+          <p class="text-gray-700 text-sm">Duration: {{ $mission->service_durition ?? '-' }}</p>
+          <p class="text-gray-700 text-sm mb-1">{{ $mission->location_country ?? '-' }}</p>
+          <p class="text-gray-700 text-sm mb-1">{{ $mission->location_city ?? '-' }}</p>
+          <p class="text-gray-700 text-sm mb-1">{{ $mission->language ?? '-' }}</p>
+          <p class="text-gray-700 text-sm mb-2">Status: {{ ucfirst($mission->status) }}</p>
+          <div class="space-y-2">
+            <a href="{{ route('view.request', ['id' => $mission->id]) }}" class="block border border-blue-400 text-blue-500 rounded-full px-4 py-2 text-sm font-medium text-center hover:bg-blue-50 transition">See my request</a>
+          </div>
+          <div class="flex justify-between items-center mt-6">
+            <span></span>
+            <a href="{{ route('service-providers') }}" class="bg-green-500 text-white px-4 py-2 text-sm rounded-full hover:bg-green-600 transition">See the Ulysses</a>
+          </div>
         </div>
       </div>
-    </div>
-    <?php endfor; ?>
+    @empty
+      <div class="col-span-3 text-center text-gray-500 py-12">
+        You have no active service requests.
+      </div>
+    @endforelse
   </div>
   <!-- New Section: Published - Not yet provider -->
   <div class="mt-10">

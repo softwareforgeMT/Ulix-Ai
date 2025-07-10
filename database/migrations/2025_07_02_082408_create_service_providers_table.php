@@ -15,7 +15,8 @@ class CreateServiceProvidersTable extends Migration
             $table->string('last_name');
             $table->string('native_language')->nullable();
             $table->json('spoken_language')->nullable();
-            $table->text('services_to_offer')->nullable();
+            $table->json('services_to_offer')->nullable();
+            $table->json('services_to_offer_category')->nullable();
             $table->text('provider_address')->nullable();
             $table->text('operational_countries')->nullable(); 
             $table->boolean('communication_online')->nullable();

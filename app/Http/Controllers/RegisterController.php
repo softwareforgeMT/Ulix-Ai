@@ -20,29 +20,31 @@ class RegisterController extends Controller
         $ip = $request->ip();
         $geoLocationService = new GeolocationService();
         $countryName = $geoLocationService->getCountryFromRequest($request);
-        if (User::where('email', $expats['email'])->exists()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'A user with this email already exists.'
-            ], 409);
+
+        $user = User::where('email', $expats['email'])->first();
+
+        if ($user) {
+            // User exists: update user_role and create provider record
+            $user->user_role = 'service_provider';
+            $user->save();
+        } else {
+            // Create new user
+            $affiliateLink = $this->generateAffiliateLink($expats['email'] ?? '', $expats['first_name'] ?? '', $expats['last_name'] ?? '');
+            $user = User::create([
+                'name' => trim(($expats['first_name'] ?? '') . ' ' . ($expats['last_name'] ?? '')),
+                'email' => $expats['email'],
+                'password' => Hash::make($expats['password'] ?? Str::random(12)),
+                'country' => $countryName,
+                'preferred_language' => $expats['native_language'] ?? null,
+                'user_role' => 'service_provider',
+                'affiliate_code' => $affiliateLink,
+                'referred_by' => $expats['referred_by'] ?? null,
+                'referral_stats' => $expats['referral_stats'] ?? null,
+                'status' => 'active',
+                'is_fake' => $expats['is_fake'] ?? false,
+                'last_login_at' => now(),
+            ]);
         }
-
-        $affiliateLink = $this->generateAffiliateLink($expats['email'] ?? '', $expats['first_name'] ?? '', $expats['last_name'] ?? '');
-
-        $user = User::create([
-            'name' => trim(($expats['first_name'] ?? '') . ' ' . ($expats['last_name'] ?? '')),
-            'email' => $expats['email'],
-            'password' => Hash::make($expats['password'] ?? Str::random(12)),
-            'country' => $countryName,
-            'preferred_language' => $expats['native_language'] ?? null,
-            'user_role' => 'service_provider',
-            'affiliate_code' => $affiliateLink,
-            'referred_by' => $expats['referred_by'] ?? null,
-            'referral_stats' => $expats['referral_stats'] ?? null,
-            'status' => 'active',
-            'is_fake' => $expats['is_fake'] ?? false,
-            'last_login_at' => now(),
-        ]);
 
         $profileImagePath = null;
         if (!empty($expats['profile_image'])) {
@@ -68,14 +70,26 @@ class RegisterController extends Controller
                 $documents[$docType] = $docArr;
             }
         }
+ 
+        $provider = ServiceProvider::where('user_id', $user->id)->where('email', $expats['email'])->first();
 
+        if($provider) {
+            return response()->json([
+                'status' => 'success',
+                'user' => $user,
+                'provider' => $provider,
+                'message' => 'Provider Already Exists',
+            ]);
+        }
+        
         $provider = ServiceProvider::create([
             'user_id' => $user->id,
             'first_name' => $expats['first_name'] ?? null,
             'last_name' => $expats['last_name'] ?? null,
             'native_language' => $expats['native_language'] ?? null,
             'spoken_language' => isset($expats['spoken_language']) ? json_encode($expats['spoken_language']) : null,
-            'services_to_offer' => $expats['provider_services'] ?? null,
+            'services_to_offer' => isset($expats['provider_services']) ? json_encode($expats['provider_services']) : null,
+            'services_to_offer_category' => isset($expats['provider_subcategories']) ? json_encode($expats['provider_subcategories']) : null,
             'provider_address' => $expats['location'] ?? null,
             'operational_countries' => isset($expats['operational_countries']) ? json_encode($expats['operational_countries']) : null,
             'communication_online' => $this->truthy($expats, 'communication_preference.Online'),
