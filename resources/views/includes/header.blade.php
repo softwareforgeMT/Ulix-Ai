@@ -434,7 +434,8 @@
 
 		<!-- Step 16: Success Confirmation -->
 		<div id="step16" class="hidden space-y-6 text-center">
-			<h2 class="text-blue-900 font-extrabold text-2xl">YOUR ACCOUNT PRESTATAIRE IS CREATE</h2>
+			<h2 class="text-blue-900 font-extrabold text-2xl">
+YOUR PROVIDER ACCOUNT IS CREATED</h2>
 			<p class="text-blue-800 font-semibold text-md">YOU ARE OFFICIALLY A ULYSSE</p>
 			<p class="text-gray-600">Go check out the service requests in your area now</p>
 
@@ -576,6 +577,10 @@
 					return document.querySelectorAll('#step3 .lang-btn.bg-blue-900').length > 0;
 				case 3: // Step 4 - help icon selected
 					return document.querySelectorAll('#step4 .help-icon.ring-4').length > 0;
+          	case 4: // Step 9 - text filled
+					return document.getElementById('location-input').value.trim().length > 0;
+          	case 5: // Step 9 - text filled
+					return document.getElementById('countriesInput').value.trim().length > 0;
 				case 6: // Step 7 - one toggle selected in each group
 					return Array.from(document.querySelectorAll('#step7 .special-status-item'));
 				case 7: // Step 8 - yes/no selected in each group
@@ -586,6 +591,14 @@
 					return document.getElementById('profileDescription').value.trim().length > 0;
 				case 9: // Step 10 - image uploaded
 					return document.getElementById('profileUpload').files.length > 0;
+          case 11:
+          return document.getElementById('first_name_input').value.trim().length > 0;
+           case 12:
+          return document.getElementById('email_input').value.trim().length > 0;
+          case 13:
+          return document.getElementById('phone_number_input').value.trim().length > 0;
+          case 14:
+          return document.getElementById('otp_input').value.trim().length > 0;
 				default:
 					return true;
 			}
@@ -1319,6 +1332,12 @@ function closeAllPopups() {
   }
 
 </script>
+
+
+
+
+
+
 
 
 </body>
