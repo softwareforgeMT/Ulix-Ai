@@ -23,41 +23,61 @@
         <h1 class="text-xl sm:text-2xl font-semibold text-blue-800 text-center">
           WE CONFIRM THAT YOUR BOOKING HAS BEEN TAKEN INTO ACCOUNT, YOUR ULYSSE HAS BEEN NOTIFIED
         </h1>
-        <p class="text-gray-600 text-center">Here Are His Contact Details</p>
+        <p class="text-gray-600 text-center">Here Are The Provider's Contact Details</p>
 
         <div class="flex flex-col md:flex-row gap-8 md:gap-6 items-center md:items-start">
-          <!-- User Card -->
+          <!-- Provider Card -->
           <div class="w-full md:w-72 bg-blue-50 rounded-2xl p-6 flex flex-col items-center text-center shadow-md border border-blue-100">
-            <div class="w-24 h-24 bg-gray-300 rounded-full mb-4"></div>
+            <div class="w-24 h-24 bg-gray-300 rounded-full mb-4 overflow-hidden">
+              @if($mission->selected_provider && $mission->selected_provider->profile_photo)
+                <img src="{{ asset($mission->selected_provider->profile_photo) }}" alt="Provider Photo" class="w-full h-full object-cover rounded-full">
+              @endif
+            </div>
             <div class="text-blue-600 text-sm mb-1">✔ Profile verified</div>
-            <div class="text-gray-700 text-sm mb-1">⭐ 4.85 / 5</div>
-            <div class="text-gray-700 text-sm mb-1">📞 06 00 00 00</div>
-            <div class="text-blue-700 underline text-sm mb-2">📧 sgfcfgfttf@gmail.com</div>
+            <div class="text-gray-700 text-sm mb-1">
+              
+              ⭐ {{ $reviews->avg('rating') ?? '5.0' }} / 5
+            </div>
+            <div class="text-gray-700 text-sm mb-1">
+              📞 {{ $provider->phone_number ?? '-' }}
+            </div>
+            <div class="text-blue-700 underline text-sm mb-2">
+              📧 {{ $provider->email ?? '-' }}
+            </div>
             <ul class="text-sm text-gray-700 space-y-1 mt-2">
-              <li>🌱 Gardener</li>
-              <li>🛠 Work In Handyman</li>
-              <li>📊 Accounting</li>
+              @if($mission->selected_provider && $mission->selected_provider->services_to_offer)
+                @foreach(json_decode($mission->selected_provider->services_to_offer, true) as $service)
+                  <li>{{ $service }}</li>
+                @endforeach
+              @endif
             </ul>
           </div>
 
           <!-- Booking Info -->
           <div class="flex-1 space-y-4 w-full">
-            <div onclick="openPopup1()" class="border border-blue-200 rounded-xl p-6 shadow-sm cursor-pointer hover:bg-blue-50 transition">
-              <h2 class="font-semibold text-gray-600 text-sm mb-2">Initial advertising</h2>
+            <div class="border border-blue-200 rounded-xl p-6 shadow-sm bg-blue-50">
+              <h2 class="font-semibold text-gray-600 text-sm mb-2">Mission Details</h2>
               <div class="flex justify-between items-center flex-wrap gap-2">
                 <div>
-                  <p class="text-gray-800 font-medium">Moving household appliances</p>
-                  <p class="text-sm text-gray-600">9:00 - 15:00 (6h30)</p>
-                  <p class="text-xs text-gray-400">After tomorrow</p>
+                  <p class="text-gray-800 font-medium">{{ $mission->title }}</p>
+                  <p class="text-sm text-gray-600">{{ $mission->service_durition ?? '-' }}</p>
+                  <p class="text-xs text-gray-400">{{ $mission->created_at ? $mission->created_at->format('d/m/Y') : '-' }}</p>
                 </div>
-                <div class="text-xl font-semibold text-gray-700">36$</div>
+                <div class="text-xl font-semibold text-gray-700">
+                  @if($mission->offer)
+                    €{{ number_format($mission->offer->price, 2) }}
+                  @endif
+                </div>
+              </div>
+              <div class="mt-2 text-gray-700 text-sm">
+                {{ $mission->description }}
               </div>
             </div>
 
-            <div class="text-blue-600 text-sm underline cursor-pointer text-center">PHONE TO &lt;NAME&gt;</div>
+            <div class="text-blue-600 text-sm underline cursor-pointer text-center">PHONE TO {{ $mission->selected_provider->first_name ?? 'Provider' }}</div>
             <div class="flex items-center justify-center space-x-2">
               <span class="text-gray-500 text-sm">Or</span>
-              <button class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-2 rounded-full transition text-sm">SEND A MESSAGE</button>
+              <a href="{{ route('user.conversation') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-2 rounded-full transition text-sm">SEND A MESSAGE</a>
             </div>
           </div>
         </div>
@@ -136,16 +156,6 @@
     }
   </script>
  
-@include('dashboard.bottomnavbar')
-</body>
-</html>
-      <!-- closePopup2();
-      document.getElementById('bookingPopup3').classList.remove('hidden');
-    }
-    function closePopup3() {
-      document.getElementById('bookingPopup3').classList.add('hidden');
-    } -->
-  </script>
- 
+@include('dashboard.partials.dashboard-mobile-navbar')
 </body>
 </html>

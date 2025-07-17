@@ -192,8 +192,7 @@ class RegisterController extends Controller
     {
         $base = $first . $last . explode('@', $email)[0] . rand(100, 999);
         $slug = strtolower(Str::slug($base));
-        $domain = config('app.url') ?? env('APP_URL', 'http://localhost');
-        return rtrim($domain, '/') . '/affiliate/' . $slug;
+        return $slug;
     }
 
     public function verifyEmailOtp(Request $request)

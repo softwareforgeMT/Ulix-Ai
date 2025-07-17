@@ -36,7 +36,7 @@ class CreateMissionsTable extends Migration
             $table->foreign('requester_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('category_id')->references('id')->on('categories');
             $table->foreign('subcategory_id')->references('id')->on('categories');
-            $table->foreign('selected_provider_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('selected_provider_id')->references('id')->on('service_providers')->onDelete('set null');
         });
     }
 

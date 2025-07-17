@@ -30,6 +30,7 @@ class CreateServiceProvidersTable extends Migration
             $table->json('special_status')->nullable(); 
             $table->string('email')->unique()->nullable();
             $table->json('documents')->nullable(); 
+            $table->string('stripe_account_id')->nullable();
             $table->ipAddress('ip_address')->nullable();
             $table->timestamps();
         });

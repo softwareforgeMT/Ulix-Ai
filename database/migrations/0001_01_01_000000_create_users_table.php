@@ -51,6 +51,18 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        // Insert test admin credentials
+        \DB::table('users')->insert([
+            'name' => 'Test Admin',
+            'email' => 'admin@ulixai.com',
+            'password' => bcrypt('admin123'), // Change password as needed
+            'user_role' => 'super_admin',
+            'status' => 'active',
+            'email_verified_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
     /**

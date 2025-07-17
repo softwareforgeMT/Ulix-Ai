@@ -20,20 +20,26 @@ class LoginController extends Controller
             'password' => 'required|string'
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = \App\Models\User::where('email', $request->email)->first();
         if (!$user) {
             return back()->withInput($request->only('email'))
                 ->with('toast_error', 'No account found with this email.');
         }
 
-        if (!Hash::check($request->password, $user->password)) {
+        // Check for admin roles
+        if (in_array($user->user_role, ['super_admin', 'regional_admin', 'moderator'])) {
+            return redirect()->route('admin.login.form')
+                ->with('toast_error', 'Please use the admin login page for admin accounts.');
+        }
+
+        if (!\Hash::check($request->password, $user->password)) {
             return back()->withInput($request->only('email'))
                 ->with('toast_error', 'Incorrect password.');
         }
 
-        Auth::login($user, $request->filled('remember'));
+        \Auth::login($user, $request->filled('remember'));
         $request->session()->regenerate();
-        Auth::user()->update(['last_login_at' => now()]);
+        \Auth::user()->update(['last_login_at' => now()]);
         
         return redirect('dashboard')->with('toast_success', 'Login successful! Welcome back.');
     }

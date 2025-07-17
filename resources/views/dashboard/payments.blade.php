@@ -3,10 +3,23 @@
 @section('title', 'Payments')
 
 @section('content')
-    
     <!-- Main Content -->
+
+     @php 
+        // Platform fee (client-side, e.g., 5%)
+        $clientFeePercent = config('ulixai.fees.client', 5);
+        $providerFeePercent = config('ulixai.fees.provider', 15);
+
+        $missionAmount = $offer->price ?? 0;
+        $clientFee = number_format($missionAmount * $clientFeePercent / 100, 2, '.', '');
+        $providerFee = number_format($missionAmount * $providerFeePercent / 100, 2, '.', '');
+        $total = $missionAmount + $clientFee;
+        $netToProvider = $missionAmount - $providerFee;
+      @endphp
     <div class="flex-1 p-4 sm:p-6 lg:p-8">
-      <h1 class="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-center lg:text-left">I VALIDATE JULIEN</h1>
+      <h1 class="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-center lg:text-left">
+        I VALIDATE {{ $provider->first_name ?? 'Provider' }}
+      </h1>
 
       <div class="flex flex-col lg:flex-row gap-6 justify-center items-start">
         <!-- Payment Form -->
@@ -60,10 +73,18 @@
               </div>
 
               <!-- Reserve Button -->
-              <button class="w-full bg-blue-500 text-white rounded-lg py-2.5 text-sm font-semibold hover:bg-blue-600 transition">
-                <a href="/orderconfirm">RESERVE FOR 41.40$</a>
-              </button>
-
+              <form id="stripeCheckoutForm" method="POST" action="{{ route('payments.stripe.checkout') }}">
+                @csrf
+                <input type="hidden" name="mission_id" value="{{ $offer->mission_id }}">
+                <input type="hidden" name="provider_id" value="{{ $provider->id }}">
+                <input type="hidden" name="offer_id" value="{{ $offer->id }}">
+                <input type="hidden" name="amount" value="{{ $missionAmount }}">
+                <input type="hidden" name="client_fee" value="{{ $clientFee }}">
+                <input type="hidden" name="total" value="{{ $total }}">
+                <button type="submit" class="w-full bg-blue-500 text-white rounded-lg py-2.5 text-sm font-semibold hover:bg-blue-600 transition">
+                  RESERVE FOR {{ number_format($total, 2) }} €
+                </button>
+              </form>
               <p class="text-xs text-gray-500 text-center">
                 This is a prepayment, the amount is refunded in the event of cancellation
               </p>
@@ -74,7 +95,7 @@
         <!-- Order Summary -->
         <div class="w-full max-w-md bg-white rounded-lg p-6 mx-auto lg:mx-0">
           <div class="flex items-center mb-6">
-            <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Profile Photo" class="w-16 h-16 rounded-full object-cover mr-4 border border-gray-300" />
+            <img src="{{ $provider->profile_photo ? asset($provider->profile_photo) : 'https://randomuser.me/api/portraits/men/75.jpg' }}" alt="Profile Photo" class="w-16 h-16 rounded-full object-cover mr-4 border border-gray-300" />
 
             <div class="flex-1">
               <div class="flex items-center mb-2">
@@ -83,39 +104,42 @@
               </div>
               <div class="flex items-center">
                 <i class="fas fa-star text-yellow-400 mr-1"></i>
-                <span class="text-sm">4.85 / 5</span>
+                <span class="text-sm">{{ $reviews  ?? '5.0' }} / 5</span>
               </div>
             </div>
             <div class="text-right">
               <i class="fas fa-file-alt text-blue-500 text-2xl"></i>
             </div>
           </div>
-
           <div class="text-center mb-6">
             <div class="text-sm text-gray-600 mb-1">Expected delivery</div>
-            <div class="font-semibold">12 October 2024</div>
+            <div class="font-semibold">{{ $offer->delivery_time ?? '-' }} Days</div>
           </div>
 
           <div class="border-t pt-4 space-y-3">
             <div class="flex justify-between">
-              <span class="text-sm">Zeiper</span>
-              <span class="text-sm">36.00 €</span>
+              <span class="text-sm">{{ $provider->first_name ?? 'Provider' }}</span>
+              <span class="text-sm">{{ number_format($missionAmount, 2) }} €</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-sm">Service fees</span>
-              <span class="text-sm">5.40 €</span>
+              <span class="text-sm">Service fees ({{ $clientFeePercent }}%)</span>
+              <span class="text-sm">{{ $clientFee }} €</span>
             </div>
             <div class="border-t pt-3 flex justify-between font-semibold">
               <span>TOTAL</span>
-              <span>41.40 €</span>
+              <span>{{ number_format($total, 2) }} €</span>
+            </div>
+            <div class="flex justify-between text-xs text-gray-500 pt-2">
+              <span>Provider receives (after {{ $providerFeePercent }}% fee):</span>
+              <span>{{ number_format($netToProvider, 2) }} €</span>
             </div>
           </div>
 
           <div class="mt-4 text-right">
             <i class="fas fa-info-circle text-gray-400"></i>
           </div>
+          </div>
         </div>
       </div>
     </div>
-    @endsection
- 
+@endsection

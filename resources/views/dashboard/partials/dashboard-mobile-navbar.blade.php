@@ -17,7 +17,7 @@
     <!-- Payments -->
     <a href="{{ route('user.payments') }}" class="flex flex-col items-center text-gray-700 hover:text-blue-600 text-xs">
       <i class="fas fa-credit-card text-lg"></i>
-      <span>Payments</span>
+      <span>Payments</span>   
     </a>
 
     <!-- Message with badge -->
@@ -29,6 +29,3 @@
 
   </div>
 </div>
-
-<!-- Font Awesome CDN -->
-<script src="https://kit.fontawesome.com/your-kit-id.js" crossorigin="anonymous"></script>

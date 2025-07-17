@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Mission;
 use App\Models\User;
+use App\Models\Category;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -15,7 +16,6 @@ class ServiceRequestController extends Controller
         $missions = [];
         if ($user) {
             $missions = Mission::where('requester_id', $user->id)
-                ->where('status', 'published')
                 ->orderByDesc('created_at')
                 ->get();
         }
@@ -38,8 +38,10 @@ class ServiceRequestController extends Controller
             ->where('status', 'published')     
             ->where('payment_status', 'unpaid')
             ->get();  
+
+        $category = Category::where('level', 1)->with('subcategories')->get();
     
-        return view('dashboard.service.ongoing-service-requests', compact('missions'));
+        return view('dashboard.service.ongoing-service-requests', compact('missions', 'category'));
     }
     
 
@@ -151,7 +153,32 @@ class ServiceRequestController extends Controller
     {
         $base = $first . $last . explode('@', $email)[0] . rand(100, 999);
         $slug = strtolower(Str::slug($base));
-        $domain = config('app.url') ?? env('APP_URL', 'http://localhost');
-        return rtrim($domain, '/') . '/affiliate/' . $slug;
+        return $slug;
+    }
+
+    public function getSubcategories($categoryId)
+    {
+        // Fetch the subcategories for the selected category
+        $subcategories = Category::where('parent_id', $categoryId)->get();
+
+        return response()->json($subcategories);
+    }
+
+    public function getMissions(Request $request)
+    {
+        
+        $categoryId = $request->input('category_id');
+        $subcategoryId = $request->input('subcategory_id');
+        $country = $request->input('country');
+        $language = $request->input('language');
+        // Fetch missions based on category and subcategory
+        $missions = Mission::where('category_id', $categoryId)
+                           ->where('subcategory_id', $subcategoryId)
+                        //    ->where('location_country', $country)
+                           ->where('language', $language)
+                           ->where('status', 'published')
+                           ->with(['category', 'subcategory', 'requester'])
+                           ->get();
+        return response()->json($missions);
     }
 }

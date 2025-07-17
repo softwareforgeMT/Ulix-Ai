@@ -9,32 +9,44 @@
       <div class="bg-white rounded-2xl shadow p-4 sm:p-8  mx-auto space-y-6">
 
         <!-- Title -->
-        <h2 class="text-blue-900 font-bold text-lg sm:text-xl">NIGHT BABYSTILLING MOM</h2>
+        <h2 class="text-blue-900 font-bold text-lg sm:text-xl">{{ $job->title ?? 'Service Request' }}</h2>
 
         <!-- Requester Info -->
         <div class="space-y-2 text-sm text-gray-800">
-          <p>First of the requester: <span class="text-red-500 font-medium">Jean</span></p>
-          <p>Number phone of the requester: <span class="text-red-600 font-semibold">00 00 00 00</span></p>
-          <p>Date: 15/10/2023</p>
-          <p>From: 16h00 to 18h00</p>
-          <p class="break-words">(exact address) 23 kghjdfgbvkcgfjvhgjbvgfj - 42170 Saint Just Saint Rambert</p>
+          <p>Requester: <span class="text-red-500 font-medium">{{ $job->requester->name ?? '-' }}</span></p>
+          <p>Phone: <span class="text-red-600 font-semibold">{{ $job->requester->phone_number ?? '-' }}</span></p>
+          <p>Date: {{ $job->created_at ? $job->created_at->format('d/m/Y') : '-' }}</p>
+          @if($job->service_durition)
+            <p>Duration: {{ $job->service_durition }}</p>
+          @endif
+          <p>Location: {{ $job->location_city ?? '-' }}, {{ $job->location_country ?? '-' }}</p>
+          <p>Language: {{ $job->language ?? '-' }}</p>
         </div>
 
         <!-- Service Details -->
         <h3 class="text-blue-900 font-bold mt-6">DETAILS OF THE SERVICE REQUEST</h3>
         <div class="border border-blue-200 rounded-xl p-4 text-gray-700 text-sm bg-blue-50">
-          Watch over my mom for part of the night. She is calm and sleeps through the night without waking up.
+          {{ $job->description ?? 'No description provided.' }}
         </div>
 
         <!-- Image Thumbnails -->
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          <?php for ($i = 0; $i < 4; $i++): ?>
-          <div class="border border-blue-200 rounded-xl p-4 flex items-center justify-center h-32 bg-blue-50">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M4 16l4-4a3 3 0 014 0l4 4M2 20h20M12 12a4 4 0 100-8 4 4 0 000 8z"/>
-            </svg>
-          </div>
-          <?php endfor; ?>
+          @php
+            $images = json_decode($job->attachments ?? '[]', true);
+          @endphp
+          @forelse($images as $img)
+            <div class="border border-blue-200 rounded-xl p-2 flex items-center justify-center h-32 bg-blue-50 overflow-hidden">
+              <img src="{{ asset($img) }}" alt="Attachment" class="object-cover w-full h-full rounded-xl" />
+            </div>
+          @empty
+            @for ($i = 0; $i < 4; $i++)
+              <div class="border border-blue-200 rounded-xl p-4 flex items-center justify-center h-32 bg-blue-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M4 16l4-4a3 3 0 014 0l4 4M2 20h20M12 12a4 4 0 100-8 4 4 0 000 8z"/>
+                </svg>
+              </div>
+            @endfor
+          @endforelse
         </div>
 
         <!-- Action Buttons + Cancel -->
@@ -42,8 +54,7 @@
 
           <!-- Left Buttons -->
           <div class="flex flex-wrap gap-4">
-            <!-- <a href="modifyrequest.php" class="bg-blue-600 text-white px-6 py-2 rounded-full font-medium hover:bg-blue-700 transition">MODIFICATIONS</a> -->
-            <a href="/privatemsg" class="border border-blue-500 text-blue-600 px-6 py-2 rounded-full font-medium hover:bg-blue-50 transition">PRIVATE MESSAGING</a>
+            <a href="{{ route('user.conversation') }}" class="border border-blue-500 text-blue-600 px-6 py-2 rounded-full font-medium hover:bg-blue-50 transition">PRIVATE MESSAGING</a>
           </div>
 
           <!-- Right Text -->

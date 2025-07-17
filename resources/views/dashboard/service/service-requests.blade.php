@@ -24,81 +24,96 @@
     <h3 class="text-blue-700 text-xl md:text-2xl font-medium text-center mb-6">My Current Service Request</h3>
   </div>
 
-  <!-- Cards Grid -->
+  @php
+      $currentRequests = $missions->filter(function($m) {
+          return !empty($m->selected_provider_id) && in_array($m->status, ['in_progress', 'completed', 'disputed']);
+      });
+      $publishedNoProvider = $missions->filter(function($m) {
+          return empty($m->selected_provider_id) && $m->status === 'published';
+      });
+  @endphp
+
+  <!-- Cards Grid: My Current Service Request -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    @forelse($missions as $mission)
-      <div class="bg-white rounded-2xl shadow-md p-6 relative">
-        <!-- Right-side circular icon -->
-        <div class="absolute right-4 top-4 sm:top-1/3 transform sm:-translate-y-1/2 w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center">
-          <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/>
-          </svg>
-        </div>
-        <div class="pr-0 sm:pr-20">
-          <h3 class="text-blue-900 font-bold mb-1 text-sm">{{ strtoupper($mission->title ?? 'Service Request') }}</h3>
-          <p class="text-gray-700 text-sm">Duration: {{ $mission->service_durition ?? '-' }}</p>
-          <p class="text-gray-700 text-sm mb-1">{{ $mission->location_country ?? '-' }}</p>
-          <p class="text-gray-700 text-sm mb-1">{{ $mission->location_city ?? '-' }}</p>
-          <p class="text-gray-700 text-sm mb-1">{{ $mission->language ?? '-' }}</p>
-          <p class="text-gray-700 text-sm mb-2">Status: {{ ucfirst($mission->status) }}</p>
-          <div class="space-y-2">
-            <a href="{{ route('view.request', ['id' => $mission->id]) }}" class="block border border-blue-400 text-blue-500 rounded-full px-4 py-2 text-sm font-medium text-center hover:bg-blue-50 transition">See my request</a>
+      @forelse($currentRequests as $mission)
+        <div class="bg-white rounded-2xl shadow-md p-6 relative">
+          <!-- Right-side circular icon -->
+          <div class="absolute right-4 top-4 sm:top-1/3 transform sm:-translate-y-1/2 w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/>
+            </svg>
           </div>
-          <div class="flex justify-between items-center mt-6">
-            <span></span>
-            <a href="{{ route('service-providers') }}" class="bg-green-500 text-white px-4 py-2 text-sm rounded-full hover:bg-green-600 transition">See the Ulysses</a>
+          <div class="pr-0 sm:pr-20">
+            <h3 class="text-blue-900 font-bold mb-1 text-sm">{{ strtoupper($mission->title ?? 'Service Request') }}</h3>
+            <p class="text-gray-700 text-sm">Duration: {{ $mission->service_durition ?? '-' }}</p>
+            <p class="text-gray-700 text-sm mb-1">Country: {{ $mission->location_country ?? '-' }}</p>
+            <p class="text-gray-700 text-sm mb-1">City: {{ $mission->location_city ?? '-' }}</p>
+            <p class="text-gray-700 text-sm mb-1">Language: {{ $mission->language ?? '-' }}</p>
+            <p class="text-gray-700 text-sm mb-2">
+              Status: 
+              {{ 
+                ucfirst(
+                  $mission->status === 'in_progress' ? 'In Progress' : 
+                  ($mission->status === 'completed' ? 'Completed' : 
+                  ($mission->status === 'disputed' ? 'Disputed' : 'N/A'))
+                )
+              }}
+            </p>
+
+            <div class="space-y-2">
+              <a href="{{ route('view.request', ['id' => $mission->id]) }}" class="block border border-blue-400 text-blue-500 rounded-full px-4 py-2 text-sm font-medium text-center hover:bg-blue-50 transition">See my request</a>
+            </div>
+            <div class="flex justify-between items-center mt-6">
+              <span></span>
+              <a href="{{ route('service-providers') }}" class="bg-green-500 text-white px-4 py-2 text-sm rounded-full hover:bg-green-600 transition">See the Ulysses</a>
+            </div>
           </div>
         </div>
-      </div>
-    @empty
-      <div class="col-span-3 text-center text-gray-500 py-12">
-        You have no active service requests.
-      </div>
-    @endforelse
+      @empty
+        <div class="col-span-3 text-center text-gray-500 py-12">
+          You have no active service requests.
+        </div>
+      @endforelse
   </div>
-  <!-- New Section: Published - Not yet provider -->
+
+  <!-- Published - Not yet provider Section -->
   <div class="mt-10">
-    <h3 class="text-center text-blue-700 text-2xl font-semibold mb-6">Published - Not yet provider</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <?php for ($i = 0; $i < 3; $i++): ?>
-      <div class="bg-blue-100 rounded-2xl shadow-md p-6 relative">
-        <div class="absolute right-4 top-4 sm:top-1/3 transform sm:-translate-y-1/2 w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center">
-          <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 5.5V10.5C15 11.9 14.1 13.1 12.8 13.6L12 14L11.2 13.6C9.9 13.1 9 11.9 9 10.5V5.5L3 7V9H1V7C1 6.4 1.4 5.9 2 5.8L8 4.3V2H9V4.3L15 5.8C15.6 6 16 6.4 16 7V9H21Z"/>
-          </svg>
-        </div>
-        <div class="pr-0 sm:pr-20">
-          <h3 class="text-blue-900 font-bold mb-1 text-sm">WAITING FOR PROVIDER</h3>
-          <p class="text-gray-700 text-sm">Duration : 24 jun 2024  2 hours</p>
-          <p class="text-gray-700 text-sm mb-1">France</p>
-          <p class="text-gray-700 text-sm mb-1">English</p>
-          <p class="text-gray-700 text-sm mb-2">Mission Ends In : 12:00</p>
-          <div class="space-y-2">
-            <a href="{{ route('qoute-offer') }}" class="block border border-blue-400 text-blue-500 rounded-full px-4 py-2 text-sm font-medium text-center hover:bg-blue-200 transition">See my request</a>
-            <?php
-              // Example: $proposals = 0; // Always 0 for these cards
-              $proposals = 0;
-              if ($proposals > 0) {
-                echo '<div class="text-green-600 text-center font-semibold text-sm">', $proposals, ' proposals received</div>';
-              } else {
-                echo '<div class="text-red-600 text-center font-semibold text-sm">0 proposals received</div>';
-              }
-            ?>
+      <h3 class="text-center text-blue-700 text-2xl font-semibold mb-6">Published - Not yet provider</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @forelse($publishedNoProvider as $mission)
+        <div class="bg-blue-100 rounded-2xl shadow-md p-6 relative">
+          <div class="absolute right-4 top-4 sm:top-1/3 transform sm:-translate-y-1/2 w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 5.5V10.5C15 11.9 14.1 13.1 12.8 13.6L12 14L11.2 13.6C9.9 13.1 9 11.9 9 10.5V5.5L3 7V9H1V7C1 6.4 1.4 5.9 2 5.8L8 4.3V2H9V4.3L15 5.8C15.6 6 16 6.4 16 7V9H21Z"/>
+            </svg>
           </div>
-          <div class="flex justify-end items-center mt-6 gap-2 flex-wrap">
-            <span class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full">No provider yet</span>
-            <button 
-              class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-xs rounded-full font-semibold transition-all whitespace-nowrap"
-              onclick="openCancelRequestPopup(event)">
-              Cancel my help request
-            </button>
+          <div class="pr-0 sm:pr-20">
+            <h3 class="text-blue-900 font-bold mb-1 text-sm">{{ strtoupper($mission->title ?? 'WAITING FOR PROVIDER') }}</h3>
+            <p class="text-gray-700 text-sm">Duration : {{ $mission->service_durition ?? '-' }}</p>
+            <p class="text-gray-700 text-sm mb-1">Location in Need : {{ $mission->location_country ?? '-' }}</p>
+            <p class="text-gray-700 text-sm mb-1">Prefered Language : {{ $mission->language ?? '-' }}</p>
+            <p class="text-gray-700 text-sm mb-2">Mission Ends In : {{ $mission->ends_in ?? '-' }}</p>
+            <div class="space-y-2">
+              <a href="{{ route('qoute-offer', ['id'=> $mission->id]) }}" class="block border border-blue-400 text-blue-500 rounded-full px-4 py-2 text-sm font-medium text-center hover:bg-blue-200 transition">See my request</a>
+              <div class="text-red-600 text-center font-semibold text-sm">{{ $mission->offers->count() ?? 0 }} proposals received</div>
+            </div>
+            <div class="flex justify-end items-center mt-6 gap-2 flex-wrap">
+              <span class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full">No provider yet</span>
+              <button 
+                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-xs rounded-full font-semibold transition-all whitespace-nowrap"
+                onclick="openCancelRequestPopup(event)">
+                Cancel my help request
+              </button>
+            </div>
           </div>
         </div>
+        @empty
+        <div class="col-span-3 text-center text-gray-500 py-12">
+          No published requests without provider.
+        </div>
+        @endforelse
       </div>
-      <?php endfor; ?>
-    </div>
   </div>
-  <!-- End New Section -->
 
   <!-- Tabs at bottom center (not sticky, just after all content) -->
   <div class="flex justify-center gap-3  mb-4 pb-8 mt-6">

@@ -8,11 +8,7 @@
 @endphp
 
 <div class="flex flex-col lg:flex-row min-h-screen">
-    <!-- Sidebar is included in master layout -->
-
-    <!-- Main Content -->
     <div class="flex-1 p-4 sm:p-6 lg:pl-10 space-y-6">
-
       <!-- Tab Buttons -->
       <div class="flex flex-wrap justify-center gap-4">
         <a id="tabServiceRequest" href="?tab=services"
@@ -29,56 +25,42 @@
         </a>
       </div>
 
-      <!-- Messaging Interface -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-        <!-- Chat List -->
-        <div class="space-y-4">
-          <!-- Message Card 1 -->
-          <div class="message-card border rounded-xl p-4 bg-white flex items-center gap-4 cursor-pointer hover:shadow-lg transition"
-               data-chat-id="chat1" data-user-name="Mohamed" data-phone="06 00 00 00" data-status="was online 2 hours ago">
-            <div class="flex-1 space-y-1">
-              <h3 class="text-blue-900 font-bold text-sm">PRIVATE LESSONS MY CHILD IN ENGLISH</h3>
-              <p class="text-gray-700 text-sm">Duration: 1 hour</p>
-              <p class="text-gray-700 text-sm">France</p>
-              <p class="text-gray-700 text-sm">Lyon</p>
-              <p class="text-gray-700 text-sm">French</p>
-              <p class="text-gray-700 text-sm">Mission Ends In: 59:30</p>
-              <a href="{{ route('qoute-offer') }}" class="inline-block bg-blue-600 text-white text-xs font-semibold rounded-full px-4 py-2 mt-2 hover:bg-blue-700 transition">
-                See My Job
-              </a>
-            </div>
-            <div class="flex-shrink-0">
-              <div class="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center">
-                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
-                </svg>
+        <!-- Missions List (Dynamic) -->
+        <div id="mission-list" class="space-y-4">
+          @foreach($missions as $mission)
+            @php
+                $conv = $conversations->firstWhere('mission_id', $mission->id);
+                $otherParty = null;
+                if ($user->user_role === 'service_requester') {
+                    $otherParty = $mission->selected_provider ?? null;
+                } else {
+                    $otherParty = $mission->requester ?? null;
+                }
+            @endphp
+            <div class="mission-card border rounded-xl p-4 bg-white flex items-center gap-4 cursor-pointer hover:shadow-lg transition"
+                 data-mission-id="{{ $mission->id }}"
+                 data-conversation-id="{{ $conv ? $conv->id : '' }}"
+                 data-other-name="{{ $otherParty ? ($otherParty->name ?? ($otherParty->first_name . ' ' . $otherParty->last_name)) : '' }}"
+                 data-other-phone="{{ $otherParty->phone_number ?? '' }}">
+              <div class="flex-1 space-y-1">
+                <h3 class="text-blue-900 font-bold text-sm">{{ $mission->title }}</h3>
+                <p class="text-gray-700 text-sm">Duration: {{ $mission->service_durition ?? '-' }}</p>
+                <p class="text-gray-700 text-sm">{{ $mission->location_country ?? '-' }}</p>
+                <p class="text-gray-700 text-sm">{{ $mission->location_city ?? '-' }}</p>
+                <p class="text-gray-700 text-sm">{{ $mission->language ?? '-' }}</p>
+                <p class="text-gray-700 text-sm">Status: {{ $mission->status }}</p>
+                <a href="{{ route('qoute-offer', ['id' => $mission->id])}}" class="inline-block bg-blue-600 text-white text-xs font-semibold rounded-full px-4 py-2 mt-2 hover:bg-blue-700 transition">
+                  See My Job
+                </a>
+              </div>
+              <div class="flex-shrink-0">
+                <div class="w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center">
+                  <i class="fa fa-comments text-white"></i>
+                </div>
               </div>
             </div>
-          </div>
-
-          <!-- Message Card 2 -->
-          <div class="message-card border rounded-xl p-4 bg-white flex items-center gap-4 cursor-pointer hover:shadow-lg transition"
-               data-chat-id="chat2" data-user-name="Sarah" data-phone="07 11 22 33" data-status="online now">
-            <div class="flex-1 space-y-1">
-              <h3 class="text-blue-900 font-bold text-sm">PRIVATE LESSONS MY CHILD IN ENGLISH</h3>
-              <p class="text-gray-700 text-sm">Duration: 1 hour</p>
-              <p class="text-gray-700 text-sm">France</p>
-              <p class="text-gray-700 text-sm">Lyon</p>
-              <p class="text-gray-700 text-sm">French</p>
-              <p class="text-gray-700 text-sm">Mission Ends In: 45:20</p>
-              <a href="{{ route('qoute-offer') }}" class="inline-block bg-blue-600 text-white text-xs font-semibold rounded-full px-4 py-2 mt-2 hover:bg-blue-700 transition">
-                See My Job
-              </a>
-            </div>
-            <div class="flex-shrink-0">
-              <div class="w-16 h-16 bg-red-400 rounded-full flex items-center justify-center">
-                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
-              </div>
-            </div>
-          </div>
+          @endforeach
         </div>
 
         <!-- Chat Box -->
@@ -98,7 +80,6 @@
             </div>
             <p id="chatStatus" class="text-gray-400 text-xs"></p>
           </div>
-
           <div class="flex-1 space-y-4 overflow-y-auto text-sm max-h-[300px]">
             <div id="chatMessages" class="space-y-4">
               <div class="text-center text-gray-500 py-8">
@@ -106,8 +87,8 @@
               </div>
             </div>
           </div>
-         <form action="#" method="POST" class="pt-2 relative">
-            <input type="text" placeholder="Send a message here" class="w-full px-4 py-3 border border-blue-300 rounded-full focus:outline-none pr-14" style="padding-right:3.5rem; height:48px;" />
+          <form id="chatForm" class="pt-2 relative" autocomplete="off">
+            <input type="text" id="chatInput" placeholder="Send a message here" class="w-full px-4 py-3 border border-blue-300 rounded-full focus:outline-none pr-14" style="padding-right:3.5rem; height:48px;" autocomplete="off" />
             <button type="submit" id="sendMessageBtn"
                 class="absolute right-3 top-1/2 -translate-y-1/2 bg-blue-500 hover:bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow transition"
                 style="top: calc(30% + 16px); transform: translateY(-50%); padding:0;">
@@ -115,11 +96,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
             </button>
-        </form>
+          </form>
         </div>
       </div>
     </div>
-  </div>
+</div>
 <style>
 @media (max-width: 1024px) {
   #chatBox {
@@ -127,62 +108,139 @@
   }
 }
 </style>
-<script>
-const messageCards = document.querySelectorAll('.message-card');
-const chatBox = document.getElementById('chatBox');
-const chatUserName = document.getElementById('chatUserName');
-const chatPhone = document.getElementById('chatPhone');
-const chatStatus = document.getElementById('chatStatus');
-const chatMessages = document.getElementById('chatMessages');
-const closeChatBtn = document.getElementById('closeChatBtn');
 
-const chatData = {
-  chat1: {
-    messages: [
-      { type: 'received', text: 'est qui dolorem ipsum quia dolor sit amet, consectetur,' },
-      { type: 'sent', text: 'est qui dolorem ipsum quia dolor sit amet, consectetur, est qui dolorem ipsum...' }
-    ]
-  },
-  chat2: {
-    messages: [
-      { type: 'received', text: 'Hello! I\'m ready for the English lesson.' },
-      { type: 'sent', text: 'Great! Let\'s start with some basic vocabulary.' }
-    ]
+@endsection
+@section('scripts')
+
+<script type="module">
+  let currentConversationId = null;
+  let userId = {{ $user->id }};
+  let chatEcho = null;
+
+  // Use the already configured Echo instance from bootstrap.js
+  // No need to create a new one!
+
+  function renderMessages(messages) {
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.innerHTML = '';
+    messages.forEach(msg => {
+      const div = document.createElement('div');
+      div.className = msg.sender_id === userId ? 'text-right' : 'text-left';
+      div.innerHTML = `<div class="inline-block bg-${msg.sender_id === userId ? 'blue-600' : 'gray-100'} text-${msg.sender_id === userId ? 'white' : 'gray-800'} px-4 py-2 rounded-xl text-sm max-w-xs">${msg.body}</div>`;
+      chatMessages.appendChild(div);
+    });
+    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
-};
 
-function renderMessages(messages) {
-  chatMessages.innerHTML = '';
-  messages.forEach(msg => {
+  function appendMessage(msg) {
+    const chatMessages = document.getElementById('chatMessages');
     const div = document.createElement('div');
-    div.className = msg.type === 'sent' ? 'text-right' : 'text-left';
-    div.innerHTML = `<div class="inline-block bg-${msg.type === 'sent' ? 'blue-600' : 'gray-100'} text-${msg.type === 'sent' ? 'white' : 'gray-800'} px-4 py-2 rounded-xl text-sm max-w-xs">${msg.text}</div>`;
+    div.className = msg.sender_id === userId ? 'text-right' : 'text-left';
+    div.innerHTML = `<div class="inline-block bg-${msg.sender_id === userId ? 'blue-600' : 'gray-100'} text-${msg.sender_id === userId ? 'white' : 'gray-800'} px-4 py-2 rounded-xl text-sm max-w-xs">${msg.body}</div>`;
     chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function openChat(conversationId, userName, phone, status, missionId) {
+    currentConversationId = conversationId;
+    document.getElementById('chatBox').classList.remove('hidden');
+    document.getElementById('chatUserName').textContent = userName;
+    document.getElementById('chatPhone').textContent = phone;
+    document.getElementById('chatStatus').textContent = status ? `${userName} / ${status}` : '';
+
+    // Fetch messages
+    fetch(`/conversations/${conversationId}/messages`)
+      .then(res => res.json())
+      .then(renderMessages);
+
+    // Online status
+    fetch(`/conversations/${conversationId}/status`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('chatStatus').textContent = data.online ? 'Online' : 'Offline';
+      });
+
+    // Unsubscribe from previous channel if exists
+    if (chatEcho) {
+      chatEcho.leave();
+      chatEcho = null;
+    }
+    
+    // Subscribe to private channel using the global Echo instance
+    chatEcho = window.Echo.channel('conversation.' + conversationId)
+      .listen('MessageSent', (e) => {
+        console.log('Message received:', e);
+        if (e.message && e.message.conversation_id == currentConversationId) {
+          appendMessage(e.message);
+        }
+      });
+
+      
+  }
+
+  document.querySelectorAll('.mission-card').forEach(card => {
+    card.addEventListener('click', function() {
+      let conversationId = this.dataset.conversationId;
+      let missionId = this.dataset.missionId;
+      let userName = this.dataset.otherName;
+      let phone = this.dataset.otherPhone;
+      
+      // If conversation doesn't exist, start it
+      if (!conversationId) {
+        fetch('/conversations/start', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          },
+          body: JSON.stringify({
+            mission_id: missionId,
+            provider_id: null
+          })
+        })
+        .then(res => res.json())
+        .then(conv => {
+          conversationId = conv.id;
+          this.dataset.conversationId = conversationId;
+          openChat(conversationId, userName, phone, '', missionId);
+        });
+      } else {
+        openChat(conversationId, userName, phone, '', missionId);
+      }
+    });
   });
-}
 
-function openChat(chatId, userName, phone, status) {
-  chatUserName.textContent = userName;
-  chatPhone.textContent = phone;
-  chatStatus.textContent = `${userName} / ${status}`;
-  renderMessages(chatData[chatId]?.messages || []);
-  chatBox.classList.remove('hidden');
-  chatBox.classList.add('flex');
-}
-
-function closeChat() {
-  chatBox.classList.remove('flex');
-  chatBox.classList.add('hidden');
-}
-
-messageCards.forEach(card => {
-  card.addEventListener('click', () => {
-    openChat(card.dataset.chatId, card.dataset.userName, card.dataset.phone, card.dataset.status);
+  document.getElementById('closeChatBtn').addEventListener('click', function() {
+    document.getElementById('chatBox').classList.add('hidden');
+    if (chatEcho) {
+      chatEcho.leave();
+      chatEcho = null;
+    }
+    currentConversationId = null;
   });
-});
 
-closeChatBtn.addEventListener('click', () => {
-  closeChat();
-});
+  document.getElementById('chatForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const input = document.getElementById('chatInput');
+    const body = input.value.trim();
+    if (!body || !currentConversationId) return;
+    
+    fetch(`/conversations/${currentConversationId}/message`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({ body })
+    })
+    .then(res => res.json())
+    .then(msg => {
+      input.value = '';
+      appendMessage(msg);
+    })
+    .catch(error => {
+      console.error('Error sending message:', error);
+    });
+  });
 </script>
 @endsection

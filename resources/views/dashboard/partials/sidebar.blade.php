@@ -97,7 +97,6 @@
                     <i class="fa-solid fa-envelope w-5 h-5"></i>
                     <span>Private messaging</span>
                 </div>
-                <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">3</span>
             </a>
 
             <a href="{{ route('user.account') }}"
@@ -106,7 +105,7 @@
                 <span>My account</span>
             </a>
 
-            <a href="{{ route('user.payments') }}"
+            <a href="{{ route('user.payments.validate') }}"
                class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('payments') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
                 <i class="fa-solid fa-credit-card w-5 h-5"></i>
                 <span>Payments to be validated</span>

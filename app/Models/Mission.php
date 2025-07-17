@@ -49,6 +49,13 @@ class Mission extends Model
 
     public function selectedProvider()
     {
-        return $this->belongsTo(User::class, 'selected_provider_id');
+        return $this->belongsTo(ServiceProvider::class, 'selected_provider_id');
     }
+
+    public function offers()
+    {
+        return $this->hasMany(MissionOffer::class, 'mission_id');
+    }
+
+
 }

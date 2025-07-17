@@ -1,4 +1,3 @@
-
 @extends('dashboard.layouts.master')
 
 @section('title', 'Job List')
@@ -14,7 +13,7 @@
         </div>
         <a href="{{ route('ongoing-requests')}}"
            class="bg-red-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow flex flex-wrap items-center gap-2 hover:bg-red-700 transition cursor-pointer w-full md:w-auto justify-center md:justify-start text-center">
-          77 ongoing service requests
+          {{ $jobs->count() }} ongoing service requests
           <span class="underline font-semibold ml-1">| DISCOVER</span>
         </a>
       </div>
@@ -29,35 +28,37 @@
           Current job to do
         </span>
       </div>
+@php 
+    $jobsAccepted = $jobs->filter(function($job) {
+        return in_array($job->status, ['accepted']);
+    });
 
+    $jobsOffer = $jobs->filter(function($job) {
+        return in_array($job->status, ['pending']);
+    });
+@endphp
       <!-- Job Cards Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <?php
-          $jobs = [
-            ['date' => '18 March 2025', 'price' => '36', 'dispute' => 1],
-            ['date' => '16 February 2025', 'price' => '42', 'dispute' => 0],
-            ['date' => '20 March 2025', 'price' => '75', 'dispute' => 1],
-          ];
-          foreach ($jobs as $index => $job):
-        ?>
+        @forelse($jobs as $job)
         <div class="bg-white rounded-2xl shadow p-5 relative flex flex-col sm:flex-row items-center gap-4 border border-blue-100">
           <div class="flex-1 w-full">
-            <h3 class="text-blue-900 font-bold text-xs mb-1 uppercase tracking-wide">NIGHT BABYSTILLING MOM</h3>
+            <h3 class="text-blue-900 font-bold text-xs mb-1 uppercase tracking-wide">{{ $job->title ?? 'Job' }}</h3>
             <div class="text-xs text-gray-700 mb-2">
-              Deadline : <span class="font-semibold"><?= $job['date'] ?></span>
+              Deadline : <span class="font-semibold">{{ $job->service_durition ?? '-' }}</span>
             </div>
             <div class="flex items-center gap-2 mb-2">
-              <a href="{{ route('view-job') }}" class="bg-blue-600 text-white text-xs px-4 py-1.5 rounded-full font-semibold shadow hover:bg-blue-700 transition">See the job</a>
+              <a href="{{ route('view-job', ['id' => $job->id]) }}" class="bg-blue-600 text-white text-xs px-4 py-1.5 rounded-full font-semibold shadow hover:bg-blue-700 transition">See the job</a>
             </div>
-            <!-- Ongoing dispute always shown, a bit lower -->
             <div class="mt-3">
+              @if($job->dispute_count ?? 0)
               <button
                 type="button"
                 class="bg-red-50 text-red-600 border border-red-300 text-xs px-3 py-1 rounded-full font-semibold block w-max focus:outline-none"
-                onclick="openDisputePopup(<?= $index ?>)"
+                onclick="openDisputePopup({{ $job->id }})"
               >
-                1 Ongoing dispute
+                {{ $job->dispute_count }} Ongoing dispute
               </button>
+              @endif
             </div>
           </div>
           <div class="flex flex-col items-center gap-2 min-w-[120px]">
@@ -68,14 +69,18 @@
             </div>
             <div class="bg-white border border-blue-300 rounded-xl px-3 py-1 text-xs text-blue-900 font-semibold text-center mb-1">
               For this job<br>
-              I win <?= $job['price'] ?>€
+              I win {{ $job->budget_max ?? '-' }}€
             </div>
             <button class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-5 py-2 rounded-lg shadow transition"
               onclick="openDeliveryConfirmPopup()"
             >Job finish</button>
           </div>
         </div>
-        <?php endforeach; ?>
+        @empty
+        <div class="col-span-3 text-center text-gray-500 py-12">
+          No current jobs to do.
+        </div>
+        @endforelse
       </div>
 
       <!-- My Quote Offers Section -->
@@ -85,21 +90,14 @@
         </span>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <?php
-          $offers = [
-            ['date' => '10 April 2025'],
-            ['date' => '22 May 2025'],
-            ['date' => '5 June 2025'],
-          ];
-          foreach ($offers as $offer):
-        ?>
+        @forelse($offers as $offer)
         <div class="bg-blue-100 rounded-2xl shadow p-5 flex flex-row items-center gap-4 border border-blue-200">
           <div class="flex-1">
-            <h3 class="text-blue-900 font-bold text-sm mb-1">NIGHT BABYSTILLING MOM</h3>
+            <h3 class="text-blue-900 font-bold text-sm mb-1">{{ $offer->mission->title ?? 'Job' }}</h3>
             <div class="text-sm text-gray-700 mb-2">
-              Deadline : <span class="font-semibold"><?= $offer['date'] ?></span>
+              Deadline : <span class="font-semibold">{{ $offer->mission->service_durition ?? '-' }}</span>
             </div>
-            <a href="{{ route('qoute-offer')}}" class="bg-blue-600 text-white text-sm px-5 py-2 rounded-full font-semibold shadow hover:bg-blue-700 transition inline-block">See the job</a>
+            <a href="{{ route('qoute-offer', ['id' => $offer->mission->id])}}" class="bg-blue-600 text-white text-sm px-5 py-2 rounded-full font-semibold shadow hover:bg-blue-700 transition inline-block">See the job</a>
           </div>
           <div class="flex flex-col items-center min-w-[64px]">
             <div class="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center">
@@ -109,7 +107,11 @@
             </div>
           </div>
         </div>
-        <?php endforeach; ?>
+        @empty
+        <div class="col-span-3 text-center text-gray-500 py-12">
+          No pending quote offers.
+        </div>
+        @endforelse
       </div>
 
       <!-- Tabs moved to bottom and centered -->

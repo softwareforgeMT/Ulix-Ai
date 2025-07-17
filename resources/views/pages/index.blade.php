@@ -571,300 +571,59 @@ body {
     <!-- Service Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Card 1 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-            <div class="relative">
-                <img src="images/attachment.png" 
-                     alt="Elisa" class="w-full h-62 object-cover">
-                <div class="absolute top-2 left-2 flex items-center">
-                    <img src="https://flagcdn.com/w20/th.png" alt="Thailand Flag" class="w-4 h-3 mr-1">
-                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Visas</span>
-                </div>
-                <div class="absolute bottom-2 left-2">
-                    <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">English</span>
-                </div>
-            </div>
-            <div class="p-4">
-                <div class="flex items-center mb-2">
-                    <h3 class="font-semibold text-lg">Elisa</h3>
-                    <span class="ml-auto text-lg font-semibold">€/h</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-2">Country service: Thailand</p>
-                <div class="flex items-center mb-3">
-                    <div class="flex text-yellow-400">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <span class="text-sm text-gray-600 ml-2">4.91 (300 avis)</span>
-                </div>
-                <div class="flex gap-2 text-xs text-gray-500">
-                    <span class="bg-gray-100 px-2 py-1 rounded">Super pro</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Top</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Sympa</span>
-                </div>
-            </div>
-        </div>
-          <!-- Card 1 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-            <div class="relative">
-                <img src="images/attachment.png" 
-                     alt="Elisa" class="w-full h-62 object-cover">
-                <div class="absolute top-2 left-2 flex items-center">
-                    <img src="https://flagcdn.com/w20/th.png" alt="Thailand Flag" class="w-4 h-3 mr-1">
-                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Visas</span>
-                </div>
-                <div class="absolute bottom-2 left-2">
-                    <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">English</span>
-                </div>
-            </div>
-            <div class="p-4">
-                <div class="flex items-center mb-2">
-                    <h3 class="font-semibold text-lg">Elisa</h3>
-                    <span class="ml-auto text-lg font-semibold">€/h</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-2">Country service: Thailand</p>
-                <div class="flex items-center mb-3">
-                    <div class="flex text-yellow-400">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <span class="text-sm text-gray-600 ml-2">4.91 (300 avis)</span>
-                </div>
-                <div class="flex gap-2 text-xs text-gray-500">
-                    <span class="bg-gray-100 px-2 py-1 rounded">Super pro</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Top</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Sympa</span>
-                </div>
-            </div>
-        </div>
-          <!-- Card 1 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-            <div class="relative">
-                <img src="images/attachment.png" 
-                     alt="Elisa" class="w-full h-62 object-cover">
-                <div class="absolute top-2 left-2 flex items-center">
-                    <img src="https://flagcdn.com/w20/th.png" alt="Thailand Flag" class="w-4 h-3 mr-1">
-                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Visas</span>
-                </div>
-                <div class="absolute bottom-2 left-2">
-                    <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">English</span>
-                </div>
-            </div>
-            <div class="p-4">
-                <div class="flex items-center mb-2">
-                    <h3 class="font-semibold text-lg">Elisa</h3>
-                    <span class="ml-auto text-lg font-semibold">€/h</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-2">Country service: Thailand</p>
-                <div class="flex items-center mb-3">
-                    <div class="flex text-yellow-400">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <span class="text-sm text-gray-600 ml-2">4.91 (300 avis)</span>
-                </div>
-                <div class="flex gap-2 text-xs text-gray-500">
-                    <span class="bg-gray-100 px-2 py-1 rounded">Super pro</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Top</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Sympa</span>
-                </div>
-            </div>
-        </div>
+        @foreach ($providers as $provider)
+            @php
+                $avgRating = round($provider->reviews()->avg('rating') ?? 0);
+                $reviewCount = $provider->reviews()->count();
+                $statuses = json_decode($provider->special_status, true) ?? [];
+            @endphp
 
-          <!-- Card 1 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-            <div class="relative">
-                <img src="images/attachment.png" 
-                     alt="Elisa" class="w-full h-62 object-cover">
-                <div class="absolute top-2 left-2 flex items-center">
-                    <img src="https://flagcdn.com/w20/th.png" alt="Thailand Flag" class="w-4 h-3 mr-1">
-                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Visas</span>
-                </div>
-                <div class="absolute bottom-2 left-2">
-                    <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">English</span>
-                </div>
-            </div>
-            <div class="p-4">
-                <div class="flex items-center mb-2">
-                    <h3 class="font-semibold text-lg">Elisa</h3>
-                    <span class="ml-auto text-lg font-semibold">€/h</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-2">Country service: Thailand</p>
-                <div class="flex items-center mb-3">
-                    <div class="flex text-yellow-400">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <span class="text-sm text-gray-600 ml-2">4.91 (300 avis)</span>
-                </div>
-                <div class="flex gap-2 text-xs text-gray-500">
-                    <span class="bg-gray-100 px-2 py-1 rounded">Super pro</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Top</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Sympa</span>
-                </div>
-            </div>
-        </div>
+            <a href="{{ route('provider-details', ['id' => $provider->id]) }}" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor:pointer">
+                <div class="relative aspect-[9/12] w-full">
+                    <img src="{{ $provider->profile_photo ?? 'images/attachment.png'}}" 
+                        alt="profile" class="absolute inset-0 w-full h-full object-cover">
 
-          <!-- Card 1 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-            <div class="relative">
-                <img src="images/attachment.png" 
-                     alt="Elisa" class="w-full h-62 object-cover">
-                <div class="absolute top-2 left-2 flex items-center">
-                    <img src="https://flagcdn.com/w20/th.png" alt="Thailand Flag" class="w-4 h-3 mr-1">
-                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Visas</span>
-                </div>
-                <div class="absolute bottom-2 left-2">
-                    <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">English</span>
-                </div>
-            </div>
-            <div class="p-4">
-                <div class="flex items-center mb-2">
-                    <h3 class="font-semibold text-lg">Elisa</h3>
-                    <span class="ml-auto text-lg font-semibold">€/h</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-2">Country service: Thailand</p>
-                <div class="flex items-center mb-3">
-                    <div class="flex text-yellow-400">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
+                    <div class="absolute top-2 left-2 flex items-center flex-wrap">
+                        <img src="https://flagcdn.com/w20/th.png" alt="Thailand Flag" class="w-4 h-3 mr-1">
+                        
+                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">{{ $provider->country ?? 'Visas' }}</span>
+                           
                     </div>
-                    <span class="text-sm text-gray-600 ml-2">4.91 (300 avis)</span>
-                </div>
-                <div class="flex gap-2 text-xs text-gray-500">
-                    <span class="bg-gray-100 px-2 py-1 rounded">Super pro</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Top</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Sympa</span>
-                </div>
-            </div>
-        </div>
 
-          <!-- Card 1 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-            <div class="relative">
-                <img src="images/attachment.png" 
-                     alt="Elisa" class="w-full h-62 object-cover">
-                <div class="absolute top-2 left-2 flex items-center">
-                    <img src="https://flagcdn.com/w20/th.png" alt="Thailand Flag" class="w-4 h-3 mr-1">
-                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Visas</span>
-                </div>
-                <div class="absolute bottom-2 left-2">
-                    <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">English</span>
-                </div>
-            </div>
-            <div class="p-4">
-                <div class="flex items-center mb-2">
-                    <h3 class="font-semibold text-lg">Elisa</h3>
-                    <span class="ml-auto text-lg font-semibold">€/h</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-2">Country service: Thailand</p>
-                <div class="flex items-center mb-3">
-                    <div class="flex text-yellow-400">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
+                    <div class="absolute bottom-2 left-2">
+                        <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">{{ $provider->preferred_language ?? 'English' }}</span>
                     </div>
-                    <span class="text-sm text-gray-600 ml-2">4.91 (300 avis)</span>
                 </div>
-                <div class="flex gap-2 text-xs text-gray-500">
-                    <span class="bg-gray-100 px-2 py-1 rounded">Super pro</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Top</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Sympa</span>
-                </div>
-            </div>
-        </div>
 
-          <!-- Card 1 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-            <div class="relative">
-                <img src="images/attachment.png" 
-                     alt="Elisa" class="w-full h-62 object-cover">
-                <div class="absolute top-2 left-2 flex items-center">
-                    <img src="https://flagcdn.com/w20/th.png" alt="Thailand Flag" class="w-4 h-3 mr-1">
-                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Visas</span>
-                </div>
-                <div class="absolute bottom-2 left-2">
-                    <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">English</span>
-                </div>
-            </div>
-            <div class="p-4">
-                <div class="flex items-center mb-2">
-                    <h3 class="font-semibold text-lg">Elisa</h3>
-                    <span class="ml-auto text-lg font-semibold">€/h</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-2">Country service: Thailand</p>
-                <div class="flex items-center mb-3">
-                    <div class="flex text-yellow-400">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
+                <div class="p-4">
+                    <div class="flex items-center mb-2">
+                        <h3 class="font-semibold text-lg">{{ $provider->first_name ?? '_' }}</h3>
+                        <span class="ml-auto text-lg font-semibold">45€/h</span>
                     </div>
-                    <span class="text-sm text-gray-600 ml-2">4.91 (300 avis)</span>
-                </div>
-                <div class="flex gap-2 text-xs text-gray-500">
-                    <span class="bg-gray-100 px-2 py-1 rounded">Super pro</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Top</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Sympa</span>
-                </div>
-            </div>
-        </div>
 
-          <!-- Card 1 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-            <div class="relative">
-                <img src="images/attachment.png" 
-                     alt="Elisa" class="w-full h-62 object-cover">
-                <div class="absolute top-2 left-2 flex items-center">
-                    <img src="https://flagcdn.com/w20/th.png" alt="Thailand Flag" class="w-4 h-3 mr-1">
-                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Visas</span>
-                </div>
-                <div class="absolute bottom-2 left-2">
-                    <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">English</span>
-                </div>
-            </div>
-            <div class="p-4">
-                <div class="flex items-center mb-2">
-                    <h3 class="font-semibold text-lg">Elisa</h3>
-                    <span class="ml-auto text-lg font-semibold">€/h</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-2">Country service: Thailand</p>
-                <div class="flex items-center mb-3">
-                    <div class="flex text-yellow-400">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
+                    <p class="text-gray-600 text-sm mb-2">Country service: {{ $provider->operational_countries }}</p>
+
+                    <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                            @for ($i = 1; $i <= 5; $i++)
+                                @if ($i <= $avgRating)
+                                    <i class="fas fa-star"></i>
+                                @else
+                                    <i class="far fa-star"></i>
+                                @endif
+                            @endfor
+                        </div>
+                        <span class="text-sm text-gray-600 ml-2">{{ number_format($provider->reviews()->avg('rating'), 1) }} ({{ $reviewCount }} Reviews)</span>
                     </div>
-                    <span class="text-sm text-gray-600 ml-2">4.91 (300 avis)</span>
-                </div>
-                <div class="flex gap-2 text-xs text-gray-500">
-                    <span class="bg-gray-100 px-2 py-1 rounded">Super pro</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Top</span>
-                    <span class="bg-gray-100 px-2 py-1 rounded">Sympa</span>
-                </div>
-            </div>
-        </div>
 
-        <!-- Add additional cards (Card 2, Card 3, etc.) following the same structure as Card 1 -->
+                    <div class="flex gap-2 text-xs text-gray-500">
+                      @foreach ($statuses as $index => $status)
+                        <span class="bg-gray-100 px-2 py-1 rounded">{{ $index }}</span>
+                      @endforeach
+                    </div>
+                </div>
+            </a>
+        @endforeach
 
     </div>
 </section>

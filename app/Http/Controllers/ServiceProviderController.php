@@ -8,6 +8,11 @@ use App\Models\ServiceProvider;
 
 class ServiceProviderController extends Controller
 {
+    public function main(Request $request) {
+        $providers = ServiceProvider::with(['user', 'reviews'])->latest()->get();
+        return view('pages.index', compact('providers'));
+    }
+    
     public function serviceproviders(Request $request) {
         // Fetch all service providers with their user info
         $providers = ServiceProvider::with('user')->latest()->get();

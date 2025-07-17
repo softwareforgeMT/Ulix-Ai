@@ -603,7 +603,6 @@
       if (!valid) {
         toastr.error("Please complete all required fields before continuing.");
       }
-
       return valid;
     }
 
@@ -741,7 +740,6 @@
             formData.append('category', categories.category || '');
             formData.append('subcategory', categories.sub_category || '');
             formData.append('subcategory2', categories.child_category || '');
-            console.log("Categories", categories);
           }
 
           nextBtn.disabled = true;
