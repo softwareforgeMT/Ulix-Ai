@@ -6,6 +6,7 @@
   <title>Request for Help - ULIX AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -53,22 +54,23 @@
     <!-- Step 1 -->
     <div class="form-step">
       <label for="countryNeed" class="block font-semibold mb-2 text-blue-800"></label>
-      <input type="text" id="countryNeed" name="countryNeed"  placeholder="ex: USA" class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg mb-4" required />
+      <select id="countryNeed" name="countryNeed" class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg mb-4" required>
+        <option value="">Select country</option>
+        @foreach(['Afghanistan','Albania','Algeria','Andorra','Angola','Argentina','Armenia','Australia','Austria','Azerbaijan','Bahamas','Bahrain','Bangladesh','Barbados','Belarus','Belgium','Belize','Benin','Bhutan','Bolivia','Bosnia and Herzegovina','Botswana','Brazil','Brunei','Bulgaria','Burkina Faso','Burundi','Cabo Verde','Cambodia','Cameroon','Canada','Central African Republic','Chad','Chile','China','Colombia','Comoros','Congo','Costa Rica','Croatia','Cuba','Cyprus','Czech Republic','Denmark','Djibouti','Dominica','Dominican Republic','Ecuador','Egypt','El Salvador','Equatorial Guinea','Eritrea','Estonia','Eswatini','Ethiopia','Fiji','Finland','France','Gabon','Gambia','Georgia','Germany','Ghana','Greece','Grenada','Guatemala','Guinea','Guinea-Bissau','Guyana','Haiti','Honduras','Hungary','Iceland','India','Indonesia','Iran','Iraq','Ireland','Israel','Italy','Jamaica','Japan','Jordan','Kazakhstan','Kenya','Kiribati','Kuwait','Kyrgyzstan','Laos','Latvia','Lebanon','Lesotho','Liberia','Libya','Liechtenstein','Lithuania','Luxembourg','Madagascar','Malawi','Malaysia','Maldives','Mali','Malta','Marshall Islands','Mauritania','Mauritius','Mexico','Micronesia','Moldova','Monaco','Mongolia','Montenegro','Morocco','Mozambique','Myanmar','Namibia','Nauru','Nepal','Netherlands','New Zealand','Nicaragua','Niger','Nigeria','North Korea','North Macedonia','Norway','Oman','Pakistan','Palau','Palestine','Panama','Papua New Guinea','Paraguay','Peru','Philippines','Poland','Portugal','Qatar','Romania','Russia','Rwanda','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines','Samoa','San Marino','Sao Tome and Principe','Saudi Arabia','Senegal','Serbia','Seychelles','Sierra Leone','Singapore','Slovakia','Slovenia','Solomon Islands','Somalia','South Africa','South Korea','South Sudan','Spain','Sri Lanka','Sudan','Suriname','Sweden','Switzerland','Syria','Taiwan','Tajikistan','Tanzania','Thailand','Timor-Leste','Togo','Tonga','Trinidad and Tobago','Tunisia','Turkey','Turkmenistan','Tuvalu','Uganda','Ukraine','United Arab Emirates','United Kingdom','United States','Uruguay','Uzbekistan','Vanuatu','Vatican City','Venezuela','Vietnam','Yemen','Zambia','Zimbabwe'] as $country)
+          <option value="{{ $country }}">{{ $country }}</option>
+        @endforeach
+      </select>
     </div>
 
-  <!-- Step 2 -->
+    <!-- Step 2 -->
     <div class="form-step hidden">
       <label for="originCountry" class="block font-semibold mb-2 text-blue-800"></label>
-      
-      <input 
-        type="text" 
-        id="originCountry" 
-        name="originCountry" 
-        placeholder="ex: Bangkok, New York..." 
-        class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg mb-6" 
-        required 
-      />
-
+      <select id="originCountry" name="originCountry" class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg mb-6" required>
+        <option value="">Select country</option>
+        @foreach(['Afghanistan','Albania','Algeria','Andorra','Angola','Argentina','Armenia','Australia','Austria','Azerbaijan','Bahamas','Bahrain','Bangladesh','Barbados','Belarus','Belgium','Belize','Benin','Bhutan','Bolivia','Bosnia and Herzegovina','Botswana','Brazil','Brunei','Bulgaria','Burkina Faso','Burundi','Cabo Verde','Cambodia','Cameroon','Canada','Central African Republic','Chad','Chile','China','Colombia','Comoros','Congo','Costa Rica','Croatia','Cuba','Cyprus','Czech Republic','Denmark','Djibouti','Dominica','Dominican Republic','Ecuador','Egypt','El Salvador','Equatorial Guinea','Eritrea','Estonia','Eswatini','Ethiopia','Fiji','Finland','France','Gabon','Gambia','Georgia','Germany','Ghana','Greece','Grenada','Guatemala','Guinea','Guinea-Bissau','Guyana','Haiti','Honduras','Hungary','Iceland','India','Indonesia','Iran','Iraq','Ireland','Israel','Italy','Jamaica','Japan','Jordan','Kazakhstan','Kenya','Kiribati','Kuwait','Kyrgyzstan','Laos','Latvia','Lebanon','Lesotho','Liberia','Libya','Liechtenstein','Lithuania','Luxembourg','Madagascar','Malawi','Malaysia','Maldives','Mali','Malta','Marshall Islands','Mauritania','Mauritius','Mexico','Micronesia','Moldova','Monaco','Mongolia','Montenegro','Morocco','Mozambique','Myanmar','Namibia','Nauru','Nepal','Netherlands','New Zealand','Nicaragua','Niger','Nigeria','North Korea','North Macedonia','Norway','Oman','Pakistan','Palau','Palestine','Panama','Papua New Guinea','Paraguay','Peru','Philippines','Poland','Portugal','Qatar','Romania','Russia','Rwanda','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines','Samoa','San Marino','Sao Tome and Principe','Saudi Arabia','Senegal','Serbia','Seychelles','Sierra Leone','Singapore','Slovakia','Slovenia','Solomon Islands','Somalia','South Africa','South Korea','South Sudan','Spain','Sri Lanka','Sudan','Suriname','Sweden','Switzerland','Syria','Taiwan','Tajikistan','Tanzania','Thailand','Timor-Leste','Togo','Tonga','Trinidad and Tobago','Tunisia','Turkey','Turkmenistan','Tuvalu','Uganda','Ukraine','United Arab Emirates','United Kingdom','United States','Uruguay','Uzbekistan','Vanuatu','Vatican City','Venezuela','Vietnam','Yemen','Zambia','Zimbabwe'] as $country)
+          <option value="{{ $country }}">{{ $country }}</option>
+        @endforeach
+      </select>
       <!-- Highlighted Note -->
       <!-- <div class="bg-yellow-100 border-l-4 border-yellow-400 text-yellow-800 text-sm p-3 rounded-md">
         <p class="text-center font-semibold">It is important to know the local legislation</p>
@@ -78,8 +80,14 @@
     <!-- Step 3 -->
     <div class="form-step hidden">
       <label for="currentCity" class="block font-semibold mb-2 text-blue-800"></label>
-      <input type="text" id="currentCity" name="currentCity" placeholder="ex: Bangkok, New York..." class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg mb-4" required />
-      
+      <select id="currentCity" name="currentCity" class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg mb-4" required>
+        <option value="">Select city</option>
+        @foreach([
+          'New York','London','Paris','Berlin','Tokyo','Sydney','Toronto','Los Angeles','Chicago','Madrid','Rome','Dubai','Singapore','Bangkok','Istanbul','Moscow','Beijing','Seoul','Mexico City','Mumbai','Cairo','Lagos','Johannesburg','Buenos Aires','Sao Paulo','Jakarta','Hong Kong','Barcelona','San Francisco','Amsterdam','Vienna','Prague','Budapest','Warsaw','Dublin','Brussels','Zurich','Geneva','Stockholm','Oslo','Copenhagen','Helsinki','Lisbon','Athens','Kuala Lumpur','Manila','Delhi','Shanghai','Riyadh','Tehran','Baghdad','Karachi','Lima','Bogota','Santiago','Montreal','Vancouver','Melbourne','Brisbane','Auckland','Cape Town','Casablanca','Doha','Abu Dhabi','Kuwait City','Muscat','Nairobi','Accra','Addis Ababa','Kampala','Dar es Salaam','Algiers','Tunis','Tripoli','Khartoum','Kigali','Luanda','Harare','Maputo','Antananarivo','Hanoi','Phnom Penh','Yangon','Kathmandu','Colombo','Dhaka','Islamabad','Amman','Jerusalem','Beirut','Damascus','Ankara','Bucharest','Sofia','Belgrade','Zagreb','Ljubljana','Bratislava','Tallinn','Riga','Vilnius','Luxembourg','Monaco','San Marino','Andorra la Vella','Vaduz','Reykjavik','Helsinky'
+        ] as $city)
+          <option value="{{ $city }}">{{ $city }}</option>
+        @endforeach
+      </select>
     </div>
 
     <!-- Step 4 -->
@@ -275,7 +283,7 @@
     </div>
 
     <!-- Step 10 -->
-<div class="form-step hidden w-full flex justify-center">
+<div class="form-step hidden w-full flex justify-center" id="step10-name">
   <div class="grid grid-cols-1 gap-4 w-full max-w-md">
     <input
       type="text"
@@ -284,28 +292,35 @@
       placeholder="Your first name"
       class="p-3 bg-gray-200 border border-blue-300 rounded-lg w-full"
       required
-    />
-    <input
-      type="text"
-      id="lastName"
-      name="lastName"
-      placeholder="Your surname"
-      class="p-3 bg-gray-200 border border-blue-300 rounded-lg w-full"
-      required
+      @if(Auth::check())
+        value="{{ Auth::user()->name }}"
+        disabled
+      @endif
     />
   </div>
 </div>
 
     <!-- Step 11 - Email -->
-    <div class="form-step hidden">
+    <div class="form-step hidden" id="step11-email">
       <label for="email" class="block font-semibold mb-2 text-blue-800"></label>
-      <input type="email" id="email" name="email" placeholder="Enter your address" class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg" required />
+      <input type="email" id="email" name="email" placeholder="Enter your address" class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg"
+    required
+    @if(Auth::check())
+      value="{{ Auth::user()->email }}"
+      disabled
+    @endif
+  />
     </div>
 
     <!-- Step 12 - Password -->
-    <div class="form-step hidden">
+    <div class="form-step hidden" id="step12-password">
       <label for="password" class="block font-semibold mb-2 text-blue-800"></label>
-      <input type="password" id="password" name="password" placeholder="Password" class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg" required />
+      <input type="password" id="password" name="password"  @if(Auth::check())
+        value="{{ Auth::user()->password }}"
+        disabled
+      @endif
+      placeholder="Password" 
+      class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg" required />
     </div>
 
     <!-- Step 13 - Service Request Duration -->
@@ -642,7 +657,7 @@
           break;
         case 9: // Step 10 (name)
           expats.firstName = document.getElementById('firstName').value.trim();
-          expats.lastName = document.getElementById('lastName').value.trim();
+         
           break;
         case 10: // Step 11 (email)
           expats.email = document.getElementById('email').value.trim();
@@ -883,5 +898,26 @@
 
   });
   </script>
+  <!-- Add to <head> -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/country-select-js@2.0.1/build/css/countrySelect.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/country-select-js@2.0.1/build/js/countrySelect.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Populate all .country-select selects with country options using country-select-js
+    function populateCountrySelect(select) {
+      // Use country-select-js to populate the dropdown
+      if (window.countrySelect) {
+        window.countrySelect(select, {
+          defaultCountry: "us",
+          onlyCountries: null,
+          responsiveDropdown: true
+        });
+      }
+    }
+    document.querySelectorAll('.country-select').forEach(populateCountrySelect);
+
+  });
+</script>
 </body>
 </html>
