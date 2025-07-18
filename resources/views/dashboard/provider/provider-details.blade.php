@@ -72,23 +72,33 @@
                     </div>
                     <div class="space-y-3 text-sm mb-6">
                         @php
-                            $services = $provider->services_to_offer ?? [];
-                            if (is_string($services)) {
-                                $decoded = json_decode($services, true);
-                                $services = is_array($decoded) ? $decoded : [$services];
-                            }
+                            // Decode the stringified JSON into an actual array
+                            $services = $provider->services_to_offer ? json_decode($provider->services_to_offer, true) : [];
                         @endphp
-                        @if(is_array($services))
+
+                        @if(is_array($services) && count($services) > 0)
                             @foreach($services as $service)
-                                <div class="flex items-center gap-2">
-                                    <i class="fas fa-briefcase text-blue-500"></i>{{ $service }}
-                                </div>
+                                @php
+                                    // Fetch the category by ID
+                                    $category = \App\Models\Category::find($service);
+                                @endphp
+                                @if($category)
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-briefcase text-blue-500"></i>{{ $category->name }}
+                                    </div>
+                                @else
+                                    <div class="flex items-center gap-2 text-gray-400">
+                                        <i class="fas fa-briefcase"></i>Category not found
+                                    </div>
+                                @endif
                             @endforeach
                         @else
                             <div class="flex items-center gap-2 text-gray-400">
                                 <i class="fas fa-briefcase"></i>No services listed
                             </div>
                         @endif
+
+                        
                     </div>
                     <button onclick="openHelpPopup()" class="inline-block mt-6 bg-red-600 hover:bg-white hover:text-black text-white py-3 px-6 rounded-lg text-sm font-medium"> Suggest A Mission</button>
                 </div>

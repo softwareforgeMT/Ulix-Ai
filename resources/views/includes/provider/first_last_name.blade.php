@@ -1,9 +1,23 @@
+@php 
+  $check = Auth::check();
+  $name = Auth::user()->name;
+@endphp
 <div id="step12" class="hidden space-y-6">
   <h2 class="text-blue-900 font-bold text-xl">WHAT’S YOUR FIRST NAME AND SURNAME?</h2>
   <p class="text-sm text-blue-600">Describe your project in a few words</p>
   <div class="flex gap-4">
-    <input id="first_name_input" type="text" placeholder="Your first name" class="w-full border border-gray-300 rounded-full px-4 py-2" />
-    <input id="last_name_input" type="text" placeholder="Your surname" class="w-full border border-gray-300 rounded-full px-4 py-2" />
+    <input id="first_name_input" type="text" placeholder="Your first name" class="w-full border border-gray-300 rounded-full px-4 py-2"
+      @if($check)
+        value="{{ $name }}"
+        disabled
+      @endif
+    />
+    <input id="last_name_input" type="text" placeholder="Your surname" class="w-full border border-gray-300 rounded-full px-4 py-2"
+      @if($check)
+        value="{{$name}}"
+        disabled
+      @endif
+    />
   </div>
   <div class="flex justify-between items-center">
     <button id="backToStep11" class="text-blue-600 font-medium"> Back</button>

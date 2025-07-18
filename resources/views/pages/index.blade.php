@@ -511,7 +511,7 @@ body {
     </div>
   </div>
 
-      </section>
+</section>
 
 
 
@@ -520,7 +520,21 @@ body {
 
 
 
-
+ @php 
+    $country = [
+        'English', 
+        'French', 
+        'Spanish', 
+        'Portuguese', 
+        'German', 
+        'Italian', 
+        'Arabic', 
+        'Japanese', 
+        'Korean', 
+        'Hindi', 
+        'Turkish'
+    ];
+@endphp
 
 <div class="mt-0 sm:mt-[100px]">
 
@@ -534,42 +548,40 @@ body {
     </div>
   
     <!-- Filters -->
-    <div class="flex flex-wrap justify-center items-center gap-4 mb-8 bg-white p-4 rounded-lg shadow-sm">
-        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto">
-            <option>Country</option>
-            <option>Thailand</option>
-            <option>USA</option>
-            <option>UK</option>
+    <div class="flex flex-wrap justify-center items-center gap-4 mb-8 bg-white p-4 rounded-lg shadow-sm">       
+        <!-- Country Dropdowns -->
+        <select id="languageSelect" class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
+            @foreach($country as $lang)
+              <option value="{{ $lang }}">{{ $lang }}</option>
+            @endforeach
+        </select>
+        <select id="countrySelect" class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
+            @foreach($country as $lang)
+              <option value="{{ $lang }}">{{ $lang }}</option>
+            @endforeach
         </select>
         
-        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto">
-            <option>Language</option>
-            <option>English</option>
-            <option>Thai</option>
-            <option>Spanish</option>
+        <!-- Category Dropdown -->
+        <select id="categorySelect" class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
+            <option value="">Select Category</option>
+            @foreach($category as $cat)
+              <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+            @endforeach  
+        </select>
+
+        <!-- Sub-category Dropdown (hidden initially) -->
+        <select id="subcategorySelect" class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white hidden">
+            <option value="">Select Sub-category</option>
+            <!-- Subcategories will be dynamically added here based on the selected category -->
         </select>
         
-        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto">
-            <option>Category</option>
-            <option>Translation</option>
-            <option>Consulting</option>
-            <option>Design</option>
-        </select>
-        
-        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto">
-            <option>Sub-category</option>
-            <option>Document Translation</option>
-            <option>Business Consulting</option>
-            <option>Graphic Design</option>
-        </select>
-        
-        <button class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors w-full sm:w-auto">
+        <button id="filterButton" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-150">
             Filter
         </button>
     </div>
 
     <!-- Service Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="serviceGrid">
         <!-- Card 1 -->
         @foreach ($providers as $provider)
             @php
@@ -578,7 +590,7 @@ body {
                 $statuses = json_decode($provider->special_status, true) ?? [];
             @endphp
 
-            <a href="{{ route('provider-details', ['id' => $provider->id]) }}" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor:pointer">
+            <a href="{{ route('provider-details', ['id' => $provider->slug]) }}" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor:pointer">
                 <div class="relative aspect-[9/12] w-full">
                     <img src="{{ $provider->profile_photo ?? 'images/attachment.png'}}" 
                         alt="profile" class="absolute inset-0 w-full h-full object-cover">
@@ -1327,6 +1339,121 @@ body {
       popup.classList.remove("scale-100");
     }
   });
+</script>
+
+<script>
+      // Event listener for category select
+      // Event listener for category select
+document.getElementById('categorySelect').addEventListener('change', function() {
+    var categoryId = this.value;
+    var subcategorySelect = document.getElementById('subcategorySelect');
+    
+    if (categoryId) {
+        // Fetch subcategories based on the selected category
+        fetch(`/get-subcategories/${categoryId}`)
+            .then(response => response.json())
+            .then(subcategories => {
+                // Populate the subcategory dropdown
+                subcategorySelect.innerHTML = '<option value="">Select Sub-category</option>';  // Clear previous options
+                
+                subcategories.forEach(function(subcategory) {
+                    var option = document.createElement('option');
+                    option.value = subcategory.id;
+                    option.textContent = subcategory.name;
+                    subcategorySelect.appendChild(option);
+                });
+                
+                // Show the subcategory select
+                subcategorySelect.classList.remove('hidden');
+            });
+    } else {
+        // Hide the subcategory dropdown if no category is selected
+        subcategorySelect.classList.add('hidden');
+    }
+});
+
+// Event listener for the "Filter" button to load providers
+document.getElementById('filterButton').addEventListener('click', function() {
+    var categoryId = document.getElementById('categorySelect').value;
+    var subcategoryId = document.getElementById('subcategorySelect').value;
+    var language = document.getElementById('languageSelect').value;
+    var country = document.getElementById('countrySelect').value;
+
+    // Fetch providers based on selected filters (category, subcategory, country, language)
+    fetch(`/get-providers?category_id=${categoryId}&subcategory_id=${subcategoryId}&country=${country}&language=${language}`)
+        .then(response => response.json())
+        .then(providers => {
+            // Render providers in the service grid
+            const serviceGrid = document.getElementById('serviceGrid');
+            serviceGrid.innerHTML = '';  // Clear previous providers
+
+            if (providers.length > 0) {
+                providers.forEach(function(provider) {
+                    // Parse special_status if it's a stringified JSON
+                    console.log(provider)
+                    let specialStatus = provider.special_status ? JSON.parse(provider.special_status) : [];
+
+                    const providerCard = document.createElement('div');
+                    providerCard.className = 'bg-white rounded-3xl card-hover relative overflow-hidden shadow-xl border border-blue-100';
+
+                    providerCard.innerHTML = `
+                      <div class="absolute top-0 right-0 w-24 h-24 bg-blue-100 rounded-bl-3xl opacity-20"></div>
+                      ${provider.urgent ? 
+                        '<div class="absolute top-4 right-4 w-3 h-3 bg-blue-500 rounded-full pulse-animation"></div>' : ''}
+                      <div class="relative z-10">
+                        <a href="/provider-details/${provider.id}" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor:pointer">
+                            <div class="relative aspect-[9/12] w-full">
+                                <img src="${provider.profile_photo ?? 'images/attachment.png'}" 
+                                    alt="profile" class="absolute inset-0 w-full h-full object-cover">
+
+                                <div class="absolute top-2 left-2 flex items-center flex-wrap">
+                                    <img src="https://flagcdn.com/w20/th.png" alt="Thailand Flag" class="w-4 h-3 mr-1">
+                                  
+                                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">${provider.country ?? 'Visas'}</span>
+                                </div>
+
+                                <div class="absolute bottom-2 left-2">
+                                    <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">${provider.preferred_language ?? 'English'}</span>
+                                </div>
+                            </div>
+
+                            <div class="p-4">
+                                <div class="flex items-center mb-2">
+                                    <h3 class="font-semibold text-lg">${provider.first_name ?? '_'}</h3>
+                                    <span class="ml-auto text-lg font-semibold">45€/h</span>
+                                </div>
+
+                                <p class="text-gray-600 text-sm mb-2">Country service: ${provider.operational_countries}</p>
+
+                                <div class="flex items-center mb-3">
+                                    <div class="flex text-yellow-400">
+                                        ${[1, 2, 3, 4, 5].map(i => 
+                                            i <= provider.avgRating ? 
+                                            '<i class="fas fa-star"></i>' : 
+                                            '<i class="far fa-star"></i>'
+                                        ).join('')}
+                                    </div>
+                                    <span class="text-sm text-gray-600 ml-2">${provider.avgRating} (${provider.reviewCount} Reviews)</span>
+                                </div>
+
+                                <div class="flex gap-2 text-xs text-gray-500">
+                                  ${Object.keys(specialStatus).map(statusKey => 
+                                      `<span class="bg-gray-100 px-2 py-1 rounded">${statusKey}</span>`
+                                  ).join('')}
+                                </div>
+                            </div>
+                        </a>
+                      </div>
+                    `;
+                    serviceGrid.appendChild(providerCard);
+                });
+            } else {
+                serviceGrid.innerHTML = '<p>No providers found.</p>';
+            }
+        });
+});
+
+
 </script>
 
 </body>

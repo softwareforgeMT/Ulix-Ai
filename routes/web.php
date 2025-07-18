@@ -41,6 +41,8 @@ Route::get('/signup', function() {
 });
 
 Route::get('/', [ServiceProviderController::class, 'main']);
+Route::get('/get-providers', [ServiceProviderController::class, 'getProviders']);
+Route::get('/get-subcategories/{categoryId}', [ServiceProviderController::class, 'getSubcategories']);
 // User Registeration
 Route::post('/register', [RegisterController::class, 'register'])->name('user.register');
 Route::post('/verify-email-otp', [RegisterController::class, 'verifyEmailOtp'])->name('user.verifyEmailOtp');
@@ -100,8 +102,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::post('/provider/{id}/review', [ProviderReviewController::class, 'store'])->name('provider.review');
     Route::post('/mission/{id}/offer', [JobListController::class, 'submitOffer'])->name('mission.offer');
+
     Route::post('/mission/{id}/public-message', [MissionMessageController::class, 'store'])->name('mission.public-message');
     Route::get('/mission/{id}/public-messages', [MissionMessageController::class, 'list'])->name('mission.public-messages');
+
+    //Cancel Mission
+    
+
     Route::post('/payments/stripe/checkout', [StripePaymentController::class, 'checkout'])->name('payments.stripe.checkout');
     Route::post('/payments/stripe/process', [StripePaymentController::class, 'processPayment'])->name('payments.stripe.process');
     Route::get('/payments/success/{mission}', [StripePaymentController::class, 'success'])->name('payments.success');

@@ -69,7 +69,7 @@
                     </div>
                     <div class="flex items-center justify-center gap-1 mb-2">
                         <i class="fas fa-star star-filled"></i>
-                        <span class="text-sm font-medium">4.85 / 5</span>
+                        <span class="text-sm font-medium">{{$provider->reviews()->avg('rating') ?? 5}} / 5</span>
                     </div>
                 </div>
                 <div class="border-t pt-4">
@@ -83,26 +83,36 @@
                     </div>
                     <div class="space-y-3 text-sm mb-6">
                         @php
-                            $services = $provider->services_to_offer ?? [];
-                            if (is_string($services)) {
-                                $decoded = json_decode($services, true);
-                                $services = is_array($decoded) ? $decoded : [$services];
-                            }
+                        // Decode the stringified JSON into an actual array
+                        $services = $provider->services_to_offer ? json_decode($provider->services_to_offer, true) : [];
                         @endphp
-                        @if(is_array($services))
+
+                        @if(is_array($services) && count($services) > 0)
                             @foreach($services as $service)
-                                <div class="flex items-center gap-2">
-                                    <i class="fas fa-briefcase text-blue-500"></i>{{ $service }}
-                                </div>
+                                @php
+                                    // Fetch the category by ID
+                                    $category = \App\Models\Category::find($service);
+                                @endphp
+                                @if($category)
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-briefcase text-blue-500"></i>{{ $category->name }}
+                                    </div>
+                                @else
+                                    <div class="flex items-center gap-2 text-gray-400">
+                                        <i class="fas fa-briefcase"></i>Category not found
+                                    </div>
+                                @endif
                             @endforeach
                         @else
                             <div class="flex items-center gap-2 text-gray-400">
                                 <i class="fas fa-briefcase"></i>No services listed
                             </div>
                         @endif
+
+
                     </div>
                     <button class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors">
-                        <a href="{{ route('provider-details', ['id' => $provider->id]) }}"> SEE MORE </a>
+                        <a href="{{ route('provider-details', ['id' => $provider->slug]) }}"> SEE MORE </a>
                     </button>
                 </div>
             </div>

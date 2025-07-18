@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <script src="https://js.stripe.com/basil/stripe.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/country-select-js@1.0.8/dist/countrySelect.min.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-800">
 

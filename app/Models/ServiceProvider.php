@@ -30,7 +30,8 @@ class ServiceProvider extends Model
         'email',
         'documents',
         'ip_address',
-        'stripe_account_id'
+        'stripe_account_id',
+        'slug'
     ];
 
     protected $casts = [

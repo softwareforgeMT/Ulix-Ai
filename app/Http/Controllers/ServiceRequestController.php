@@ -54,7 +54,7 @@ class ServiceRequestController extends Controller
         $request->validate([
             'email' => 'required|email',
             'firstName' => 'required|string|max:255',
-            'lastName' => 'required|string|max:255',
+            // 'lastName' => 'required|string|max:255',
             'password' => 'required|string|min:6',
             'countryNeed' => 'required|string',
             'currentCity' => 'required|string',
@@ -64,10 +64,10 @@ class ServiceRequestController extends Controller
 
         // Check/Create User
         $user = User::where('email', $request->email)->first();
-        $affiliateLink = $this->generateAffiliateLink($request->email ?? '', $request->firstName ?? '', $request->lastName ?? '');
+        $affiliateLink = $this->generateAffiliateLink($request->email ?? '', $request->firstName ?? '');
         if (!$user) {
             $user = User::create([
-                'name' => trim($request->firstName . ' ' . $request->lastName),
+                'name' => trim($request->firstName),
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'country' => $request->countryNeed,
@@ -180,5 +180,20 @@ class ServiceRequestController extends Controller
                            ->with(['category', 'subcategory', 'requester'])
                            ->get();
         return response()->json($missions);
+    }
+
+    public function cancelMissionRequest(Request $request, $id) 
+    {
+        $mission = Mission::findOrFail($id);
+        
+        if ($mission->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $reason = $request->input('reason');
+        $otherReason = $request->input('other_reason');
+        $mission->delete();
+        
+        return response()->json(['message' => 'Mission canceled successfully']);
     }
 }

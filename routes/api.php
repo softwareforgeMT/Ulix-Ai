@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ServiceRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,7 @@ Route::get('/categories/{parentId}/subcategories', [CategoryController::class, '
 Route::get('/categories/{parentId}/children', [CategoryController::class, 'fetchChildCategories']);
 
 
-
+Route::delete('/missions/{id}/cancel', [ServiceRequestController::class, 'canceLMissionRequest']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

@@ -32,6 +32,7 @@ class CreateServiceProvidersTable extends Migration
             $table->json('documents')->nullable(); 
             $table->string('stripe_account_id')->nullable();
             $table->ipAddress('ip_address')->nullable();
+            $table->string('slug')->nullable();
             $table->timestamps();
         });
     }

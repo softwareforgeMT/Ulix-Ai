@@ -82,7 +82,7 @@
     <div class="rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
   </div>
   <div class="flex items-center h-full">
-  <a href="/index.php">
+  <a href="/">
     <img src="/images/headerlogo.png" alt="Logo" class="w-20 h-auto max-h-12 object-contain" />
   </a>
 </div>

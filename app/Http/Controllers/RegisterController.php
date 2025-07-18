@@ -82,14 +82,32 @@ class RegisterController extends Controller
             ]);
         }
         
+        $categoriesMetaData = isset($expats['provider_subcategories']) ? json_encode($expats['provider_subcategories']) : null;
+        $categoriesArray = json_decode($categoriesMetaData, true); 
+        $category = array_keys($categoriesArray);
+        $subcategoryArray = [];
+        $subcategory = array_values($categoriesArray);
+        foreach ($subcategory as $value) {
+            if (is_array($value)) {
+                foreach ($value as $subValue) {
+                    $subcategoryArray[] = $subValue;
+                }
+            } elseif (is_string($value)) {
+                $subcategoryArray[] = json_encode($value);
+            } else {
+                $subcategoryArray[] = $value;
+            }
+        }
+        $slug = $this->generateSlug($expats, $countryName);
+
         $provider = ServiceProvider::create([
             'user_id' => $user->id,
             'first_name' => $expats['first_name'] ?? null,
             'last_name' => $expats['last_name'] ?? null,
             'native_language' => $expats['native_language'] ?? null,
-            'spoken_language' => isset($expats['spoken_language']) ? json_encode($expats['spoken_language']) : null,
-            'services_to_offer' => isset($expats['provider_services']) ? json_encode($expats['provider_services']) : null,
-            'services_to_offer_category' => isset($expats['provider_subcategories']) ? json_encode($expats['provider_subcategories']) : null,
+            'spoken_language' => $expats['spoken_language'],
+            'services_to_offer' =>  json_encode($category) ?? null,
+            'services_to_offer_category' => json_encode($subcategoryArray) ?? null,
             'provider_address' => $expats['location'] ?? null,
             'operational_countries' => isset($expats['operational_countries']) ? json_encode($expats['operational_countries']) : null,
             'communication_online' => $this->truthy($expats, 'communication_preference.Online'),
@@ -104,6 +122,7 @@ class RegisterController extends Controller
             'email' => $expats['email'],
             'documents' => !empty($documents) ? json_encode($documents) : null,
             'ip_address' => $ip,
+            'slug' => $slug
         ]);
 
         $otp = random_int(100000, 999999);
@@ -132,7 +151,15 @@ class RegisterController extends Controller
             'message' => 'Registration successful. Please check your email for the verification code.',
         ]);
     }
-
+    private function generateSlug($expats, $country)
+    {
+        $firstName = Str::slug($expats['first_name'] ?? '');
+        $language = Str::slug($expats['native_language'] ?? '');
+        $countrySlug = Str::slug($country);
+        $baseSlug = $firstName .  '-' . $countrySlug . '-' . $language . '-' . Str::random(6);
+        $slug = $baseSlug;
+        return $slug;
+    }
     public function signupRegister(Request $request)
     {
         try{
@@ -266,4 +293,6 @@ class RegisterController extends Controller
             'message' => 'A new verification code has been sent to your email.'
         ]);
     }
+
+    
 }

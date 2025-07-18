@@ -101,7 +101,7 @@
               <span class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full">No provider yet</span>
               <button 
                 class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-xs rounded-full font-semibold transition-all whitespace-nowrap"
-                onclick="openCancelRequestPopup(event)">
+                onclick="openCancelRequestPopup({{ $mission->id }})">
                 Cancel my help request
               </button>
             </div>
