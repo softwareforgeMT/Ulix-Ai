@@ -613,7 +613,7 @@ body {
                         <span class="ml-auto text-lg font-semibold">45€/h</span>
                     </div>
                     @php 
-                      $operationalCountriesRaw = $provider->operational_countries, true ?? [];
+                      $operationalCountriesRaw = $provider->operational_countries ?? [];
 
                       // If first decode gave a string, decode again
                       if (is_string($operationalCountriesRaw)) {
