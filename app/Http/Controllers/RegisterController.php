@@ -109,7 +109,7 @@ class RegisterController extends Controller
             'services_to_offer' =>  json_encode($category) ?? null,
             'services_to_offer_category' => json_encode($subcategoryArray) ?? null,
             'provider_address' => $expats['location'] ?? null,
-            'operational_countries' => isset($expats['operational_countries']) ? json_encode($expats['operational_countries']) : null,
+            'operational_countries' => isset($expats['operational_countries']) ?? null,
             'communication_online' => $this->truthy($expats, 'communication_preference.Online'),
             'communication_inperson' => $this->truthy($expats, 'communication_preference.In Person'),
             'profile_description' => $expats['profile_description'] ?? null,

@@ -34,6 +34,18 @@ class ServiceProviderController extends Controller
         return view('dashboard.provider.provider-details', compact('provider'));
     }
 
+   
+        public function providerProfile($slug) {
+            $provider = ServiceProvider::with('user')->where('slug', $slug)->first();
+
+            if (!$provider) {
+                abort(404, 'Provider not found');
+            }
+
+            return view('dashboard.provider.provider-details', compact('provider'));
+        }
+
+
     public function getSubcategories($categoryId)
     {
         // Fetch the subcategories for the selected category

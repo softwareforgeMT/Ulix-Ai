@@ -43,6 +43,11 @@ Route::get('/signup', function() {
 Route::get('/', [ServiceProviderController::class, 'main']);
 Route::get('/get-providers', [ServiceProviderController::class, 'getProviders']);
 Route::get('/get-subcategories/{categoryId}', [ServiceProviderController::class, 'getSubcategories']);
+
+
+// provider Profile
+Route::get('/provider/{slug}', [ServiceProviderController::class, 'providerProfile']);
+
 // User Registeration
 Route::post('/register', [RegisterController::class, 'register'])->name('user.register');
 Route::post('/verify-email-otp', [RegisterController::class, 'verifyEmailOtp'])->name('user.verifyEmailOtp');

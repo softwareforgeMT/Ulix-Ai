@@ -1,6 +1,6 @@
 @php 
   $check = Auth::check();
-  $name = Auth::user()->name;
+  $name = Auth::user()->name ?? '';
 @endphp
 <div id="step12" class="hidden space-y-6">
   <h2 class="text-blue-900 font-bold text-xl">WHAT’S YOUR FIRST NAME AND SURNAME?</h2>

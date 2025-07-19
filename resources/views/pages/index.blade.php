@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,9 +6,9 @@
   <head>
   <title>Abroad Ease Guide - Your Global Companion</title>
   <link rel="icon" type="image/png" sizes="64x64" href="images/logoblue-64.png" />
-
-
-</head> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+</head>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -585,7 +585,7 @@ body {
         <!-- Card 1 -->
         @foreach ($providers as $provider)
             @php
-                $avgRating = round($provider->reviews()->avg('rating') ?? 0);
+                $avgRating = round($provider->reviews()->avg('rating') ?? 5);
                 $reviewCount = $provider->reviews()->count();
                 $statuses = json_decode($provider->special_status, true) ?? [];
             @endphp
@@ -612,8 +612,20 @@ body {
                         <h3 class="font-semibold text-lg">{{ $provider->first_name ?? '_' }}</h3>
                         <span class="ml-auto text-lg font-semibold">45€/h</span>
                     </div>
+                    @php 
+                      $operationalCountriesRaw = json_decode($provider->operational_countries, true) ?? [];
 
-                    <p class="text-gray-600 text-sm mb-2">Country service: {{ $provider->operational_countries }}</p>
+                      // If first decode gave a string, decode again
+                      if (is_string($operationalCountriesRaw)) {
+                          $operationalCountries = json_decode($operationalCountriesRaw, true) ?? [];
+                      } else {
+                          $operationalCountries = $operationalCountriesRaw;
+                      }
+                    @endphp
+
+                    @foreach($operationalCountries as $country)
+                      <span class="bg-gray-100 px-2 py-1 rounded">{{ $country }}</span>
+                    @endforeach
 
                     <div class="flex items-center mb-3">
                         <div class="flex text-yellow-400">
@@ -625,7 +637,7 @@ body {
                                 @endif
                             @endfor
                         </div>
-                        <span class="text-sm text-gray-600 ml-2">{{ number_format($provider->reviews()->avg('rating'), 1) }} ({{ $reviewCount }} Reviews)</span>
+                        <span class="text-sm text-gray-600 ml-2">{{ number_format($provider->reviews()->avg('rating') ?? 5.0, 1) }} ({{ $reviewCount }} Reviews)</span>
                     </div>
 
                     <div class="flex gap-2 text-xs text-gray-500">
@@ -958,73 +970,7 @@ body {
 
 
           <!-- Maps Section -->
-    <section class="relative py-20 px-4 sm:px-6 lg:px-8 bg-blue-900 overflow-hidden">
-        <!-- Background Elements -->
-        <div class="absolute inset-0 bg-black/10"></div>
-        <div class="absolute top-0 left-0 w-full h-full">
-            <div class="absolute top-20 left-10 w-72 h-72 bg-blue-200/20 rounded-full blur-3xl animate-pulse-slow"></div>
-            <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-800/20 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 1.5s;"></div>
-        </div>
-        
-        <div class="relative max-w-7xl mx-auto">
-            <!-- Header -->
-            <div class="text-center mb-16 animate-fade-in">
-                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-                    Service <span class="bg-gradient-to-r from-blue-200 to-cyan-200 bg-clip-text text-transparent">Providers Worldwide</span>
-                </h2>
-                <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                    Visit us at our headquarters or get in touch. We're conveniently located in the heart of the city with easy access to public transportation.
-                </p>
-            </div>
-
-            <!-- Maps Container -->
-            <div class="flex justify-center animate-slide-up">
-                <!-- Google Maps -->
-                <div class="relative max-w-4xl w-full">
-                    <div class="relative overflow-hidden rounded-3xl shadow-2xl border border-white/20 group">
-                        <!-- Map Container -->
-                        <div class="aspect-[16/10] md:aspect-[16/9] lg:aspect-[16/8] relative">
-                            <iframe 
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3168.639225589593!2d-122.08424908469285!3d37.42199997982525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fba02425dad8f%3A0x6c296c66619367e0!2sGoogleplex!5e0!3m2!1sen!2sus!4v1703123456789!5m2!1sen!2sus" 
-                                class="w-full h-full border-0 transition-all duration-500 group-hover:scale-105"
-                                allowfullscreen="" 
-                                loading="lazy" 
-                                referrerpolicy="no-referrer-when-downgrade"
-                                title="Our Location">
-                            </iframe>
-                        </div>
-                        
-                        <!-- Overlay gradient for better visual integration -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
-                        
-                        <!-- Floating action button -->
-                        <div class="absolute bottom-4 right-4">
-                            <a href="https://maps.google.com/?q=Googleplex,+Mountain+View,+CA" 
-                               target="_blank"
-                               class="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-sm text-gray-900 px-4 py-2 rounded-full shadow-lg hover:bg-white hover:scale-105 transition-all duration-300 font-medium">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm4-16h6m0 0v6m0-6L10 14"></path>
-                                </svg>
-                                <span>Open in Maps</span>
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Decorative elements -->
-                    <div class="absolute -top-4 -left-4 w-24 h-24 bg-blue-400/30 rounded-full blur-xl"></div>
-                    <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-cyan-400/30 rounded-full blur-xl"></div>
-                </div>
-            </div>
-
-            <!-- Call to Action -->
-            <div class="text-center mt-16 animate-fade-in" style="animation-delay: 0.5s;">
-                <div class="inline-flex items-center space-x-4 bg-white/10 backdrop-blur-lg rounded-full px-8 py-4 border border-white/20">
-                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span class="text-white font-medium">We're open and ready to help!</span>
-                </div>
-            </div>
-        </div>
-    </section>
+    @include('pages.ulixai-map')
 
 
   <!-- News Section (Desktop only) -->
@@ -1390,7 +1336,6 @@ document.getElementById('filterButton').addEventListener('click', function() {
             if (providers.length > 0) {
                 providers.forEach(function(provider) {
                     // Parse special_status if it's a stringified JSON
-                    console.log(provider)
                     let specialStatus = provider.special_status ? JSON.parse(provider.special_status) : [];
 
                     const providerCard = document.createElement('div');
@@ -1454,6 +1399,421 @@ document.getElementById('filterButton').addEventListener('click', function() {
 });
 
 
+</script>
+
+<script>
+  let providers = [];
+  let filterCategory = [];
+  let filterCountry = [];
+  let filterLanguage = [];
+        
+        // Country code to flag emoji mapping
+        const countryFlags = {
+            'US': '🇺🇸', 'UK': '🇬🇧', 'GB': '🇬🇧', 'CA': '🇨🇦', 'AU': '🇦🇺', 
+            'DE': '🇩🇪', 'FR': '🇫🇷', 'PK': '🇵🇰', 'IN': '🇮🇳', 'CN': '🇨🇳',
+            'JP': '🇯🇵', 'KR': '🇰🇷', 'ES': '🇪🇸', 'IT': '🇮🇹', 'BR': '🇧🇷',
+            'MX': '🇲🇽', 'RU': '🇷🇺', 'SA': '🇸🇦', 'AE': '🇦🇪', 'EG': '🇪🇬'
+        };
+
+        // Category mapping for better display
+        const categoryMapping = {
+            'legal': 'Legal Services',
+            'translation': 'Translation',
+            'consulting': 'Business Consulting',
+            'healthcare': 'Healthcare',
+            'education': 'Education',
+            'technology': 'Technology',
+            'finance': 'Finance',
+            'marketing': 'Marketing'
+        };
+
+        // Language code to name mapping
+        const languageNames = {
+            'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German',
+            'it': 'Italian', 'pt': 'Portuguese', 'ru': 'Russian', 'zh': 'Chinese',
+            'ja': 'Japanese', 'ko': 'Korean', 'ar': 'Arabic', 'ur': 'Urdu',
+            'hi': 'Hindi', 'bn': 'Bengali', 'tr': 'Turkish', 'nl': 'Dutch'
+        };
+
+        // Generate badge based on provider data
+        function generateBadge(provider) {
+            const reviewCount = provider.reviews_count || 0;
+            const avgRating = provider.average_rating || 0;
+            
+            if (reviewCount > 100 && avgRating >= 4.8) return 'Diamond';
+            if (reviewCount > 50 && avgRating >= 4.5) return 'Expert';
+            if (reviewCount > 20 && avgRating >= 4.0) return 'Pro';
+            if (provider.special_status && provider.special_status.length > 0) return 'Certified';
+            return 'Verified';
+        }
+
+        // Get coordinates for country/city (you'll need to implement geocoding)
+        function getCoordinates(country, address) {
+            // This is a simplified mapping - you should implement proper geocoding
+            const countryCoords = {
+                'US': [39.8283, -98.5795],
+                'UK': [55.3781, -3.4360],
+                'GB': [55.3781, -3.4360],
+                'CA': [56.1304, -106.3468],
+                'AU': [-25.2744, 133.7751],
+                'DE': [51.1657, 10.4515],
+                'FR': [46.6034, 1.8883],
+                'PK': [30.3753, 69.3451],
+                'IN': [20.5937, 78.9629]
+            };
+            
+            // Add some random offset for better visualization
+            const baseCoords = countryCoords[country] || [0, 0];
+            return [
+                baseCoords[0] + (Math.random() - 0.5) * 5, // Add some random offset
+                baseCoords[1] + (Math.random() - 0.5) * 5
+            ];
+        }
+
+        // Load providers from API
+        async function loadProviders() {
+            try {
+                const response = await fetch('/api/providers/map', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load providers');
+                }
+                
+                const data = await response.json();
+                filterCategory = data.filters.categories;
+                filterCountry = data.filters.countries;
+                filterLanguage = data.filters.languages;
+                // Transform API data to match our map format
+                providers = data.data.map(provider => {
+                    const coords = getCoordinates(provider.country, provider.provider_address);
+                    const spokenLanguages = provider.spoken_language || [];
+                    const reviewCount = provider.reviews_count || 0;
+                    const avgRating = provider.average_rating || 0;
+                    return {
+                        id: provider.id,
+                        firstName: provider.first_name,
+                        lastName: provider.last_name,
+                        profession: provider.services_to_offer || 'Service Provider',
+                        country: provider.country,
+                        countryFlag: countryFlags[provider.country] || '🌍',
+                        city: extractCity(provider.provider_address),
+                        address: provider.provider_address,
+                        lat: coords[0],
+                        lng: coords[1],
+                        photo: provider.profile_photo || '/images/default-avatar.png',
+                        languages: spokenLanguages,
+                        languageNames: spokenLanguages.map(lang => languageNames[lang] || lang.toUpperCase()),
+                        category: provider.services_to_offer_category || 'general',
+                        categoryName: categoryMapping[provider.services_to_offer_category] || provider.services_to_offer_category,
+                        badge: generateBadge(provider),
+                        rating: avgRating,
+                        reviews: reviewCount,
+                        slug: provider.slug,
+                        description: provider.profile_description,
+                        nativeLanguage: provider.native_language,
+                        operationalCountries: provider.operational_countries || [],
+                        communicationOnline: provider.communication_online,
+                        communicationInperson: provider.communication_inperson,
+                        specialStatus: provider.special_status || []
+                    };
+                });
+                
+                // Initialize map with loaded providers
+                addMarkersToMap(providers);
+                filteredProviders = [...providers];
+                
+                // Update filter options based on loaded data
+                updateFilterOptions();
+                
+            } catch (error) {
+                console.error('Error loading providers:', error);
+                
+                // Fallback: Show error message or use sample data
+                document.getElementById('map').innerHTML = `
+                    <div class="flex items-center justify-center h-full bg-gray-100 rounded-2xl">
+                        <div class="text-center">
+                            <div class="text-red-500 mb-4">
+                                <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Unable to load providers</h3>
+                            <p class="text-gray-600 mb-4">Please check your connection and try again.</p>
+                            <button onclick="loadProviders()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                                Retry
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Extract city from address string
+        function extractCity(address) {
+            if (!address) return 'Unknown';
+            
+            // Simple extraction - you might want to improve this
+            const parts = address.split(',');
+            return parts[0].trim();
+        }
+
+        // Update filter options based on available data
+        function updateFilterOptions() {
+            const countries = [...new Set(filterCountry)];
+            const categories = [...new Set(filterCategory)];
+            const languages = [...new Set(filterLanguage)];
+            
+            // Update country filter
+            const countrySelect = document.getElementById('countryFilter');
+            countrySelect.innerHTML = '<option value="">All Countries</option>';
+            countries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country;
+                option.textContent = `${countryFlags[country] || '🌍'} ${country}`;
+                countrySelect.appendChild(option);
+            });
+            
+            // Update category filter
+            const categorySelect = document.getElementById('categoryFilter');
+            categorySelect.innerHTML = '<option value="">All Categories</option>';
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = categoryMapping[category] || category;
+                categorySelect.appendChild(option);
+            });
+            
+            // Update language filter
+            const languageSelect = document.getElementById('languageFilter');
+            languageSelect.innerHTML = '<option value="">All Languages</option>';
+            languages.forEach(lang => {
+                const option = document.createElement('option');
+                option.value = lang;
+                option.textContent = languageNames[lang] || lang.toUpperCase();
+                languageSelect.appendChild(option);
+            });
+        }
+
+        // Initialize map
+        const map = L.map('map').setView([30, 0], 2);
+        
+        // Add tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Store markers for filtering
+        let markers = [];
+        let filteredProviders = [...providers];
+
+        // Create custom marker icon
+        function createMarkerIcon(provider) {
+            const badgeColors = {
+                'Diamond': 'bg-blue-500',
+                'Expert': 'bg-purple-500',
+                'Pro': 'bg-green-500',
+                'Certified': 'bg-yellow-500',
+                'Verified': 'bg-red-500',
+                'Mentor': 'bg-indigo-500'
+            };
+            
+            const badgeColor = badgeColors[provider.badge] || 'bg-gray-500';
+            
+            return L.divIcon({
+                className: 'custom-marker',
+                html: `
+                    <div class="relative w-12 h-12 ${badgeColor} rounded-full flex items-center justify-center text-white font-bold shadow-lg border-2 border-white">
+                        <img src="${provider.photo}" class="w-10 h-10 rounded-full object-cover" alt="${provider.firstName}">
+                        <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
+                    </div>
+                `,
+                iconSize: [48, 48],
+                iconAnchor: [24, 24]
+            });
+        }
+
+        // Create popup content
+        function createPopupContent(provider) {
+            const rating = provider.rating > 0 ? provider.rating.toFixed(1) : 'New';
+            const reviewsText = provider.reviews === 0 ? 'No reviews yet' : provider.reviews;
+            const ratingDisplay = provider.rating > 0 ? 
+                `<div class="flex items-center space-x-1">
+                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                    <span class="text-sm font-medium">${rating}</span>
+                    <span class="text-sm text-gray-500">(${reviewsText})</span>
+                </div>` : 
+                `<span class="text-sm text-gray-500">New provider</span>`;
+
+            return `
+                <div class="w-80 p-4">
+                    <div class="flex items-start space-x-4">
+                        <img src="${provider.photo}" 
+                             class="w-16 h-16 rounded-full object-cover shadow-lg" 
+                             alt="${provider.firstName}"
+                            >
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">${provider.firstName} ${provider.lastName}</h3>
+                                <span class="text-xl">${provider.countryFlag}</span>
+                            </div>
+                            <p class="text-blue-600 font-semibold mb-1">${provider.profession}</p>
+                            <p class="text-gray-600 text-sm mb-2">${provider.city}, ${provider.country}</p>
+                            
+                            <div class="flex items-center space-x-4 mb-3">
+                                ${ratingDisplay}
+                                <div class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-medium">
+                                    ${provider.badge}
+                                </div>
+                            </div>
+                            
+                            ${provider.description ? `
+                                <p class="text-sm text-gray-600 mb-3 line-clamp-2">${provider.description.substring(0, 100)}${provider.description.length > 100 ? '...' : ''}</p>
+                            ` : ''}
+                            
+                            <div class="flex flex-wrap gap-1 mb-3">
+                                ${provider.languageNames.map(lang => `
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">${lang}</span>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="flex items-center space-x-4 mb-3 text-xs text-gray-500">
+                                ${provider.communicationOnline ? '<span class="flex items-center"><span class="w-2 h-2 bg-green-400 rounded-full mr-1"></span>Online</span>' : ''}
+                                ${provider.communicationInperson ? '<span class="flex items-center"><span class="w-2 h-2 bg-blue-400 rounded-full mr-1"></span>In-person</span>' : ''}
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button onclick="viewProvider('${provider.slug}')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    View Profile
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Provider action functions
+        function viewProvider(providerId) {
+            window.open(`/service-provider/${providerId}`, '_blank');
+        }
+
+        function contactProvider(providerId) {
+            // window.open(`/contact/${providerId}`, '_blank');
+        }
+
+        // Add markers to map
+        function addMarkersToMap(providersList) {
+            // Clear existing markers
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+    providersList.forEach(provider => {
+        const marker = L.marker([provider.lat, provider.lng], {
+            icon: createMarkerIcon(provider)
+        }).addTo(map);
+
+        marker.bindPopup(createPopupContent(provider), {
+            className: 'custom-popup',
+            maxWidth: 350,
+            minWidth: 320
+        });
+
+        markers.push(marker);
+    });
+
+    // Update provider count
+    document.getElementById('providerCount').textContent = providersList.length;
+}
+
+// Filter functionality
+function applyFilters() {
+    const country = document.getElementById('countryFilter').value;
+    const city = document.getElementById('cityFilter').value.toLowerCase();
+    const category = document.getElementById('categoryFilter').value;
+    const language = document.getElementById('languageFilter').value;
+
+    filteredProviders = providers.filter(provider => {
+        return (!country || provider.country === country) &&
+                (!city || provider.city.toLowerCase().includes(city)) &&
+                (!category || provider.category === category) &&
+                (!language || provider.languages.includes(language));
+    });
+
+    addMarkersToMap(filteredProviders);
+    updateActiveFilters();
+}
+
+// Update active filters display
+function updateActiveFilters() {
+    const activeFilters = document.getElementById('activeFilters');
+    activeFilters.innerHTML = '';
+
+    const filters = [
+        { id: 'countryFilter', label: 'Country' },
+        { id: 'cityFilter', label: 'City' },
+        { id: 'categoryFilter', label: 'Category' },
+        { id: 'languageFilter', label: 'Language' }
+    ];
+
+    filters.forEach(filter => {
+        const element = document.getElementById(filter.id);
+        const value = element.value;
+        if (value) {
+            const chip = document.createElement('div');
+            chip.className = 'filter-chip bg-blue-500 text-white px-3 py-1 rounded-full text-sm flex items-center space-x-2';
+            chip.innerHTML = `
+                <span>${filter.label}: ${value}</span>
+                <button class="text-blue-200 hover:text-white" onclick="clearFilter('${filter.id}')">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            `;
+            activeFilters.appendChild(chip);
+        }
+    });
+}
+
+// Clear individual filter
+function clearFilter(filterId) {
+    document.getElementById(filterId).value = '';
+    applyFilters();
+}
+
+// Event listeners for filters
+document.getElementById('countryFilter').addEventListener('change', applyFilters);
+document.getElementById('cityFilter').addEventListener('input', applyFilters);
+document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+document.getElementById('languageFilter').addEventListener('change', applyFilters);
+
+// Reset view button
+document.getElementById('resetView').addEventListener('click', () => {
+    map.setView([30, 0], 2);
+});
+
+// Fullscreen button
+document.getElementById('fullscreen').addEventListener('click', () => {
+    const mapContainer = document.getElementById('map');
+    if (mapContainer.requestFullscreen) {
+        mapContainer.requestFullscreen();
+    }
+});
+
+// Initialize map with all providers
+loadProviders();
+
+// Adjust map size on window resize
+window.addEventListener('resize', () => {
+    map.invalidateSize();
+});
 </script>
 
 </body>
