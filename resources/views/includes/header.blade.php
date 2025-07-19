@@ -706,10 +706,6 @@ YOUR PROVIDER ACCOUNT IS CREATED</h2>
 				btn.classList.toggle('ring-4');
 				btn.classList.toggle('ring-white');
 				btn.classList.toggle('ring-offset-2');
-
-
-
-        console.log("Newss", JSON.parse(localStorage.getItem('expats')));
 			});
 		});
 
@@ -854,7 +850,6 @@ YOUR PROVIDER ACCOUNT IS CREATED</h2>
         expats.phone_number = phoneNumberInput.value.trim();
         localStorage.setItem('expats', JSON.stringify(expats));
 
-        console.log("In", phoneNumberInput);
         createProviderAccount();
       });
     }
@@ -876,7 +871,6 @@ YOUR PROVIDER ACCOUNT IS CREATED</h2>
         return response.json();
       })
       .then(data => {
-        console.log('Account created:', data);
         // toastr.success(data.message || 'Account created successfully!');
         // Optional: redirect after toast
       })
