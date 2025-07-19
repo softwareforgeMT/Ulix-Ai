@@ -1684,7 +1684,7 @@ document.getElementById('filterButton').addEventListener('click', function() {
                         id: provider.id,
                         firstName: provider.first_name,
                         lastName: provider.last_name,
-                        profession: provider.services_to_offer || 'Service Provider',
+                        profession: provider.services_to_offer_category || 'Service Provider',
                         country: provider.country,
                         countryFlag: countryFlags[provider.country] || '🌍',
                         city: extractCity(provider.provider_address),
@@ -1887,7 +1887,7 @@ document.getElementById('filterButton').addEventListener('click', function() {
 
         // Provider action functions
         function viewProvider(providerId) {
-            window.open(`/service-provider/${providerId}`, '_blank');
+            window.open(`/provider/${providerId}`, '_blank');
         }
 
         function contactProvider(providerId) {
