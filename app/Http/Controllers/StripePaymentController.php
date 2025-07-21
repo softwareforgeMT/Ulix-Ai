@@ -11,6 +11,7 @@ use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Stripe\Account as StripeAccount;
 use Illuminate\Support\Facades\DB;
+use Stripe\Transfer;
 
 class StripePaymentController extends Controller
 {

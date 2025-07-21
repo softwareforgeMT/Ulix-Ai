@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
         otpSuccess.textContent = data.message || "Email verified successfully!";
         otpSuccess.classList.remove('hidden');
         otpError.classList.add('hidden');
-        setTimeout(() => { window.location.href = '/'; }, 1500);
+        setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
       } else {
         otpError.textContent = data.message || "Invalid code. Please try again.";
         otpError.classList.remove('hidden');

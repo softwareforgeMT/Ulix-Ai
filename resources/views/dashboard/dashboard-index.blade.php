@@ -12,7 +12,7 @@
           <p class="text-sm mb-2">You can make life easier for your friends abroad</p>
           <h3 class="text-xl sm:text-2xl font-bold mb-4">Share your affiliate link and earn passive income</h3>
           <div class="flex flex-col sm:flex-row gap-2 mb-4">
-            <input id="copy-link" type="text" disabled value="{{ env('APP_URL') . '/affiliate/?code=' . $user->affiliate_code }}" class="bg-white bg-opacity-20 text-white placeholder-gray-200 px-4 py-2 rounded-lg w-full" />
+            <input id="copy-link" type="text" disabled value="{{ env('APP_URL') . '/affiliate/sign-up/?code=' . $user->affiliate_code }}" class="bg-white bg-opacity-20 text-white placeholder-gray-200 px-4 py-2 rounded-lg w-full" />
             <button class="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium w-full sm:w-auto" onclick="copyLink()">Invite Friends</button>
           </div>
         </div>
@@ -62,7 +62,7 @@
             <p class="text-sm mb-2">You can make life easier for your friends abroad</p>
             <h3 class="text-xl sm:text-2xl font-bold mb-4">Share your affiliate link and earn passive income</h3>
             <div class="flex flex-col sm:flex-row gap-2 mb-4">
-              <input id="copy-link" type="text" disabled value="{{ env('APP_URL') . '/affiliate/?code=' . $user->affiliate_code }}" class="bg-white bg-opacity-20 text-white placeholder-gray-200 px-4 py-2 rounded-lg w-full" />
+              <input id="copy-link" type="text" disabled value="{{ env('APP_URL') . '/affiliate/sign-up/?code=' . $user->affiliate_code }}" class="bg-white bg-opacity-20 text-white placeholder-gray-200 px-4 py-2 rounded-lg w-full" />
               <button class="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium w-full sm:w-auto" onclick="copyLink()">Invite Friends</button>
             </div>
           </div>

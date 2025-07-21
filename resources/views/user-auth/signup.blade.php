@@ -25,7 +25,9 @@
               Continue with Google
             </button>
           </div>
-
+            @php 
+                  $affiliateCode = request()->query('code') ?? null;
+            @endphp
           <form id="signupForm" class="space-y-4" autocomplete="off" method="POST" action="{{route('user.signupRegister')}}">
             @csrf
             <div>
@@ -68,6 +70,7 @@
                   Female
                 </label>
               </div>
+              <input type="text" name="affiliate_code" value="{{ $affiliateCode }}" class="hidden" />
               <div class="text-xs text-red-600 mt-1" id="error-gender"></div>
             </div>
             <button type="submit" id="signupBtnSubmit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 rounded-md">Sign Up</button>

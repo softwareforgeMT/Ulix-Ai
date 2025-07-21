@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use App\Services\GeolocationService;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
@@ -163,6 +164,9 @@ class RegisterController extends Controller
     public function signupRegister(Request $request)
     {
         try{
+
+            $affiliateCode = $request->input('affiliate_code');
+            $referrer = User::where('affiliate_code', $affiliateCode)->first();
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
@@ -180,7 +184,8 @@ class RegisterController extends Controller
                 'user_role' => 'service_requester',
                 'status' => 'active',
                 'affiliate_code' => $affiliateLink,
-                'gender' => $request->input('gender')
+                'gender' => $request->input('gender'),
+                'referred_by' => $referrer ? $referrer->id : null,
             ]);
 
             $otp = random_int(100000, 999999);
@@ -249,7 +254,9 @@ class RegisterController extends Controller
             $user->email_verified_at = now();
             $user->save();
         }
-
+        \Auth::login($user, $request->filled('remember'));
+        $request->session()->regenerate();
+        \Auth::user()->update(['last_login_at' => now()]);
         return response()->json([
             'status' => 'success',
             'message' => 'Email verified successfully.'

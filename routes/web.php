@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\ProviderReviewController;
 use App\Http\Controllers\MissionMessageController;
 use App\Http\Controllers\StripePaymentController;
+use App\Http\Controllers\AffiliateController;
 
 // AJAX user signup
 Route::post('/signup/store', [UserController::class, 'storeViaSignup']);
@@ -39,6 +40,7 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'
 Route::get('/signup', function() {
     return view('user-auth.signup');
 });
+Route::get('/affiliate/sign-up', [AffiliateController::Class, 'affliateSignup']); 
 
 Route::get('/', [ServiceProviderController::class, 'main']);
 Route::get('/get-providers', [ServiceProviderController::class, 'getProviders']);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AccountController extends Controller
 {
@@ -34,7 +35,11 @@ class AccountController extends Controller
     }
 
     public function affiliationAccounts(Request $request) {
-        return view('dashboard.my-affiliate-account');
+        $user = Auth::user();
+        if($user) {
+            $affiliates = $user->referrals()->get() ?? [];
+            return view('dashboard.my-affiliate-account', compact('affiliates', 'user'));
+        }
     }
 
 
