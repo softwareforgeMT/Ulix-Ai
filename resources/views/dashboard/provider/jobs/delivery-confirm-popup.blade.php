@@ -13,10 +13,10 @@
             <span><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4e6.svg" class="w-6 h-6 inline" alt="box" /></span>
             Do you confirm that your mission is completed and delivered?
         </h2>
-        <p class="text-gray-700 mb-4">Your service requester has just received your delivery confirmation.</p>
+        <p id="message" class="text-gray-700 mb-4 hidden">Your service requester has just received your delivery confirmation.</p>
         </div>
         <div class="flex flex-col gap-3 items-center">
-        <button onclick="openDeliverySentPopup()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full px-8 py-2 text-base flex items-center justify-center gap-2 transition">
+        <button onclick="sendDelivery()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full px-8 py-2 text-base flex items-center justify-center gap-2 transition">
             <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><rect x="5" y="9" width="10" height="6" rx="2"/><rect x="7" y="5" width="6" height="4" rx="2"/></svg>
             YES
         </button>
@@ -52,16 +52,41 @@
 
 <script>
     // Delivery confirmation popups
-    function openDeliveryConfirmPopup() {
+    let currentMissionId = null;
+    function openDeliveryConfirmPopup(missionId) {
+        currentMissionId = missionId;
         document.getElementById('deliveryConfirmPopup').classList.remove('hidden');
     }
     function closeDeliveryConfirmPopup() {
         document.getElementById('deliveryConfirmPopup').classList.add('hidden');
     }
-    function openDeliverySentPopup() {
-        closeDeliveryConfirmPopup();
-        document.getElementById('deliverySentPopup').classList.remove('hidden');
+    function sendDelivery() {
+        const missionId = currentMissionId;
+        fetch('/api/provider/jobs/confirm-delivery', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ mission_id: missionId })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+            document.getElementById('message').classList.remove('hidden');
+            location.reload();
+            } else {
+            alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
     }
+
     function closeDeliverySentPopup() {
         document.getElementById('deliverySentPopup').classList.add('hidden');
     }

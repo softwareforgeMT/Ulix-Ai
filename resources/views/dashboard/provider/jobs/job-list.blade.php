@@ -69,11 +69,19 @@
             </div>
             <div class="bg-white border border-blue-300 rounded-xl px-3 py-1 text-xs text-blue-900 font-semibold text-center mb-1">
               For this job<br>
-              I win {{ $job->budget_max ?? '-' }}€
+              I win '-' €
             </div>
+            @if($job->status === 'waiting_to_start')
+              <button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-5 py-2 rounded-lg shadow transition" onclick="startMission({{$job->id}})" >Start</button>
+            @elseif($job->status === 'in_progress')
             <button class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-5 py-2 rounded-lg shadow transition"
-              onclick="openDeliveryConfirmPopup()"
+              onclick="openDeliveryConfirmPopup( {{$job->id}})"
             >Job finish</button>
+            @elseif($job->status === 'disputed')
+              <button class="bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold px-5 py-2 rounded-lg shadow transition"
+                onclick="resolveDispute({{$job->id}})"
+              >Resolve Dispute</button>
+            @endif
           </div>
         </div>
         @empty
@@ -187,6 +195,66 @@
     function closeDecisionPopup() {
       document.getElementById('decisionPopup').classList.add('hidden');
     }
+    function startMission(missionId) {
+      if (!confirm('Are you sure you want to start this mission?')) {
+        return;
+      }
+
+      fetch('/api/provider/jobs/start', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+          mission_id: missionId
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Mission started successfully!');
+          location.reload();
+        } else {
+          alert(data.message || 'Failed to start the mission. Please try again.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An unexpected error occurred.');
+      });
+    }
+
+    function resolveDispute(missionId) {
+      if (!confirm('Are you sure you want to resolve this mission?')) {
+        return;
+      }
+
+      fetch('/api/provider/jobs/resolve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+          mission_id: missionId
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Dispute Resolved successfully!');
+          location.reload();
+        } else {
+          alert(data.message || 'Failed to reslove the mission. Please try again.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An unexpected error occurred.');
+      });
+    }
+
   </script>
 
 <style>

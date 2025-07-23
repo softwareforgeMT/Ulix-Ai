@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\ServiceRequestController;
+use App\Http\Controllers\JobListController;
+use App\Http\Controllers\Admin\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +24,21 @@ Route::get('/categories/{parentId}/subcategories', [CategoryController::class, '
 Route::get('/categories/{parentId}/children', [CategoryController::class, 'fetchChildCategories']);
 Route::get('/providers/map', [MapController::class, 'getProviders']);
 
-Route::delete('/missions/{id}/cancel', [ServiceRequestController::class, 'canceLMissionRequest']);
+//Servic Provider Action 
+Route::post('/provider/jobs/start', [JobListController::class, 'startMission']);
+Route::post('/provider/jobs/resolve', [JobListController::class, 'resolveMission']);
+Route::post('/provider/jobs/confirm-delivery', [JobListController::class, 'confirmDelivery']);
+
+//Service Request Action
+Route::post('/provider/jobs/requester/confirm-delivery', [ServiceRequestController::class, 'confirmOrderDelivery']);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+//Cancel Mission
+Route::post('/mission/cancel', [ServiceRequestController::class, 'cancelMissionRequest']);
+
+//Get Filtered Transactions
+Route::get('transactions/filter', [TransactionController::class, 'filterTransactions']);

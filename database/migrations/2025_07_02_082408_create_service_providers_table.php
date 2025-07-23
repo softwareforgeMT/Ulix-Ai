@@ -18,7 +18,8 @@ class CreateServiceProvidersTable extends Migration
             $table->json('services_to_offer')->nullable();
             $table->json('services_to_offer_category')->nullable();
             $table->text('provider_address')->nullable();
-            $table->text('operational_countries')->nullable(); 
+            $table->text('operational_countries')->nullable();
+            
             $table->boolean('communication_online')->nullable();
             $table->boolean('communication_inperson')->nullable();
             $table->text('profile_description')->nullable();
@@ -27,13 +28,28 @@ class CreateServiceProvidersTable extends Migration
             $table->string('phone_number')->nullable();
             $table->string('country')->nullable();
             $table->string('preferred_language')->nullable();
-            $table->json('special_status')->nullable(); 
+            $table->json('special_status')->nullable();
+            
             $table->string('email')->unique()->nullable();
-            $table->json('documents')->nullable(); 
+            $table->json('documents')->nullable();
+            
+            // Stripe related columns
             $table->string('stripe_account_id')->nullable();
+            $table->boolean('stripe_chg_enabled')->default(false);
+            $table->boolean('stripe_pts_enabled')->default(false);
+            $table->string('kyc_link')->nullable();
+            
+            // KYC Status column
+            $table->enum('kyc_status', ['pending', 'incomplete', 'verified', 'rejected'])->default('pending');
+            
             $table->ipAddress('ip_address')->nullable();
             $table->string('slug')->nullable();
             $table->timestamps();
+            
+            // Add indexes for better performance
+            $table->index(['stripe_chg_enabled', 'stripe_pts_enabled']);
+            $table->index('kyc_status');
+            $table->index('stripe_account_id');
         });
     }
 
@@ -42,4 +58,3 @@ class CreateServiceProvidersTable extends Migration
         Schema::dropIfExists('service_providers');
     }
 }
-

@@ -24,12 +24,13 @@ class CreateMissionsTable extends Migration
             $table->boolean('is_remote')->default(false);
             $table->string('language')->nullable();
             $table->enum('urgency', ['low', 'medium', 'high', 'urgent'])->default('medium');
-            $table->enum('status', ['draft', 'published', 'in_progress', 'completed', 'cancelled', 'disputed'])->default('published');
+            $table->enum('status', ['draft', 'published', 'waiting_to_start', 'in_progress', 'completed', 'cancelled', 'disputed'])->default('published');
             $table->unsignedBigInteger('selected_provider_id')->nullable();
             $table->enum('payment_status', ['unpaid', 'paid', 'held', 'released', 'refunded'])->default('unpaid');
             $table->boolean('is_fake')->default(false);
             $table->json('attachments')->nullable(); 
-
+            $table->enum('cancelled_by', ['requester', 'provider', 'admin'])->nullable();
+            $table->timestamp('cancelled_on')->nullable();
             $table->timestamps();
 
             // Foreign Keys

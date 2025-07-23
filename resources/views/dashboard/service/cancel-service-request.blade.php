@@ -114,24 +114,26 @@
             openLoadingPopup();
             
             // Call the delete mission function
-            deleteMission(currentMissionId, reason, otherReason);
+            // deleteMission(currentMissionId, reason, otherReason);
         });
 
         // Function to delete mission (you'll need to implement the actual API call)
-        async function deleteMission(missionId, reason, otherReason) {
+        async function deleteMission(missionId, reason, description) {
             try {
-              console.log("mission id", missionId);
                 // Replace this with your actual API endpoint
-                const response = await fetch(`/api/missions/${missionId}/cancel`, {
-                    method: 'DELETE',
+                const response = await fetch(`/api/mission/cancel`, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // If using Laravel
                     },
-                    body: JSON.stringify({
+                    body: {
+                        mission_id: missionId,
                         reason: reason,
-                        other_reason: reason === 'other' ? otherReason : null
-                    })
+                        description: reason === 'other' ? otherReason : null,
+                        cancelled_by: 'requester',
+                        cancelled_on: new Date().toISOString()
+                    }
                 });
 
                 if (response.ok) {

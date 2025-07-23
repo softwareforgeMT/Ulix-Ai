@@ -87,4 +87,22 @@
         </div>
       </div>
     </div>
+<script>
+const stripe = Stripe('{{ config('services.stripe.key') }}');
+
+const token = stripe.tokens.create({
+  account: {
+    business_type: 'individual',
+    individual: {
+      first_name: '{{ $provider->first_name ?? "" }}',  
+      last_name: '{{ $provider->last_name ?? "" }}',
+      email: '{{ $provider->email ?? "" }}',
+    },
+    tos_shown_and_accepted: true,
+  },
+});
+
+console.log('Creating account token...', token);
+
+</script>
 @endsection

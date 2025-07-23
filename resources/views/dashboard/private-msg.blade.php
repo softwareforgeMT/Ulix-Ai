@@ -167,7 +167,7 @@
     }
     
     // Subscribe to private channel using the global Echo instance
-    chatEcho = window.Echo.channel('conversation.' + conversationId)
+    chatEcho = Echo.channel('conversation.' + conversationId)
       .listen('MessageSent', (e) => {
         console.log('Message received:', e);
         if (e.message && e.message.conversation_id == currentConversationId) {

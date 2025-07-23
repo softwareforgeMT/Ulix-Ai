@@ -6,6 +6,13 @@ use Illuminate\Http\Request;
 
 use App\Models\Mission;
 use App\Models\MissionOffer;
+use App\Models\ServiceProvider;
+use Illuminate\Support\Facades\Auth;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
+use Stripe\Refund;
+use Stripe\Transfer;
+use Stripe\Account as StripeAccount;
 
 class JobListController extends Controller
 {
@@ -18,7 +25,7 @@ class JobListController extends Controller
         if ($provider) {
             // Missions where provider's offer is accepted and is under work
             $jobs = Mission::where('selected_provider_id', $provider->id)
-                ->whereIn('status', ['in_progress', 'ongoing', 'accepted'])
+                ->whereIn('status', ['in_progress', 'waiting_to_start', 'cancelled', 'disputed', 'completed'])
                 ->orderByDesc('created_at')
                 ->get();
 
@@ -93,4 +100,130 @@ class JobListController extends Controller
 
         return response()->json(['status' => 'success', 'message' => 'Offer submitted successfully!', 'offer' => $offer]);
     }
+
+    public function startMission(Request $request)
+    {
+        $request->validate([
+            'mission_id' => 'required|exists:missions,id',
+        ]);
+
+        $mission = Mission::findOrFail($request->mission_id);
+        
+        $provider = ServiceProvider::where('id', $mission->selected_provider_id)->first();
+        if (!$provider) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Provider profile not found.'
+            ], 403);
+        }
+
+        if ($mission->selected_provider_id !== $provider->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to start this mission.'
+            ], 403);
+        }
+
+        if ($mission->status === 'in_progress') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mission is already in progress.'
+            ]);
+        }
+
+        // Update mission status
+        $mission->status = 'in_progress';
+        $mission->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Mission started successfully!',
+            'mission' => $mission
+        ]);
+    }
+
+    public function resolveMission(Request $request)
+    {
+        $request->validate([
+            'mission_id' => 'required|exists:missions,id',
+        ]);
+
+        $mission = Mission::findOrFail($request->mission_id);
+        
+        if ($mission->status !== 'disputed') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mission is not in dispute status.'
+            ], 400);
+        }
+
+        $this->refundMissionPayment($mission, $request);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Dispute resolved successfully!',
+            'mission' => $mission
+        ]);
+    }
+
+    private function refundMissionPayment($mission, $request) {
+        try {
+            Stripe::setApiKey(config('services.stripe.secret'));
+            $transaction = $mission->transactions()->where('status', 'paid')->first();
+            $paymentIntent = PaymentIntent::retrieve($transaction->stripe_payment_intent_id);
+            
+            $refundAmountInCents = ($paymentIntent->metadata->mission_amount ?? null) * 100; // Convert to cents
+
+            if (!$refundAmountInCents) {
+                return response()->json(['error' => 'Refund amount not found in metadata'], 400);
+            }
+            $refund = Refund::create([
+                'payment_intent' => $paymentIntent->id,
+                'amount' => (int) $refundAmountInCents,
+            ]);
+
+
+            if ($refund->status !== 'succeeded') {
+                return response()->json(['error' => 'Refund failed'], 500);
+            }
+            // Update mission status
+            $mission->status = 'cancelled';
+            $mission->payment_status = 'refunded';
+            $mission->selected_provider_id = null;
+            $mission->save();
+            $transaction->update(['status' => 'refunded']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Refund failed: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function confirmDelivery(Request $request)
+    {
+        $request->validate([
+            'mission_id' => 'required|exists:missions,id',
+        ]);
+
+        $mission = Mission::findOrFail($request->mission_id);
+        
+        if ($mission->status !== 'in_progress') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mission is not in progress.'
+            ], 400);
+        }
+
+        // Update mission status to completed
+        $mission->status = 'completed';
+        $mission->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Delivery confirmed successfully!',
+            'mission' => $mission
+        ]);
+    }
+
 }

@@ -8,26 +8,27 @@ use App\Models\MissionOffer;
 use App\Models\ServiceProvider;
 use App\Models\Transaction;
 use Stripe\Stripe;
+use Stripe\Charge;
 use Stripe\PaymentIntent;
+use Stripe\Transfer;
 use Stripe\Account as StripeAccount;
 use Illuminate\Support\Facades\DB;
-use Stripe\Transfer;
 
 class StripePaymentController extends Controller
 {
+    
     public function checkout(Request $request)
     {
+    
         $mission = Mission::findOrFail($request->mission_id);
         $provider = ServiceProvider::findOrFail($request->provider_id);
         $offer = MissionOffer::findOrFail($request->offer_id);
 
-        // Ensure provider has a Stripe Connect Custom account
         if (!$provider->stripe_account_id) {
             $stripeAccountId = $this->createStripeConnectCustomAccount($provider);
             $provider->stripe_account_id = $stripeAccountId;
             $provider->save();
         }
-
         // Calculate fees
         $amount = (float) $request->amount;
         $clientFee = (float) $request->client_fee;
@@ -35,9 +36,11 @@ class StripePaymentController extends Controller
 
         Stripe::setApiKey(config('services.stripe.secret'));
 
-        // Create PaymentIntent instead of Checkout Session
+        $platformFeeInCents = intval($clientFee * 100);
+        $totalInCents = intval($total * 100);
+
         $paymentIntent = PaymentIntent::create([
-            'amount' => intval($total * 100), // Amount in cents
+            'amount' => $totalInCents, 
             'currency' => 'eur',
             'payment_method_types' => ['card'],
             'metadata' => [
@@ -50,12 +53,11 @@ class StripePaymentController extends Controller
         ]);
 
         // Update mission status
-        $mission->status = 'in_progress';
+        $mission->status = 'waiting_to_start';
         $mission->payment_status = 'held';
         $mission->selected_provider_id = $provider->id;
         $mission->save();
 
-        // Return view with payment intent client secret
         return view('dashboard.pay-card', [
             'mission' => $mission,
             'provider' => $provider,
@@ -66,6 +68,7 @@ class StripePaymentController extends Controller
             'clientSecret' => $paymentIntent->client_secret,
         ]);
     }
+
 
     public function processPayment(Request $request)
     {
@@ -88,7 +91,7 @@ class StripePaymentController extends Controller
 
                 // Mark mission as paid
                 $mission = Mission::find($missionId);
-                $mission->status = 'in_progress';
+                $mission->status = 'waiting_to_start';
                 $mission->payment_status = 'paid';
                 $mission->save();
 
@@ -104,7 +107,7 @@ class StripePaymentController extends Controller
                     'stripe_payment_intent_id' => $paymentIntent->id,
                     'amount_paid' => $paymentIntent->amount / 100,
                     'client_fee' => $clientFee,
-                    'provider_fee' => config('ulixai.fees.provider', 15),
+                    'provider_fee' => ($paymentIntent->amount / 100) * 0.15,
                     'country' => $mission->location_country,
                     'user_role' => auth()->user()->user_role,
                     'status' => 'paid',
@@ -146,12 +149,25 @@ class StripePaymentController extends Controller
 
     private function createStripeConnectCustomAccount(ServiceProvider $provider)
     {
-        Stripe::setApiKey(config('services.stripe.secret'));
-        $account = StripeAccount::create([
+        $stripe = Stripe::setApiKey(config('services.stripe.secret'));
+        $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
+        $token = $stripe->tokens->create([
+            'account' => [
+                'business_type' => 'individual',
+                'individual' => [
+                    'first_name' => $provider->first_name,
+                    'last_name' => $provider->last_name,
+                    'email' => $provider->email,
+                ],
+                'tos_shown_and_accepted' => true,
+            ],
+        ]);
+
+        $account = $stripe->accounts->create([
             'type' => 'custom',
-            'country' => 'US', // Fixed the null coalescing operator
+            'country' => 'FR',
             'email' => $provider->email,
-            'business_type' => 'individual',
+            'account_token' => $token->id,
             'capabilities' => [
                 'card_payments' => ['requested' => true],
                 'transfers' => ['requested' => true],
@@ -159,11 +175,7 @@ class StripePaymentController extends Controller
             'business_profile' => [
                 'product_description' => 'Ulixai Service Provider',
             ],
-            'individual' => [
-                'first_name' => $provider->first_name,
-                'last_name' => $provider->last_name,
-                'email' => $provider->email,
-            ],
+           
         ]);
         return $account->id;
     }

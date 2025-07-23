@@ -28,7 +28,9 @@ class Mission extends Model
         'selected_provider_id',
         'payment_status',
         'is_fake',
-        'attachments'
+        'attachments',
+        'cancelled_by',
+        'cancelled_on',
     ];
 
     // Relationships
@@ -55,6 +57,13 @@ class Mission extends Model
     public function offers()
     {
         return $this->hasMany(MissionOffer::class, 'mission_id');
+    }
+    public function cancellationReasons()
+    {
+        return $this->hasMany(MissionCancellationReason::class, 'mission_id');
+    }
+    public function transactions() {
+        return $this->hasMany(Transaction::class, 'mission_id');
     }
 
 

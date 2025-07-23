@@ -50,7 +50,7 @@
       <!-- Left Buttons -->
       <div class="flex flex-wrap gap-4">
         <!-- <a href="modifyrequest.php" class="bg-blue-600 text-white px-6 py-2 rounded-full font-medium hover:bg-blue-700 transition">MODIFICATIONS</a> -->
-        <a href="/privatemsg" class="border border-blue-500 text-blue-600 px-6 py-2 rounded-full font-medium hover:bg-blue-50 transition">PRIVATE MESSAGING</a>
+        <a href="{{ route('user.conversation') }}" class="border border-blue-500 text-blue-600 px-6 py-2 rounded-full font-medium hover:bg-blue-50 transition">PRIVATE MESSAGING</a>
       </div>
 
       <!-- Right Text -->
@@ -119,6 +119,16 @@
   </div>
 </div>
 
+<div id="loadingPopup" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-2 hidden">
+    <div class="bg-white rounded-2xl shadow-xl max-w-xs w-full p-8 text-center relative">
+        <div class="flex flex-col items-center">
+            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+            <h3 class="text-lg font-bold text-blue-800 mb-2">Canceling...</h3>
+            <div class="text-blue-800 font-semibold">Please wait while we process your request.</div>
+        </div>
+    </div>
+</div>
+
 <script>
   function openCancelServicePopup(e) {
     e.preventDefault();
@@ -133,10 +143,52 @@
   function closeDisputeSentPopup() {
     document.getElementById('disputeSentPopup').classList.add('hidden');
   }
+
+  function closeLoadingPopup() {
+      document.getElementById('loadingPopup').classList.add('hidden');
+  }
+
+  function openLoadingPopup() {
+      document.getElementById('loadingPopup').classList.remove('hidden');
+  }
   document.getElementById('cancelServiceForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    closeCancelServicePopup();
-    openDisputeSentPopup();
+    const reason = this.querySelector('select').value;
+    const description = this.querySelector('textarea').value;
+    if( !reason) {
+      alert('Please select the reason');
+      return;
+    }
+    openLoadingPopup();
+    fetch('/api/mission/cancel', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify({
+        mission_id: {{ $mission->id }},
+        reason: reason,
+        description: description,
+        cancelled_by: 'requester',
+        cancelled_on: new Date().toISOString()
+      })
+    }).then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    }).then(data => {
+      if (data.success) {
+        closeCancelServicePopup();
+        openDisputeSentPopup();
+      } else {
+        closeLoadingPopup();
+        alert('Error: ' + data.message);
+      }
+    }).catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
   });
   document.getElementById('disputeSentPopup').addEventListener('click', function(e) {
     if (e.target === this) closeDisputeSentPopup();

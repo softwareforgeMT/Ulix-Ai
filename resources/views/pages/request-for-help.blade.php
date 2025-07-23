@@ -354,7 +354,7 @@
       <button type="button" class="px-8 py-4 bg-blue-400 rounded-lg text-white font-semibold hover:bg-blue-500 transition">
        <a href="{{ route('qoute-offer')}}"> SEE MA AD </a></button>
       <button type="button" class="px-8 py-4 bg-blue-400 rounded-lg text-white font-semibold hover:bg-blue-500 transition">
-       <a href="/serviceproviders"> See service provider </a>
+       <a href="{{ route('service-providers' )}}"> See service provider </a>
        </button>
     </div>
 

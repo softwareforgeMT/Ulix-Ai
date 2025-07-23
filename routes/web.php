@@ -17,6 +17,7 @@ use App\Http\Controllers\ServiceProviderController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\ProviderReviewController;
 use App\Http\Controllers\MissionMessageController;
 use App\Http\Controllers\StripePaymentController;
@@ -96,7 +97,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/job-list', [JobListController::class, 'index'])->name('user.joblist');
     Route::get('/view-job', [JobListController::class, 'viewJob'])->name('view-job');
     Route::get('/quote-offer', [JobListController::class, 'quoteOffer'])->name('qoute-offer');
-
     //Account Routes
     Route::get('/account', [AccountController::class, 'index'])->name('user.account');
     Route::get('/personal-info', [AccountController::class, 'personalInfo'])->name('personal-info');
@@ -113,8 +113,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/mission/{id}/public-message', [MissionMessageController::class, 'store'])->name('mission.public-message');
     Route::get('/mission/{id}/public-messages', [MissionMessageController::class, 'list'])->name('mission.public-messages');
 
-    //Cancel Mission
-    
+   
 
     Route::post('/payments/stripe/checkout', [StripePaymentController::class, 'checkout'])->name('payments.stripe.checkout');
     Route::post('/payments/stripe/process', [StripePaymentController::class, 'processPayment'])->name('payments.stripe.process');
@@ -139,12 +138,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware('auth:admin')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/transactions', [AdminDashboardController::class, 'transactions'])->name('transactions');
         Route::get('/users', [AdminDashboardController::class, 'users'])->name('users');
         Route::post('/secret-login/{id}', [AdminDashboardController::class, 'secretLogin'])->name('secret-login');
         Route::post('/restore-admin', [AdminDashboardController::class, 'restoreAdmin'])->name('restore-admin');
         Route::post('/commission/update', [AdminDashboardController::class, 'updateCommission'])->name('commission.update');
         Route::post('/stripe/kyc/remind/{provider}', [AdminDashboardController::class, 'remindKyc'])->name('stripe.kyc.remind');
+
+        // Transaction management
+        Route::get('/transactions/{transaction}/edit', [TransactionController::class, 'edit'])->name('transactions.edit');
+        Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
     });
 });
+
 
 Route::get('/{slug?}', [PageController::class, 'show'])->where('slug', '.*');

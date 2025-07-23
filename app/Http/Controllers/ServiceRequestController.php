@@ -6,8 +6,16 @@ use Illuminate\Http\Request;
 use App\Models\Mission;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Models\MissionCancellationReason;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
+use Stripe\Refund;
+use Stripe\Transfer;
+use Stripe\Account as StripeAccount;
+use Carbon\Carbon;
 
 class ServiceRequestController extends Controller
 {
@@ -149,7 +157,7 @@ class ServiceRequestController extends Controller
         ]);
     }
 
-    private function generateAffiliateLink($email, $first, $last)
+    private function generateAffiliateLink($email, $first, $last = null)
     {
         $base = $first . $last . explode('@', $email)[0] . rand(100, 999);
         $slug = strtolower(Str::slug($base));
@@ -182,18 +190,158 @@ class ServiceRequestController extends Controller
         return response()->json($missions);
     }
 
-    public function cancelMissionRequest(Request $request, $id) 
+    public function cancelMissionRequest(Request $request) 
     {
-        $mission = Mission::findOrFail($id);
+
+        $request->validate([
+            'mission_id' => 'required|exists:missions,id',
+            'reason' => 'required|string|max:255',
+            'cancelled_by' => 'required|in:requester,provider,admin',
+            'cancelled_on' => 'required|date',
+        ]);
+
+        $mission = Mission::findOrFail($request->mission_id);
         
         if ($mission->user_id !== auth()->id()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        $reason = $request->input('reason');
-        $otherReason = $request->input('other_reason');
-        $mission->delete();
-        
+        if($mission->payment_status === 'unpaid' && $mission->status == 'published') {
+            $mission->delete();
+            return response()->json(['message' => 'Mission canceled successfully']);
+        }
+
+        if( $mission->status === 'waiting_to_start' && $mission->payment_status === 'paid') {
+            // Refund the payment
+            try {
+                $this->refundMissionPayment($mission, $request);
+                $cancellationReason = MissionCancellationReason::create([
+                    'mission_id' => $mission->id,
+                    'cancelled_by' => $request->cancelled_by,
+                    'reason' => $request->reason,
+                    'email_sent' => false,
+                    'custum_description' => $request->description ?? null,
+                ]);
+
+                return response()->json(['message' => 'Mission canceled successfully']);
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Refund failed: ' . $e->getMessage()], 500);
+            }
+        } elseif ($mission->status === 'in_progress') {
+           try {
+                $cancellationReason = MissionCancellationReason::create([
+                    'mission_id' => $mission->id,
+                    'cancelled_by' => $request->cancelled_by,
+                    'reason' => $request->reason,
+                    'email_sent' => false,
+                    'custum_description' => $request->description ?? null,
+                ]);
+
+                // Update mission status
+                $mission->status = 'disputed';
+                $mission->payment_status = 'held';
+                $mission->cancelled_by = $request->cancelled_by;
+                $mission->cancelled_on = Carbon::parse($request->cancelled_on);
+                $mission->save();
+
+                return response()->json(['message' => 'Mission canceled successfully']);
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Refund failed: ' . $e->getMessage()], 500);
+            }
+        } else {
+            return response()->json(['error' => 'Mission cannot be canceled at this stage'], 400);
+        }
+
+        $cancellationReason = MissionCancellationReason::create([
+            'mission_id' => $mission->id,
+            'cancelled_by' => $request->cancelled_by,
+            'reason' => $request->reason,
+            'email_sent' => false,
+            'custum_description' => $request->description ?? null,
+        ]);
+
+        $mission->update([
+            'status' => 'disputed',
+            'cancelled_by' => $request->cancelled_by,
+            'cancelled_on' => Carbon::parse($request->cancelled_on),
+            'payment_status' => 'refunded',
+            'selected_provider_id' => null,
+        ]);
         return response()->json(['message' => 'Mission canceled successfully']);
+    }
+
+    private function refundMissionPayment($mission, $request) {
+            Stripe::setApiKey(config('services.stripe.secret'));
+            $transaction = $mission->transactions()->where('status', 'paid')->first();
+            $paymentIntent = PaymentIntent::retrieve($transaction->stripe_payment_intent_id);
+            
+            $refundAmountInCents = ($paymentIntent->metadata->mission_amount ?? null) * 100; // Convert to cents
+
+            if (!$refundAmountInCents) {
+                return response()->json(['error' => 'Refund amount not found in metadata'], 400);
+            }
+            $refund = Refund::create([
+                'payment_intent' => $paymentIntent->id,
+                'amount' => (int) $refundAmountInCents,
+            ]);
+
+
+            if ($refund->status !== 'succeeded') {
+                return response()->json(['error' => 'Refund failed'], 500);
+            }
+            // Update mission status
+            $mission->status = 'cancelled';
+            $mission->payment_status = 'refunded';
+            $mission->selected_provider_id = null;
+            $mission->cancelled_by = $request->cancelled_by;
+            $mission->cancelled_on = Carbon::parse($request->cancelled_on);
+            $mission->attachments = null; // Clear attachments if needed
+            $mission->save();
+
+            $transaction->update(['status' => 'refunded']);
+    }
+
+    public function confirmOrderDelivery(Request $request)
+    {
+        $request->validate([
+            'mission_id' => 'required|exists:missions,id',
+        ]);
+
+        $mission = Mission::findOrFail($request->mission_id);
+        
+        if ($mission->status !== 'completed' && $mission->payment_status !== 'paid') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mission is not completed.'
+            ], 400);
+        }
+        $provider = $mission->selectedProvider; 
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $stripeImtent = PaymentIntent::retrieve($mission->transactions()->first()->stripe_payment_intent_id);
+       $transferAmount = floor($stripeImtent->amount_received - ($stripeImtent->amount_received * config('ulixai.fees.provider', 15) / 100));
+
+
+        $transfer = Transfer::create([
+            'amount' => $transferAmount, 
+            'currency' => 'eur',
+            'destination' => $provider->stripe_account_id,
+            'transfer_group' => 'MISSION_'.$mission->id,
+        ]);
+        if ($transfer->status !== 'succeeded') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transfer failed.'
+            ], 500);
+        }
+
+        // Mark mission as paid
+        $mission->update(['payment_status' => 'released']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Delivery confirmed successfully!',
+            'mission' => $mission
+        ]);
     }
 }

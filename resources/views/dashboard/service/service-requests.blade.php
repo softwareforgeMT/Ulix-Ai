@@ -26,7 +26,7 @@
 
   @php
       $currentRequests = $missions->filter(function($m) {
-          return !empty($m->selected_provider_id) && in_array($m->status, ['in_progress', 'completed', 'disputed']);
+          return !empty($m->selected_provider_id) && in_array($m->status, ['in_progress', 'completed', 'disputed', 'cancelled', 'waiting_to_start']) && $m->payment_status !== 'released';
       });
       $publishedNoProvider = $missions->filter(function($m) {
           return empty($m->selected_provider_id) && $m->status === 'published';
@@ -55,7 +55,8 @@
                 ucfirst(
                   $mission->status === 'in_progress' ? 'In Progress' : 
                   ($mission->status === 'completed' ? 'Completed' : 
-                  ($mission->status === 'disputed' ? 'Disputed' : 'N/A'))
+                  ($mission->status === 'disputed' ? 'Disputed' : 
+                  ($mission->status === 'waiting_to_start' ? 'Waiting for provider to Start' : 'N/A' )))
                 )
               }}
             </p>
@@ -63,9 +64,15 @@
             <div class="space-y-2">
               <a href="{{ route('view.request', ['id' => $mission->id]) }}" class="block border border-blue-400 text-blue-500 rounded-full px-4 py-2 text-sm font-medium text-center hover:bg-blue-50 transition">See my request</a>
             </div>
+           
             <div class="flex justify-between items-center mt-6">
-              <span></span>
               <a href="{{ route('service-providers') }}" class="bg-green-500 text-white px-4 py-2 text-sm rounded-full hover:bg-green-600 transition">See the Ulysses</a>
+              @if($mission->status === 'completed' && $mission->payment_status === 'paid')
+                <button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-5 py-2 rounded-lg shadow transition ml-3" 
+                  onclick="confirmDelivery({{$mission->id}})">
+                  Confirm Delivery
+              </button>
+              @endif
             </div>
           </div>
         </div>
@@ -92,13 +99,17 @@
             <p class="text-gray-700 text-sm">Duration : {{ $mission->service_durition ?? '-' }}</p>
             <p class="text-gray-700 text-sm mb-1">Location in Need : {{ $mission->location_country ?? '-' }}</p>
             <p class="text-gray-700 text-sm mb-1">Prefered Language : {{ $mission->language ?? '-' }}</p>
-            <p class="text-gray-700 text-sm mb-2">Mission Ends In : {{ $mission->ends_in ?? '-' }}</p>
+            <p class="text-gray-700 text-sm mb-2">Urgency : {{ ucfirst($mission->urgency) ?? '-' }}</p>
             <div class="space-y-2">
               <a href="{{ route('qoute-offer', ['id'=> $mission->id]) }}" class="block border border-blue-400 text-blue-500 rounded-full px-4 py-2 text-sm font-medium text-center hover:bg-blue-200 transition">See my request</a>
               <div class="text-red-600 text-center font-semibold text-sm">{{ $mission->offers->count() ?? 0 }} proposals received</div>
             </div>
             <div class="flex justify-end items-center mt-6 gap-2 flex-wrap">
-              <span class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full">No provider yet</span>
+              @if($mission->offers->count() > 0)
+              @else
+                <span class="bg-gray-300 text-gray-700 px-3 py-1 text-xs rounded-full">No provider yet</span>
+              @endif
+              
               <button 
                 class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-xs rounded-full font-semibold transition-all whitespace-nowrap"
                 onclick="openCancelRequestPopup({{ $mission->id }})">
@@ -123,4 +134,35 @@
 </div>
 
 @include('dashboard.service.cancel-service-request')
+
+<script>
+  function confirmDelivery(missionId) {
+    // Open the delivery confirmation popup
+    if( confirm('Are you sure you want to confirm the delivery for mission ID ' + missionId + '?')) {
+      // Proceed with the delivery confirmation
+      fetch('/api/provider/jobs/requester/confirm-delivery', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ mission_id: missionId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Delivery confirmed successfully!');
+          // Optionally, redirect or update the UI
+        } else {
+          alert('Error confirming delivery: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while confirming delivery.');
+      });
+    }
+    
+  }
+</script>
 @endSection

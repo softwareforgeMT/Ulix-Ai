@@ -343,7 +343,7 @@
                       <span class="font-medium">Requested by:</span>
                       ${mission.requester.name || 'Unknown'}
                     </div>
-                    <a href="{{ route('qoute-offer', ['id' => $mission->id]) }}"
+                    <a href="{{ route('qoute-offer', ['id' => $mission->id ?? 0]) }}"
                       class="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-2 rounded-full font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                       SEE
                     </a>

@@ -31,7 +31,11 @@ class ServiceProvider extends Model
         'documents',
         'ip_address',
         'stripe_account_id',
-        'slug'
+        'slug',
+        'stripe_chg_enabled',
+        'stripe_pts_enabled', 
+        'kyc_link',
+        'kyc_status'  
     ];
 
     protected $casts = [
