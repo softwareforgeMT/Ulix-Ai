@@ -35,15 +35,15 @@ class ServiceProviderController extends Controller
     }
 
    
-        public function providerProfile($slug) {
-            $provider = ServiceProvider::with('user')->where('slug', $slug)->first();
+    public function providerProfile($slug) {
+        $provider = ServiceProvider::with('user')->where('slug', $slug)->first();
 
-            if (!$provider) {
-                abort(404, 'Provider not found');
-            }
-
-            return view('dashboard.provider.provider-details', compact('provider'));
+        if (!$provider) {
+            abort(404, 'Provider not found');
         }
+
+        return view('dashboard.provider.provider-details', compact('provider'));
+    }
 
 
     public function getSubcategories($categoryId)
@@ -54,7 +54,7 @@ class ServiceProviderController extends Controller
         return response()->json($subcategories);
     }
 
-  public function getProviders(Request $request)
+    public function getProviders(Request $request)
     {
         $categoryId = $request->input('category_id');
         $subcategoryId = $request->input('subcategory_id');
@@ -78,6 +78,7 @@ class ServiceProviderController extends Controller
             $provider->reviewCount = $provider->reviews->count() ?? 1; // Add review count
             return $provider;
         });
+        
         return response()->json($providers);
     }
 

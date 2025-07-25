@@ -12,8 +12,11 @@ class CreateProviderReviewsTable extends Migration
             $table->id();
             $table->foreignId('provider_id')->constrained('service_providers')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->tinyInteger('rating')->default(5); // 1-5 stars
+            $table->tinyInteger('rating')->default(5);
             $table->text('comment')->nullable();
+            $table->text('attributes')->nullable();
+            $table->boolean('service_success')->default(0);
+            $table->foreignId('mission_id')->nullable();
             $table->timestamps();
         });
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ServiceProvider;
 use App\Models\MissionOffer;
+use App\Models\Mission;
 
 class PaymentController extends Controller
 {
@@ -29,8 +30,14 @@ class PaymentController extends Controller
     }
 
     public function paymentValidate(Request $request) {
-        
-        return view('dashboard.payments.payments-validate');
+        $user = auth()->user();
+        $missions = [];
+        if ($user) {
+            $missions = Mission::with(['transactions'])->where('requester_id', $user->id)
+                ->orderByDesc('created_at')
+                ->get();
+        }
+        return view('dashboard.payments.payments-validate', compact('missions', 'user'));
     }
     public function earningAndPayments(Request $request) {
         return view('dashboard.my-earnings-payments');

@@ -29,8 +29,6 @@ Route::post('/provider/jobs/start', [JobListController::class, 'startMission']);
 Route::post('/provider/jobs/resolve', [JobListController::class, 'resolveMission']);
 Route::post('/provider/jobs/confirm-delivery', [JobListController::class, 'confirmDelivery']);
 
-//Service Request Action
-Route::post('/provider/jobs/requester/confirm-delivery', [ServiceRequestController::class, 'confirmOrderDelivery']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -39,6 +37,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //Cancel Mission
 Route::post('/mission/cancel', [ServiceRequestController::class, 'cancelMissionRequest']);
+Route::post('/mission/cancel/by-provider', [ServiceRequestController::class, 'providerCancelMisssion']);
 
 //Get Filtered Transactions
 Route::get('transactions/filter', [TransactionController::class, 'filterTransactions']);

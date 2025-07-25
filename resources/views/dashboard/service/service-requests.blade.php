@@ -67,12 +67,6 @@
            
             <div class="flex justify-between items-center mt-6">
               <a href="{{ route('service-providers') }}" class="bg-green-500 text-white px-4 py-2 text-sm rounded-full hover:bg-green-600 transition">See the Ulysses</a>
-              @if($mission->status === 'completed' && $mission->payment_status === 'paid')
-                <button class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-5 py-2 rounded-lg shadow transition ml-3" 
-                  onclick="confirmDelivery({{$mission->id}})">
-                  Confirm Delivery
-              </button>
-              @endif
             </div>
           </div>
         </div>
@@ -127,42 +121,11 @@
   </div>
 
   <!-- Tabs at bottom center (not sticky, just after all content) -->
-  <div class="flex justify-center gap-3  mb-4 pb-8 mt-6">
+  <!-- <div class="flex justify-center gap-3  mb-4 pb-8 mt-6">
     <button class="bg-blue-500 text-white px-6 py-2 rounded-full font-semibold">UPCOMING</button>
     <button class="text-blue-500 underline font-medium">ARCHIVED</button>
-  </div>
+  </div> -->
 </div>
 
 @include('dashboard.service.cancel-service-request')
-
-<script>
-  function confirmDelivery(missionId) {
-    // Open the delivery confirmation popup
-    if( confirm('Are you sure you want to confirm the delivery for mission ID ' + missionId + '?')) {
-      // Proceed with the delivery confirmation
-      fetch('/api/provider/jobs/requester/confirm-delivery', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({ mission_id: missionId })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('Delivery confirmed successfully!');
-          // Optionally, redirect or update the UI
-        } else {
-          alert('Error confirming delivery: ' + data.message);
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while confirming delivery.');
-      });
-    }
-    
-  }
-</script>
 @endSection

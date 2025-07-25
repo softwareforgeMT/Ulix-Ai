@@ -117,6 +117,16 @@
   </div>
 </div>
 
+<div id="loadingPopup" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-2 hidden">
+    <div class="bg-white rounded-2xl shadow-xl max-w-xs w-full p-8 text-center relative">
+        <div class="flex flex-col items-center">
+            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+            <h3 class="text-lg font-bold text-blue-800 mb-2">Canceling...</h3>
+            <div class="text-blue-800 font-semibold">Please wait while we process your request.</div>
+        </div>
+    </div>
+</div>
+
 <script>
   function openCancelServicePopup(e) {
     e.preventDefault();
@@ -126,10 +136,62 @@
     document.getElementById('cancelServicePopup').classList.add('hidden');
   }
   document.getElementById('cancelServiceForm').addEventListener('submit', function(e) {
+  
     e.preventDefault();
-    closeCancelServicePopup();
-    document.getElementById('cancelServiceResultPopup').classList.remove('hidden');
-  });
+      const reason = this.querySelector('select').value;
+      const description = this.querySelector('textarea').value;
+      if( !reason) {
+        alert('Please select the reason');
+        return;
+      }
+      openLoadingPopup();
+      fetch('/api/mission/cancel/by-provider', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+          mission_id: {{ $job->id }},
+          reason: reason,
+          description: description,
+          cancelled_by: 'provider',
+          cancelled_on: new Date().toISOString()
+        })
+      }).then(response => {
+        closeLoadingPopup();
+        if (!response.ok) {
+          toastr.error('Network response was not ok', 'Error');
+        }
+        return response.json();
+      }).then(data => {
+        if (data.success) {
+            closeCancelServicePopup();
+            closeLoadingPopup();
+            document.getElementById('cancelServiceResultPopup').classList.remove('hidden');
+            toastr.success('Mission Cancelled Successfully', 'Success');
+            setTimeout(() => {
+              window.location.href = '/job-list';
+            }, 3000);
+        } else {
+          closeLoadingPopup();
+          toastr.error(data.message, 'Error');
+          // alert('Error: ' + data.message);
+        }
+      }).catch(error => {
+        closeLoadingPopup();
+        toastr.error('There was a problem with the fetch operation', 'Error');
+        // console.error('There was a problem with the fetch operation:', error);
+      });
+    });
+
+    function openLoadingPopup() {
+        document.getElementById('loadingPopup').classList.remove('hidden');
+    }
+
+    function closeLoadingPopup() {
+        document.getElementById('loadingPopup').classList.add('hidden');
+    }
   document.getElementById('cancelServiceResultPopup').addEventListener('click', function(e) {
     if (e.target === this) this.classList.add('hidden');
   });

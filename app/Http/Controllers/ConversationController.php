@@ -16,16 +16,31 @@ class ConversationController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-
         // Missions where status != published and selected_provider_id is set
+        // $missions = Mission::where('status', '!=', 'published')
+        //     ->where('payment_status', '!=', 'released')
+        //     ->whereNotNull('selected_provider_id')
+        //     ->where(function($q) use ($user) {
+        //         $q->where('requester_id', $user->id)
+        //           ->orWhere('selected_provider_id', optional($user->serviceProvider)->id);
+        //     })
+        //     ->get();
+        $providerId = optional($user->serviceProvider)->id;
+
         $missions = Mission::where('status', '!=', 'published')
+            ->where('payment_status', '!=', 'released')
             ->whereNotNull('selected_provider_id')
-            ->where(function($q) use ($user) {
-                $q->where('requester_id', $user->id)
-                  ->orWhere('selected_provider_id', optional($user->serviceProvider)->id);
+            ->when($request->query('tab') === 'jobs', function ($q) use ($providerId, $user) {
+                // Jobs tab: show where user is selected_provider, but not requester
+                $q->where('selected_provider_id', $providerId)
+                ->where('requester_id', '!=', $user->id);
+            }, function ($q) use ($user, $providerId) {
+                // Default tab: show where user is requester
+                $q->where('requester_id', $user->id);
             })
             ->get();
 
+        
         // Fetch all conversations for this user (as requester or provider)
         $conversations = Conversation::with('mission')
             ->where('requester_id', $user->id)

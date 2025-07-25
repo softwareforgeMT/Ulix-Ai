@@ -13,9 +13,14 @@ use Stripe\PaymentIntent;
 use Stripe\Refund;
 use Stripe\Transfer;
 use Stripe\Account as StripeAccount;
-
+use App\Services\ReputationPointService;
 class JobListController extends Controller
 {
+    protected $ReputationPointService;
+    public function __construct(ReputationPointService $ReputationPointService)
+    {
+        $this->ReputationPointService = $ReputationPointService;
+    }
     public function index(Request $request)
     {
         $provider = auth()->user()->serviceProvider;
@@ -26,6 +31,7 @@ class JobListController extends Controller
             // Missions where provider's offer is accepted and is under work
             $jobs = Mission::where('selected_provider_id', $provider->id)
                 ->whereIn('status', ['in_progress', 'waiting_to_start', 'cancelled', 'disputed', 'completed'])
+                ->whereIn('payment_status', ['paid', 'held'])
                 ->orderByDesc('created_at')
                 ->get();
 
@@ -159,6 +165,10 @@ class JobListController extends Controller
 
         $this->refundMissionPayment($mission, $request);
 
+        $provider = $mission->selectedProvider;
+
+        $this->ReputationPointService->updateReputationPointsBasedOnDisputeResolvedByProvider($provider);
+
         return response()->json([
             'success' => true,
             'message' => 'Dispute resolved successfully!',
@@ -186,6 +196,9 @@ class JobListController extends Controller
             if ($refund->status !== 'succeeded') {
                 return response()->json(['error' => 'Refund failed'], 500);
             }
+
+            $offer = MissionOffer::where('provider_id', $mission->selected_provider_id)->where('mission_id', $mission->id)->first()?->delete();
+            
             // Update mission status
             $mission->status = 'cancelled';
             $mission->payment_status = 'refunded';

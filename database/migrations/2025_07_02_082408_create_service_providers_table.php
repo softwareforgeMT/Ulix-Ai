@@ -41,7 +41,8 @@ class CreateServiceProvidersTable extends Migration
             
             // KYC Status column
             $table->enum('kyc_status', ['pending', 'incomplete', 'verified', 'rejected'])->default('pending');
-            
+            $table->integer('points')->default(0);
+            $table->enum('ulysse_status', ['Ulysse+', 'Top Ulysse', 'Ulysse Diamond'])->default('Ulysse+');
             $table->ipAddress('ip_address')->nullable();
             $table->string('slug')->nullable();
             $table->timestamps();

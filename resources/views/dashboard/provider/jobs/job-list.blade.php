@@ -123,12 +123,12 @@
       </div>
 
       <!-- Tabs moved to bottom and centered -->
-      <div class="flex justify-center mt-10 mb-12 pb-12">
+      <!-- <div class="flex justify-center mt-10 mb-12 pb-12">
         <div class="flex gap-4 flex-wrap">
           <button class="bg-blue-600 text-white px-4 py-1 rounded-full font-medium shadow hover:bg-blue-700">UPCOMING</button>
           <a href="archivejobs.php" class="text-blue-600 font-medium underline hover:text-blue-800">ARCHIVED</a>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 
