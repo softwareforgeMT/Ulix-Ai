@@ -151,5 +151,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
+//Profile sharing routes 
+Route::get('/provider/{slug}', [ServiceProviderController::class, 'providerProfile'])->name('provider.profile');
+
 
 Route::get('/{slug?}', [PageController::class, 'show'])->where('slug', '.*');

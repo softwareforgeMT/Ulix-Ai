@@ -21,30 +21,92 @@
     $avgRating = $reviewCount ? round($reviews->avg('rating'), 2) : 5;
     $isProviderSelf = (auth()->check() && $provider->user_id == auth()->id());
 @endphp
+
+
+
     <div class="max-w-6xl mx-auto space-y-6 mt-8">
-        <!-- Social Media Share Card -->
-        <div class="flex justify-end mb-2">
-            <div class="flex items-center bg-gradient-to-r from-blue-500 to-blue-700 rounded-2xl px-6 py-3 shadow-lg space-x-4">
-                <span class="text-white font-semibold flex items-center text-base">
-                  <span class="mr-2">🚀</span>Share this sheet to help your friends
-                </span>
-                <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-400 hover:bg-white transition">
-                  <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" class="w-5 h-5" />
-                </a>
-                <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-pink-400 hover:bg-white transition">
-                  <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" class="w-5 h-5" />
-                </a>
-                <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-white hover:bg-white transition">
-                  <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok" class="w-5 h-5" />
-                </a>
-                <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-red-600 hover:bg-white transition">
-                  <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" class="w-5 h-5" />
-                </a>
-                <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-300 hover:bg-white transition">
-                  <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg" alt="Twitter" class="w-5 h-5" />
-                </a>
-            </div>
-        </div>
+<!-- Social Media Share Card -->
+@php
+    $shareUrl = route('provider.profile', ['slug' => $provider->slug]);
+@endphp
+
+<div class="flex justify-end mb-2">
+    <div class="flex flex-wrap items-center bg-gradient-to-r from-blue-500 to-blue-700 rounded-2xl px-6 py-3 shadow-lg space-x-3 sm:space-x-4">
+        <span class="text-white font-semibold flex items-center text-sm sm:text-base">
+            <span class="mr-2">🚀</span>Share this sheet to help your friends
+        </span>
+
+        <!-- Facebook -->
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}"
+           onclick="copyToClipboard('{{ $shareUrl }}')" target="_blank" rel="noopener"
+           class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-400 hover:bg-white transition">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" class="w-5 h-5" />
+        </a>
+
+        <!-- Instagram -->
+        <a href="javascript:void(0);" onclick="copyAndNotify('{{ $shareUrl }}')"
+           class="w-8 h-8 flex items-center justify-center rounded-full bg-pink-400 hover:bg-white transition" title="Link copied! Paste in Instagram bio or DMs">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" class="w-5 h-5" />
+        </a>
+
+        <!-- TikTok -->
+        <a href="javascript:void(0);" onclick="copyAndNotify('{{ $shareUrl }}')"
+           class="w-8 h-8 flex items-center justify-center rounded-full bg-white hover:bg-white transition" title="Link copied! Paste in TikTok bio or DMs">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok" class="w-5 h-5" />
+        </a>
+
+        <!-- YouTube -->
+        <a href="javascript:void(0);" onclick="copyAndNotify('{{ $shareUrl }}')"
+           class="w-8 h-8 flex items-center justify-center rounded-full bg-red-600 hover:bg-white transition" title="Link copied! Paste in YouTube comments or description">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" class="w-5 h-5" />
+        </a>
+
+        <!-- Twitter -->
+        <a href="https://twitter.com/intent/tweet?url={{ urlencode($shareUrl) }}&text=Check out this service provider on ULIXAI!"
+           onclick="copyToClipboard('{{ $shareUrl }}')" target="_blank" rel="noopener"
+           class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-300 hover:bg-white transition">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg" alt="Twitter" class="w-5 h-5" />
+        </a>
+
+        <!-- Copy Link Button -->
+        <button onclick="copyAndNotify('{{ $shareUrl }}')"
+            class="flex items-center gap-2 text-white bg-green-500 hover:bg-green-600 transition px-3 py-1.5 rounded-full text-sm shadow-md"
+            title="Copy this link">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h11M9 21V3" />
+            </svg>
+            Copy Link
+        </button>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="copy-toast"
+     class="hidden fixed bottom-6 right-6 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out">
+    ✅ Link copied to clipboard!
+</div>
+
+<!-- JS for Copy + Toast -->
+<script>
+    function copyToClipboard(link) {
+        navigator.clipboard.writeText(link)
+            .then(() => console.log("Copied"))
+            .catch(err => console.error("Failed to copy", err));
+    }
+
+    function copyAndNotify(link) {
+        copyToClipboard(link);
+        const toast = document.getElementById('copy-toast');
+        toast.classList.remove('hidden');
+        toast.classList.add('opacity-100');
+
+        setTimeout(() => {
+            toast.classList.add('hidden');
+            toast.classList.remove('opacity-100');
+        }, 2000);
+    }
+</script>
+
         <!-- Main Content Layout -->
         <div class="flex flex-col lg:flex-row gap-6">
             <!-- Profile Card -->
