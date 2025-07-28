@@ -127,4 +127,7 @@ class ConversationController extends Controller
         $isOnline = cache()->has('user-is-online-' . $providerUserId);
         return response()->json(['online' => $isOnline]);
     }
+
+    
+
 }

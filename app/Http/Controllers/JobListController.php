@@ -23,10 +23,11 @@ class JobListController extends Controller
     }
     public function index(Request $request)
     {
+        
         $provider = auth()->user()->serviceProvider;
         $jobs = [];
         $offers = [];
-
+       
         if ($provider) {
             // Missions where provider's offer is accepted and is under work
             $jobs = Mission::where('selected_provider_id', $provider->id)
@@ -34,6 +35,8 @@ class JobListController extends Controller
                 ->whereIn('payment_status', ['paid', 'held'])
                 ->orderByDesc('created_at')
                 ->get();
+
+                
 
             // All quote offers made by provider that are NOT accepted yet
             $offers = MissionOffer::where('provider_id', $provider->id)
