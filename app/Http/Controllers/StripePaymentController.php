@@ -33,7 +33,7 @@ class StripePaymentController extends Controller
         $amount = (float) $request->amount;
         $clientFee = (float) $request->client_fee;
         $total = (float) $request->total;
-
+        
         Stripe::setApiKey(config('services.stripe.secret'));
 
         $platformFeeInCents = intval($clientFee * 100);

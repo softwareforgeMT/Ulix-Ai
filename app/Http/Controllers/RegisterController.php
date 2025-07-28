@@ -52,6 +52,7 @@ class RegisterController extends Controller
             $profileImagePath = saveBase64Image($expats['profile_image'], 'assets/profileImages', 'profile-' . $user->id);
         }
 
+
         $documents = [];
         $docTypes = ['passport', 'european_id', 'license'];
         foreach ($docTypes as $docType) {
@@ -125,7 +126,6 @@ class RegisterController extends Controller
             'ip_address' => $ip,
             'slug' => $slug
         ]);
-
         $otp = random_int(100000, 999999);
         EmailVerification::create([
             'user_id' => $user->id,

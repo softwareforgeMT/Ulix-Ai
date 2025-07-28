@@ -106,7 +106,7 @@
             </a>
 
             <a href="{{ route('user.payments.validate') }}"
-               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('payments') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
+               class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('payments-validate') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
                 <i class="fa-solid fa-credit-card w-5 h-5"></i>
                 <span>Payments to be validated</span>
             </a>

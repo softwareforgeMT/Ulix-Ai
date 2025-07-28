@@ -35,7 +35,9 @@ class ServiceProvider extends Model
         'stripe_chg_enabled',
         'stripe_pts_enabled', 
         'kyc_link',
-        'kyc_status'  
+        'kyc_status' ,
+        'points',
+        'ulysse_status' 
     ];
 
     protected $casts = [

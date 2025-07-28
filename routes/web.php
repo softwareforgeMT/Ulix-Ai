@@ -22,6 +22,7 @@ use App\Http\Controllers\ProviderReviewController;
 use App\Http\Controllers\MissionMessageController;
 use App\Http\Controllers\StripePaymentController;
 use App\Http\Controllers\AffiliateController;
+use App\Http\Controllers\UlixaiReviewController;
 
 // AJAX user signup
 Route::post('/signup/store', [UserController::class, 'storeViaSignup']);
@@ -82,7 +83,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/payments-validate', [PaymentController::class, 'paymentValidate'])->name('user.payments.validate');
     Route::get('/my-earning-payment', [PaymentController::class, 'earningAndPayments'])->name('my-earning-payment');
     Route::get('/reviews', [ReviewsController::class, 'reviews'])->name('user-reviews');
-    Route::get('/review-ulysse', [ReviewsController::class, 'reviewUlysse'])->name('review-ulysse');
+    Route::post('/review-ulysse', [ReviewsController::class, 'reviewUlysse'])->name('review-ulysse');
     Route::get('/review-options', [ReviewsController::class, 'reviewOptions'])->name('review-options');
     Route::get('/review-end', [ReviewsController::class, 'reviewEnd'])->name('review-end');
     
@@ -122,6 +123,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/broadcasting/auth', function (Request $request) {
         return Broadcast::auth($request);
     });
+
+
+    // Ulixai Reviews By Users
+
+    Route::post('ulixai/review', [UlixaiReviewController::class, 'userReview'])->name('submit-ulixai-review');
+
 });
 
 

@@ -49,7 +49,15 @@
                 <p class="text-gray-700 text-sm">{{ $mission->location_country ?? '-' }}</p>
                 <p class="text-gray-700 text-sm">{{ $mission->location_city ?? '-' }}</p>
                 <p class="text-gray-700 text-sm">{{ $mission->language ?? '-' }}</p>
-                <p class="text-gray-700 text-sm">Status: {{ $mission->status }}</p>
+                <p class="text-gray-700 text-sm">Status: {{ 
+                  ucfirst(
+                    $mission->status === 'in_progress' ? 'In Progress' : 
+                    ($mission->status === 'completed' ? 'Completed' : 
+                    ($mission->status === 'disputed' ? 'Disputed' : 
+                    ($mission->status === 'waiting_to_start' ? 'Waiting for provider to Start' : 'N/A' )))
+                  )
+                }}
+              </p>
                 <a href="{{ route('qoute-offer', ['id' => $mission->id])}}" class="inline-block bg-blue-600 text-white text-xs font-semibold rounded-full px-4 py-2 mt-2 hover:bg-blue-700 transition">
                   See My Job
                 </a>
@@ -110,7 +118,6 @@
 </style>
 
 @endsection
-@section('scripts')
 
 <script type="module">
   let currentConversationId = null;
@@ -243,4 +250,3 @@
     });
   });
 </script>
-@endsection

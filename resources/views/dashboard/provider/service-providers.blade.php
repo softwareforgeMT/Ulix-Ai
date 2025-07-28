@@ -69,7 +69,7 @@
                     </div>
                     <div class="flex items-center justify-center gap-1 mb-2">
                         <i class="fas fa-star star-filled"></i>
-                        <span class="text-sm font-medium">{{$provider->reviews()->avg('rating') ?? 5}} / 5</span>
+                        <span class="text-sm font-medium">{{ number_format($provider->reviews()->avg('rating') ?? 5, 1) }} / 5</span>
                     </div>
                 </div>
                 <div class="border-t pt-4">

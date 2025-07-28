@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProviderReview extends Model
 {
     protected $fillable = [
-        'provider_id', 'user_id', 'rating', 'comment'
+        'provider_id', 'user_id', 'rating', 'comment', 'attributes', 'service_success', 'mission_id'
     ];
 
     public function provider()

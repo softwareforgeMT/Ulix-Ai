@@ -6,13 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Provider Detail</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <style>
         .star-filled { color: #3B82F6; }
         .star-yellow { color: #FCD34D; }
     </style>
 </head>
 <body class="min-h-screen">
+    
+    @if (session('success'))
+        <script>
+            toastr.success('{{ session('success') }}', 'Success');
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            toastr.error('{{ session('error') }}', 'Error');
+        </script>
+    @endif
    @include('includes.header')
    @include('pages.popup')
 @php
@@ -122,7 +136,7 @@
                         </button>
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-center gap-1 text-blue-500"><i class="fas fa-check"></i><span>Profile verified</span></div>
-                            <div class="flex justify-center gap-1"><i class="fas fa-star star-filled"></i><span>{{ $avgRating }}/ 5</span></div>
+                            <div class="flex justify-center gap-1"><i class="fas fa-star star-filled"></i><span>{{ number_format($avgRating, 1) }}/ 5</span></div>
                         </div>
                     </div>
                     <div class="text-center text-xs text-gray-500 uppercase mb-4">
@@ -232,7 +246,7 @@
                                 @for($i=1; $i<=5; $i++)
                                     <label>
                                         <input type="radio" name="rating" value="{{ $i }}" class="hidden" {{ old('rating', 5) == $i ? 'checked' : '' }}>
-                                        <i class="fas fa-star star-yellow cursor-pointer" data-value="{{ $i }}"></i>
+                                        <i class="fas fa-star star cursor-pointer" data-value="{{ $i }}" data-index="{{ $i }}"></i>
                                     </label>
                                 @endfor
                             </div>
@@ -312,6 +326,53 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script>
-    </script>
+    // Get all the stars
+    const stars = document.querySelectorAll('.star');
+    
+    // Handle hover effect (on mouse over)
+    stars.forEach(star => {
+        star.addEventListener('mouseover', function() {
+            const currentRating = this.getAttribute('data-index');
+            // Set class for the hovered stars
+            stars.forEach(s => {
+                s.classList.remove('star-yellow');
+                if (s.getAttribute('data-index') <= currentRating) {
+                    s.classList.add('star-yellow');
+                }
+            });
+        });
+
+        // Handle mouse leave (to reset the hover effect)
+        star.addEventListener('mouseleave', function() {
+            stars.forEach(s => s.classList.remove('star-yellow'));
+            // Add the checked color back if the user has selected a rating
+            const selectedRating = document.querySelector('input[name="rating"]:checked');
+            if (selectedRating) {
+                stars.forEach(s => {
+                    if (s.getAttribute('data-index') <= selectedRating.value) {
+                        s.classList.add('star-yellow');
+                    }
+                });
+            }
+        });
+
+        // Handle click event (to save the rating value)
+        star.addEventListener('click', function() {
+            const selectedRating = this.getAttribute('data-index');
+            document.querySelector('input[name="rating"][value="' + selectedRating + '"]').checked = true;
+        });
+    });
+</script>
+
+<style>
+    .star {
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #d1d5db; /* Gray color for unselected stars */
+    }
+    .star-yellow {
+        color: #fbbf24; /* Yellow color for selected stars */
+    }
+</style>
 </body>
 </html>
