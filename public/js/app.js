@@ -19489,8 +19489,16 @@ window.Pusher = (pusher_js__WEBPACK_IMPORTED_MODULE_2___default());
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
   broadcaster: 'pusher',
   key: "d1d58d0a712e316c94d3",
+  // Correct usage of environment variables
   cluster: "ap2",
-  forceTLS: true
+  // Correct usage of environment variables
+  forceTLS: true,
+  auth: {
+    headers: {
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    }
+  },
+  enabledTransports: ['ws', 'wss'] // Enable WebSocket transports
 });
 
 /***/ })

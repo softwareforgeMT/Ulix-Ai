@@ -31,7 +31,10 @@ class User extends Authenticatable
         'remember_token',
         'gender',
         'affiliate_balance',
-        'pending_affiliate_balance'
+        'pending_affiliate_balance',
+        'dob', 
+        'address',
+        'phone_number'
     ];
 
     protected $hidden = [

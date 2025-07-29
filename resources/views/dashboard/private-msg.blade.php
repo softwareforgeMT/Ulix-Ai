@@ -7,531 +7,644 @@
     $activeTab = request('tab') === 'jobs' ? 'jobs' : 'services';
 @endphp
 
-   <style>
-        .chat-message {
-            max-width: 80%;
-        }
-        .sent {
-            margin-left: auto;
-            background-color: #3b82f6;
-            color: white;
-        }
-        .received {
-            margin-right: auto;
-            background-color: #f3f4f6;
-            color: #374151;
-        }
-        .file-preview {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 8px;
-        }
-        .pdf-preview {
-            width: 200px;
-            height: 250px;
-            border: 2px dashed #d1d5db;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            background-color: #f9fafb;
-        }
-        .attachment-preview {
-            display: none;
-            padding: 8px;
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
-        .file-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 4px;
-            background-color: white;
-            border-radius: 6px;
-            border: 1px solid #e5e7eb;
-        }
-    </style>
+<style>
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .message-animation {
+        animation: slideIn 0.3s ease-out;
+    }
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .mission-card {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    .mission-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .mission-card.active {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+    .online-status {
+        animation: pulse 2s infinite;
+    }
+    .file-preview {
+        max-width: 80px;
+        max-height: 80px;
+        object-fit: cover;
+    }
+    .tab-btn {
+        background:  #3b82f6;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .tab-btn:not(.active) {
+        background: #f8fafc;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+    }
+    .tab-btn:not(.active):hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+</style>
 
-<div class="flex flex-col lg:flex-row min-h-screen">
-    <div class="flex-1 p-4 sm:p-6 lg:pl-10 space-y-6">
-      <!-- Tab Buttons -->
-      <div class="flex flex-wrap justify-center gap-4">
-        <a id="tabServiceRequest" href="?tab=services"
-           class="{{ $activeTab === 'services' 
-                    ? 'bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-medium shadow hover:bg-blue-700 transition' 
-                    : 'border-2 border-blue-600 text-blue-600 px-6 py-2 rounded-full text-sm font-medium hover:bg-blue-50 transition' }}">
-          Messaging my service request
-        </a>
-        <a id="tabJobList" href="?tab=jobs"
-           class="{{ $activeTab === 'jobs' 
-                    ? 'bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-medium shadow hover:bg-blue-700 transition' 
-                    : 'border-2 border-blue-600 text-blue-600 px-6 py-2 rounded-full text-sm font-medium hover:bg-blue-50 transition' }}">
-          Messaging my job list
-        </a>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Missions List (Dynamic) -->
-        <div id="mission-list" class="space-y-4">
-          @foreach($missions as $mission)
-            @php
-                $conv = $conversations->firstWhere('mission_id', $mission->id);
-                $otherParty = null;
-                if ($user->user_role === 'service_requester') {
-                    $otherParty = $mission->selected_provider ?? null;
-                } else {
-                    $otherParty = $mission->requester ?? null;
-                }
-            @endphp
-            <div class="mission-card border rounded-xl p-4 bg-white flex items-center gap-4 cursor-pointer hover:shadow-lg transition"
-                 data-mission-id="{{ $mission->id }}"
-                 data-conversation-id="{{ $conv ? $conv->id : '' }}"
-                 data-other-name="{{ $otherParty ? ($otherParty->name ?? ($otherParty->first_name . ' ' . $otherParty->last_name)) : '' }}"
-                 data-other-phone="{{ $otherParty->phone_number ?? '' }}">
-              <div class="flex-1 space-y-1">
-                <h3 class="text-blue-900 font-bold text-sm">{{ $mission->title }}</h3>
-                <p class="text-gray-700 text-sm">Duration: {{ $mission->service_durition ?? '-' }}</p>
-                <p class="text-gray-700 text-sm">{{ $mission->location_country ?? '-' }}</p>
-                <p class="text-gray-700 text-sm">{{ $mission->location_city ?? '-' }}</p>
-                <p class="text-gray-700 text-sm">{{ $mission->language ?? '-' }}</p>
-                <p class="text-gray-700 text-sm">Status: {{ 
-                  ucfirst(
-                    $mission->status === 'in_progress' ? 'In Progress' : 
-                    ($mission->status === 'completed' ? 'Completed' : 
-                    ($mission->status === 'disputed' ? 'Disputed' : 
-                    ($mission->status === 'waiting_to_start' ? 'Waiting for provider to Start' : 'N/A' )))
-                  )
-                }}
-              </p>
-                <a href="{{ route('qoute-offer', ['id' => $mission->id])}}" class="inline-block bg-blue-600 text-white text-xs font-semibold rounded-full px-4 py-2 mt-2 hover:bg-blue-700 transition">
-                  See My Job
+<div class="min-h-screen p-4">
+    <div class="mx-auto">
+        <!-- Header Section -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6 border border-white/20">
+            <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
+                Private Messaging
+            </h1>
+            
+            <!-- Tab Navigation -->
+            <div class="flex gap-4">
+                <a href="?tab=services" 
+                   class="tab-btn {{ $activeTab === 'services' ? 'active' : '' }} px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg">
+                    <i class="fas fa-tools"></i>
+                    <span>Service Requests</span>
                 </a>
-              </div>
-              <div class="flex-shrink-0">
-                <div class="w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center">
-                  <i class="fa fa-comments text-white"></i>
-                </div>
-              </div>
+                <a href="?tab=jobs" 
+                   class="tab-btn {{ $activeTab === 'jobs' ? 'active' : '' }} px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Job Listings</span>
+                </a>
             </div>
-          @endforeach
         </div>
-  <!-- Chat Box -->
-            <div id="chatBox" class="lg:col-span-2 bg-white rounded-xl border border-blue-200 p-4 flex flex-col justify-between min-h-[500px] w-full">
-                <div class="border-b pb-2 mb-4 text-sm">
-                    <div class="flex justify-between items-center">
-                        <p id="chatUserName" class="font-semibold text-gray-800">Select a conversation</p>
-                        <div class="flex items-center gap-2">
-                            <span id="chatPhone" class="text-xs text-gray-500"></span>
-                            <button id="closeChatBtn" class="text-gray-400 hover:text-gray-600 ml-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-200px)]">
+            <!-- Mission List Sidebar -->
+            <div class="lg:col-span-1 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-4 flex flex-col">
+                <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+                    <h2 class="text-lg font-bold text-gray-800">Conversations</h2>
+                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                        {{ count($missions) }}
+                    </span>
+                </div>
+                
+                <div class="flex-1 space-y-3 overflow-y-auto scrollbar-hide">
+                    @foreach($missions as $mission)
+                        @php
+                            $conv = $conversations->firstWhere('mission_id', $mission->id);
+                            $otherParty = null;
+                            if ($user->user_role === 'service_requester') {
+                                $otherParty = $mission->selected_provider ?? null;
+                            } else {
+                                $otherParty = $mission->requester ?? null;
+                            }
+                        @endphp
+                        <div class="mission-card bg-white rounded-xl p-4 cursor-pointer group"
+                             data-mission-id="{{ $mission->id }}"
+                             data-conversation-id="{{ $conv ? $conv->id : '' }}"
+                             data-other-name="{{ $otherParty ? ($otherParty->name ?? ($otherParty->first_name . ' ' . $otherParty->last_name)) : 'Unknown' }}"
+                             data-other-phone="{{ $otherParty->phone_number ?? '' }}">
+                            
+                            <div class="flex items-start gap-3">
+                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-user text-white text-sm"></i>
+                                </div>
+                                
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-semibold text-gray-900 text-sm truncate group-hover:text-blue-600 transition-colors">
+                                        {{ $mission->title }}
+                                    </h3>
+                                    <p class="text-xs text-gray-600 mb-1">
+                                        {{ $otherParty ? ($otherParty->name ?? ($otherParty->first_name . ' ' . $otherParty->last_name)) : 'Unknown' }}
+                                    </p>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+                                            {{ $mission->status === 'in_progress' ? 'bg-green-100 text-green-800' : 
+                                               ($mission->status === 'completed' ? 'bg-blue-100 text-blue-800' : 
+                                               ($mission->status === 'disputed' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800')) }}">
+                                            {{ ucfirst(str_replace('_', ' ', $mission->status)) }}
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-gray-500">{{ $mission->location_city ?? 'Remote' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+
+                    @if(count($missions) === 0)
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-inbox text-3xl mb-3 text-gray-300"></i>
+                            <p class="text-sm">No conversations yet</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="lg:col-span-3 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 flex flex-col">
+                <!-- Chat Header -->
+                <div id="chatHeader" class="p-6 border-b border-gray-200 hidden">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                            <div>
+                                <h3 id="chatUserName" class="font-bold text-gray-900 text-lg"></h3>
+                                <div class="flex items-center gap-2">
+                                    <span id="chatPhone" class="text-sm text-gray-600"></span>
+                                    <!-- <div class="flex items-center gap-1">
+                                        <div id="onlineStatus" class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                                        <span id="statusText" class="text-xs text-gray-500">Offline</span>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                        <button id="closeChatBtn" class="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages Container -->
+                <div class="flex-1 flex flex-col min-h-0">
+                    <!-- Empty State -->
+                    <div id="emptyState" class="flex-1 flex items-center justify-center p-8">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-comments text-3xl text-blue-500"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Select a Conversation</h3>
+                            <p class="text-gray-600">Choose a mission from the sidebar to start messaging</p>
                         </div>
                     </div>
-                    <p id="chatStatus" class="text-gray-400 text-xs"></p>
-                </div>
 
-                <div class="flex-1 space-y-4 overflow-y-auto text-sm max-h-[300px] mb-4">
-                    <div id="chatMessages" class="space-y-4">
-                        <div class="text-center text-gray-500 py-8">
-                            <p>Click on a conversation to start chatting</p>
+                    <!-- Messages Area -->
+                    <div id="messagesContainer" class="flex-1 p-6 overflow-y-auto scrollbar-hide hidden">
+                        <div id="chatMessages" class="space-y-4 max-h-[400px] overflow-y-auto"></div>
+                        <div id="typingIndicator" class="hidden">
+                            <div class="flex items-center gap-2 text-gray-500 text-sm">
+                                <div class="flex gap-1">
+                                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                                </div>
+                                <span>Typing...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- File Preview Area -->
-                <div id="attachmentPreview" class="attachment-preview">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium text-gray-700">Attachments</span>
-                        <button id="clearAttachments" class="text-gray-400 hover:text-gray-600">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
+                <div id="attachmentPreview" class="px-6 py-3 border-t border-gray-100 hidden">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                            <i class="fas fa-paperclip text-blue-500"></i>
+                            Attachments
+                        </span>
+                        <button id="clearAttachments" class="text-gray-400 hover:text-red-500 transition-colors">
+                            <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <div id="previewContainer" class="flex flex-wrap gap-2"></div>
+                    <div id="previewContainer" class="flex gap-3 overflow-x-auto scrollbar-hide pb-2"></div>
                 </div>
 
-                <!-- Chat Form -->
-             <form id="chatForm" class="relative" autocomplete="off">
-  <input type="hidden" id="conversationId" name="conversation_id" value=""> <!-- Required -->
+                <!-- Message Input -->
+                <div id="messageInputArea" class="p-6 border-t border-gray-200 hidden">
+                    <form id="chatForm" class="flex items-end gap-3">
+                        <input type="hidden" id="conversationId">
+                        
+                        <!-- File Upload Button -->
+                        <div class="flex flex-col gap-2">
+                            <input type="file" id="fileInput" multiple accept="image/*,.pdf,.doc,.docx" class="hidden">
+                            <button type="button" id="attachBtn" class="p-3 bg-gray-100 hover:bg-blue-100 rounded-xl transition-colors group">
+                                <i class="fas fa-paperclip text-gray-600 group-hover:text-blue-600"></i>
+                            </button>
+                        </div>
 
-  <div class="flex items-end gap-2">
-    <!-- File Upload Button -->
-    <div class="relative">
-      <input type="file" id="fileInput" name="file" accept="image/*,.pdf" class="hidden">
-      <button type="button" id="attachBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full w-10 h-10 flex items-center justify-center transition">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Message Input -->
-    <div class="flex-1 relative">
-      <input type="text" id="chatInput" placeholder="Send a message here"
-        class="w-full px-4 py-3 border border-blue-300 rounded-full focus:outline-none focus:border-blue-500 pr-14"
-        autocomplete="off" />
-      <button type="submit" id="sendMessageBtn"
-        class="absolute right-3 top-1/2 -translate-y-1/2 bg-blue-500 hover:bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
-      </button>
-    </div>
-  </div>
-</form>
+                        <!-- Message Input Field -->
+                        <div class="flex-1 relative">
+                            <input type="text" id="chatInput" placeholder="Type your message..." 
+                                   class="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                            <button type="submit" id="sendBtn" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg transition-all transform hover:scale-105">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+</div>
+<script>
+    // Application State
+    let currentConversationId = null;
+    let selectedFiles = [];
+    let userId = {{ $user->id }};
+    let conversationChannel = null; // Store the current channel subscription
+    let lastMessageTimestamp = null;
 
- <script>
-        let selectedFiles = [];
-        let currentConversation = null;
+    // DOM Elements
+    const elements = {
+        chatHeader: document.getElementById('chatHeader'),
+        chatUserName: document.getElementById('chatUserName'),
+        chatPhone: document.getElementById('chatPhone'),
+        onlineStatus: document.getElementById('onlineStatus'),
+        statusText: document.getElementById('statusText'),
+        emptyState: document.getElementById('emptyState'),
+        messagesContainer: document.getElementById('messagesContainer'),
+        chatMessages: document.getElementById('chatMessages'),
+        messageInputArea: document.getElementById('messageInputArea'),
+        chatForm: document.getElementById('chatForm'),
+        chatInput: document.getElementById('chatInput'),
+        fileInput: document.getElementById('fileInput'),
+        attachBtn: document.getElementById('attachBtn'),
+        attachmentPreview: document.getElementById('attachmentPreview'),
+        previewContainer: document.getElementById('previewContainer'),
+        clearAttachments: document.getElementById('clearAttachments'),
+        closeChatBtn: document.getElementById('closeChatBtn'),
+        conversationId: document.getElementById('conversationId')
+    };
 
-        // DOM Elements
-        const conversationItems = document.querySelectorAll('.conversation-item');
-        const chatBox = document.getElementById('chatBox');
-        const chatUserName = document.getElementById('chatUserName');
-        const chatPhone = document.getElementById('chatPhone');
-        const chatStatus = document.getElementById('chatStatus');
-        const chatMessages = document.getElementById('chatMessages');
-        const chatForm = document.getElementById('chatForm');
-        const chatInput = document.getElementById('chatInput');
-        const fileInput = document.getElementById('fileInput');
-        const attachBtn = document.getElementById('attachBtn');
-        const attachmentPreview = document.getElementById('attachmentPreview');
-        const previewContainer = document.getElementById('previewContainer');
-        const clearAttachments = document.getElementById('clearAttachments');
-        const closeChatBtn = document.getElementById('closeChatBtn');
+    // Utility Functions
+    const utils = {
+        formatTime(timestamp) {
+            return new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        },
 
-        // Conversation selection
-        conversationItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const name = item.dataset.name;
-                const phone = item.dataset.phone;
-                const status = item.dataset.status;
+        scrollToBottom() {
+            elements.messagesContainer.scrollTop = elements.messagesContainer.scrollHeight;
+        },
+
+        showNotification(message, type = 'info') {
+            // Simple notification - you can enhance this
+            console.log(`${type.toUpperCase()}: ${message}`);
+        }
+    };
+
+    // Message Management
+    const messageManager = {
+        renderMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message-animation ${message.sender_id === userId ? 'flex justify-end' : 'flex justify-start'}`;
+            messageDiv.setAttribute('data-message-id', message.id);
+            
+            const isOwn = message.sender_id === userId;
+            const bubbleClass = isOwn 
+                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl'
+                : 'bg-gray-100 text-gray-800 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl';
+
+            messageDiv.innerHTML = `
+                <div class="max-w-xs lg:max-md px-4 py-3 ${bubbleClass} shadow-lg">
+                    <p class="text-sm">${this.escapeHtml(message.body || message.message)}</p>
+                    ${message.attachments ? this.renderAttachments(message.attachments) : ''}
+                    <div class="text-xs mt-1 ${isOwn ? 'text-blue-100' : 'text-gray-500'}">
+                        ${utils.formatTime(message.created_at)}
+                    </div>
+                </div>
+            `;
+
+            return messageDiv;
+        },
+
+        renderAttachments(attachments) {
+            if (!attachments || attachments.length === 0) return '';
+            
+            return `
+                <div class="mt-2 space-y-1">
+                    ${attachments.map(att => `
+                        <div class="bg-white/20 rounded p-2 text-xs">
+                            <i class="fas fa-paperclip mr-1"></i>
+                            ${att.filename || 'Attachment'}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        },
+
+        escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        },
+
+        addMessage(message) {
+            // Check if message already exists to prevent duplicates
+            const existingMessage = document.querySelector(`[data-message-id="${message.id}"]`);
+            if (existingMessage) {
+                return; // Message already exists, don't add again
+            }
+
+            const messageElement = this.renderMessage(message);
+            elements.chatMessages.appendChild(messageElement);
+            utils.scrollToBottom();
+            
+            // Update last message timestamp
+            lastMessageTimestamp = message.created_at;
+        },
+
+        loadMessages(messages) {
+            elements.chatMessages.innerHTML = '';
+            lastMessageTimestamp = null;
+            
+            messages.forEach(message => {
+                const messageElement = this.renderMessage(message);
+                elements.chatMessages.appendChild(messageElement);
+            });
+            
+            if (messages.length > 0) {
+                lastMessageTimestamp = messages[messages.length - 1].created_at;
+            }
+            
+            utils.scrollToBottom();
+        },
+
+        // Handle new message from broadcasted channel
+        handleBroadcastMessage(data) {
+            const message = data.message;
+            if (message.conversation_id = currentConversationId) {
+              this.addMessage(message);
+            }
+        }
+    };
+
+    // Broadcasting Management
+    const broadcastManager = {
+        subscribeToConversation(conversationId) {
+            // Unsubscribe from previous channel if exists
+            this.unsubscribeFromConversation();
+            
+            if (!window.Echo) {
+                console.error('Laravel Echo is not initialized');
+                return;
+            }
+            
+            // Subscribe to the conversation channel
+            conversationChannel = window.Echo.channel(`conversation.${conversationId}`)
+                .listen('MessageSent', (data) => {
+                    messageManager.handleBroadcastMessage(data);
+                })
+                .error((error) => {
+                    console.error('Channel subscription error:', error);
+                });
+        },
+        
+        unsubscribeFromConversation() {
+            if (conversationChannel) {
+                window.Echo.leave(`conversation.${currentConversationId}`);
+                conversationChannel = null;
+                console.log('Unsubscribed from conversation channel');
+            }
+        }
+    };
+
+    // Chat Management - Updated to use broadcasting instead of polling
+    const chatManager = {
+        openChat(conversationId, userName, phone, missionId) {
+            currentConversationId = conversationId;
+            
+            // Update UI
+            elements.emptyState.classList.add('hidden');
+            elements.chatHeader.classList.remove('hidden');
+            elements.messagesContainer.classList.remove('hidden');
+            elements.messageInputArea.classList.remove('hidden');
+            
+            elements.chatUserName.textContent = userName;
+            elements.chatPhone.textContent = phone;
+            elements.conversationId.value = conversationId;
+
+            // Update active mission card
+            document.querySelectorAll('.mission-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`[data-conversation-id="${conversationId}"]`)?.classList.add('active');
+
+            // Load initial messages
+            this.loadMessages(conversationId);
+            
+            // Subscribe to conversation broadcasts
+            broadcastManager.subscribeToConversation(conversationId);
+        },
+
+        closeChat() {
+            // Unsubscribe from broadcasts
+            broadcastManager.unsubscribeFromConversation();
+            
+            currentConversationId = null;
+            lastMessageTimestamp = null;
+            
+            elements.chatHeader.classList.add('hidden');
+            elements.messagesContainer.classList.add('hidden');
+            elements.messageInputArea.classList.add('hidden');
+            elements.emptyState.classList.remove('hidden');
+            
+            document.querySelectorAll('.mission-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            fileManager.clearAttachments();
+        },
+
+        async loadMessages(conversationId) {
+            try {
+                const response = await fetch(`/conversations/${conversationId}/messages`);
+                if (!response.ok) throw new Error('Failed to load messages');
                 
-                currentConversation = { name, phone, status };
+                const messages = await response.json();
+                messageManager.loadMessages(messages);
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                utils.showNotification('Failed to load messages', 'error');
+            }
+        },
+
+        async sendMessage() {
+            const messageText = elements.chatInput.value.trim();
+            if (!messageText && selectedFiles.length === 0) return;
+            if (!currentConversationId) return;
+
+            try {
+                const formData = new FormData();
+                formData.append('body', messageText);
+                formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
                 
-                chatUserName.textContent = name;
-                chatPhone.textContent = phone;
-                chatStatus.textContent = status;
+                selectedFiles.forEach((file, index) => {
+                    formData.append(`files[${index}]`, file);
+                });
+
+                const response = await fetch(`/conversations/${currentConversationId}/message`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to send message');
+                }
+
+                // Don't manually add the message here - let the broadcast handle it
+                // This ensures consistency and prevents duplicates
+                elements.chatInput.value = '';
+                fileManager.clearAttachments();
+            } catch (error) {
+                console.error('Error sending message:', error);
+                utils.showNotification('Failed to send message', 'error');
+            }
+        },
+
+        async startConversation(missionId) {
+            try {
+                const response = await fetch('/conversations/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        mission_id: missionId
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to start conversation');
                 
-                // Load sample messages
-                loadSampleMessages();
+                const conversation = await response.json();
+                return conversation.id;
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                utils.showNotification('Failed to start conversation', 'error');
+                return null;
+            }
+        }
+    };
+
+    // File Manager (assuming this exists - add if missing)
+    const fileManager = {
+        handleFileSelect(files) {
+            selectedFiles = Array.from(files);
+            this.updatePreview();
+        },
+
+        updatePreview() {
+            if (selectedFiles.length === 0) {
+                elements.attachmentPreview.classList.add('hidden');
+                return;
+            }
+
+            elements.attachmentPreview.classList.remove('hidden');
+            elements.previewContainer.innerHTML = selectedFiles.map((file, index) => `
+                <div class="flex items-center justify-between bg-gray-100 p-2 rounded">
+                    <span class="text-sm truncate">${file.name}</span>
+                    <button type="button" onclick="removeFile(${index})" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        },
+
+        clearAttachments() {
+            selectedFiles = [];
+            elements.fileInput.value = '';
+            elements.attachmentPreview.classList.add('hidden');
+        }
+    };
+
+    // Event Listeners
+    function initializeEventListeners() {
+        // Mission card clicks
+        document.querySelectorAll('.mission-card').forEach(card => {
+            card.addEventListener('click', async function() {
+                let conversationId = this.dataset.conversationId;
+                const missionId = this.dataset.missionId;
+                const userName = this.dataset.otherName;
+                const phone = this.dataset.otherPhone;
                 
-                // Show chat box
-                chatBox.classList.remove('hidden');
+                if (!conversationId) {
+                    conversationId = await chatManager.startConversation(missionId);
+                    if (conversationId) {
+                        this.dataset.conversationId = conversationId;
+                    } else {
+                        return;
+                    }
+                }
+                
+                chatManager.openChat(conversationId, userName, phone, missionId);
             });
         });
 
         // Close chat
-        closeChatBtn.addEventListener('click', () => {
-            chatBox.classList.add('hidden');
-            currentConversation = null;
-            clearAttachments.click();
+        elements.closeChatBtn.addEventListener('click', () => {
+            chatManager.closeChat();
         });
 
-        // File upload handling
-        attachBtn.addEventListener('click', () => {
-            fileInput.click();
+        // File upload
+        elements.attachBtn.addEventListener('click', () => {
+            elements.fileInput.click();
         });
 
-        fileInput.addEventListener('change', (e) => {
-            const files = Array.from(e.target.files);
-            files.forEach(file => {
-                if (!selectedFiles.find(f => f.name === file.name && f.size === file.size)) {
-                    selectedFiles.push(file);
-                }
-            });
-            updatePreview();
+        elements.fileInput.addEventListener('change', (e) => {
+            fileManager.handleFileSelect(e.target.files);
         });
 
         // Clear attachments
-        clearAttachments.addEventListener('click', () => {
-            selectedFiles = [];
-            fileInput.value = '';
-            updatePreview();
+        elements.clearAttachments.addEventListener('click', () => {
+            fileManager.clearAttachments();
         });
-
-        // Update preview
-        function updatePreview() {
-            if (selectedFiles.length === 0) {
-                attachmentPreview.style.display = 'none';
-                return;
-            }
-
-            attachmentPreview.style.display = 'block';
-            previewContainer.innerHTML = '';
-
-            selectedFiles.forEach((file, index) => {
-                const fileDiv = document.createElement('div');
-                fileDiv.className = 'file-item relative';
-
-                if (file.type.startsWith('image/')) {
-                    const img = document.createElement('img');
-                    img.src = URL.createObjectURL(file);
-                    img.className = 'file-preview object-cover';
-                    img.onload = () => URL.revokeObjectURL(img.src);
-                    
-                    fileDiv.innerHTML = `
-                        <div class="relative">
-                            <img src="${img.src}" class="file-preview object-cover" />
-                            <button onclick="removeFile(${index})" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">×</button>
-                        </div>
-                        <span class="text-xs text-gray-600 truncate max-w-[120px]">${file.name}</span>
-                    `;
-                } else if (file.type === 'application/pdf') {
-                    fileDiv.innerHTML = `
-                        <div class="pdf-preview relative">
-                            <svg class="w-12 h-12 text-red-500 mb-2" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                            </svg>
-                            <span class="text-xs text-gray-600 text-center">PDF</span>
-                            <button onclick="removeFile(${index})" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">×</button>
-                        </div>
-                        <span class="text-xs text-gray-600 truncate max-w-[120px]">${file.name}</span>
-                    `;
-                }
-
-                previewContainer.appendChild(fileDiv);
-            });
-        }
-
-        // Remove file
-        window.removeFile = function(index) {
-            selectedFiles.splice(index, 1);
-            updatePreview();
-        };
 
         // Send message
-        chatForm.addEventListener('submit', (e) => {
+        elements.chatForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
-            if (!currentConversation) return;
-            
-            const message = chatInput.value.trim();
-            if (!message && selectedFiles.length === 0) return;
-
-            // Create message element
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'chat-message sent p-3 rounded-lg';
-            
-            let messageContent = '';
-            if (message) {
-                messageContent += `<p class="mb-2">${message}</p>`;
-            }
-            
-            if (selectedFiles.length > 0) {
-                messageContent += '<div class="flex flex-wrap gap-2">';
-                selectedFiles.forEach(file => {
-                    if (file.type.startsWith('image/')) {
-                        const imgUrl = URL.createObjectURL(file);
-                        messageContent += `<img src="${imgUrl}" class="file-preview object-cover" />`;
-                    } else if (file.type === 'application/pdf') {
-                        messageContent += `
-                            <div class="pdf-preview bg-white/20">
-                                <svg class="w-8 h-8 text-white mb-1" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                                </svg>
-                                <span class="text-xs">PDF</span>
-                            </div>
-                        `;
-                    }
-                });
-                messageContent += '</div>';
-            }
-            
-            messageDiv.innerHTML = messageContent;
-
-            // Add to chat
-            if (chatMessages.children[0]?.textContent?.includes('Click on a conversation')) {
-                chatMessages.innerHTML = '';
-            }
-            chatMessages.appendChild(messageDiv);
-
-            // Scroll to bottom
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            // Clear form
-            chatInput.value = '';
-            selectedFiles = [];
-            updatePreview();
-
-            // Simulate response after 1 second
-            setTimeout(() => {
-                const responseDiv = document.createElement('div');
-                responseDiv.className = 'chat-message received p-3 rounded-lg';
-                responseDiv.innerHTML = '<p>Thanks for your message!</p>';
-                chatMessages.appendChild(responseDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 1000);
+            chatManager.sendMessage();
         });
 
-        // Load sample messages
-        function loadSampleMessages() {
-            chatMessages.innerHTML = `
-                <div class="chat-message received p-3 rounded-lg">
-                    <p>Hello! How can I help you today?</p>
-                </div>
-                <div class="chat-message sent p-3 rounded-lg">
-                    <p>Hi there! I need some assistance.</p>
-                </div>
-            `;
-        }
-    </script>
-<style>
-@media (max-width: 1024px) {
-  #chatBox {
-    padding-bottom: 4.5rem !important;
-  }
-}
-</style>
-
-@endsection
-
-<script type="module">
-  let currentConversationId = null;
-  let userId = {{ $user->id }};
-  let chatEcho = null;
-
-  // Use the already configured Echo instance from bootstrap.js
-  // No need to create a new one!
-
-  function renderMessages(messages) {
-    const chatMessages = document.getElementById('chatMessages');
-    chatMessages.innerHTML = '';
-    messages.forEach(msg => {
-      const div = document.createElement('div');
-      div.className = msg.sender_id === userId ? 'text-right' : 'text-left';
-      div.innerHTML = `<div class="inline-block bg-${msg.sender_id === userId ? 'blue-600' : 'gray-100'} text-${msg.sender_id === userId ? 'white' : 'gray-800'} px-4 py-2 rounded-xl text-sm max-w-xs">${msg.body}</div>`;
-      chatMessages.appendChild(div);
-    });
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-
-  function appendMessage(msg) {
-    const chatMessages = document.getElementById('chatMessages');
-    const div = document.createElement('div');
-    div.className = msg.sender_id === userId ? 'text-right' : 'text-left';
-    div.innerHTML = `<div class="inline-block bg-${msg.sender_id === userId ? 'blue-600' : 'gray-100'} text-${msg.sender_id === userId ? 'white' : 'gray-800'} px-4 py-2 rounded-xl text-sm max-w-xs">${msg.body}</div>`;
-    chatMessages.appendChild(div);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-
-  function openChat(conversationId, userName, phone, status, missionId) {
-    currentConversationId = conversationId;
-    document.getElementById('chatBox').classList.remove('hidden');
-    document.getElementById('chatUserName').textContent = userName;
-    document.getElementById('chatPhone').textContent = phone;
-    document.getElementById('chatStatus').textContent = status ? `${userName} / ${status}` : '';
-
-    // Fetch messages
-    fetch(`/conversations/${conversationId}/messages`)
-      .then(res => res.json())
-      .then(renderMessages);
-
-    // Online status
-    fetch(`/conversations/${conversationId}/status`)
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('chatStatus').textContent = data.online ? 'Online' : 'Offline';
-      });
-
-    // Unsubscribe from previous channel if exists
-    if (chatEcho) {
-      chatEcho.leave();
-      chatEcho = null;
-    }
-    
-    // Subscribe to private channel using the global Echo instance
-    chatEcho = Echo.channel('conversation.' + conversationId)
-      .listen('MessageSent', (e) => {
-        console.log('Message received:', e);
-        if (e.message && e.message.conversation_id == currentConversationId) {
-          appendMessage(e.message);
-        }
-      });
-
-      
-  }
-
-  document.querySelectorAll('.mission-card').forEach(card => {
-    card.addEventListener('click', function() {
-      let conversationId = this.dataset.conversationId;
-      let missionId = this.dataset.missionId;
-      let userName = this.dataset.otherName;
-      let phone = this.dataset.otherPhone;
-      
-      // If conversation doesn't exist, start it
-      if (!conversationId) {
-        fetch('/conversations/start', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-          },
-          body: JSON.stringify({
-            mission_id: missionId,
-            provider_id: null
-          })
-        })
-        .then(res => res.json())
-        .then(conv => {
-          conversationId = conv.id;
-          this.dataset.conversationId = conversationId;
-          openChat(conversationId, userName, phone, '', missionId);
+        // Enter key to send
+        elements.chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatManager.sendMessage();
+            }
         });
-      } else {
-        openChat(conversationId, userName, phone, '', missionId);
-      }
-    });
-  });
-
-  document.getElementById('closeChatBtn').addEventListener('click', function() {
-    document.getElementById('chatBox').classList.add('hidden');
-    if (chatEcho) {
-      chatEcho.leave();
-      chatEcho = null;
     }
-    currentConversationId = null;
-  });
 
-  document.getElementById('chatForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const input = document.getElementById('chatInput');
-    const body = input.value.trim();
-    if (!body || !currentConversationId) return;
-    
-    fetch(`/conversations/${currentConversationId}/message`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      },
-      body: JSON.stringify({ body })
-    })
-    .then(res => res.json())
-    .then(msg => {
-      input.value = '';
-      appendMessage(msg);
-    })
-    .catch(error => {
-      console.error('Error sending message:', error);
+    // Global function for removing files (called from HTML)
+    window.removeFile = function(index) {
+        selectedFiles.splice(index, 1);
+        fileManager.updatePreview();
+    };
+
+    // Initialize Echo connection status monitoring
+    function initializeEchoMonitoring() {
+        if (window.Echo) {
+            window.Echo.connector.pusher.connection.bind('connected', () => {
+                console.log('WebSocket connected');
+                utils.showNotification('Connected to real-time messaging', 'success');
+            });
+
+            window.Echo.connector.pusher.connection.bind('disconnected', () => {
+                console.log('WebSocket disconnected');
+                utils.showNotification('Disconnected from real-time messaging', 'warning');
+            });
+
+            window.Echo.connector.pusher.connection.bind('error', (error) => {
+                console.error('WebSocket error:', error);
+                utils.showNotification('Real-time messaging error', 'error');
+            });
+        }
+    }
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeEventListeners();
+        initializeEchoMonitoring();
     });
-  });
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+        broadcastManager.unsubscribeFromConversation();
+    });
 </script>
 
-
-
-
-
-
-
+@endsection

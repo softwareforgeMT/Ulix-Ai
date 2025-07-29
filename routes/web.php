@@ -140,7 +140,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/user/funds', [EarningsController::class, 'manageUserFunds'])->name('affiliate.withdraw');
 
+    //Personal Inforation
 
+    Route::prefix('account')->group(function () {
+        Route::get('/profile', [AccountController::class, 'getProfile']);
+        Route::post('/update-personal-info', [AccountController::class, 'updatePersonalInfo']);
+        Route::post('/update-field', [AccountController::class, 'updateField']);
+        Route::post('/update-password', [AccountController::class, 'updatePassword']);
+    });
 });
 
 

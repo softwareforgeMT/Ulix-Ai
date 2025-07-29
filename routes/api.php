@@ -7,6 +7,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\JobListController;
 use App\Http\Controllers\Admin\TransactionController;
+use App\Http\Controllers\AccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+    
+// Account information routes
 
 //Cancel Mission
 Route::post('/mission/cancel', [ServiceRequestController::class, 'cancelMissionRequest']);
