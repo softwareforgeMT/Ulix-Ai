@@ -105,6 +105,7 @@
             <div class="text-sm text-gray-700 mb-2">
               Deadline : <span class="font-semibold">{{ $offer->mission->service_durition ?? '-' }}</span>
             </div>
+            
             <a href="{{ route('qoute-offer', ['id' => $offer->mission->id])}}" class="bg-blue-600 text-white text-sm px-5 py-2 rounded-full font-semibold shadow hover:bg-blue-700 transition inline-block">See the job</a>
           </div>
           <div class="flex flex-col items-center min-w-[64px]">
