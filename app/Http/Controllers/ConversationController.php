@@ -80,23 +80,43 @@ class ConversationController extends Controller
     }
 
     public function sendMessage(Request $request, Conversation $conversation)
-    {
-        $request->validate(['body' => 'required|string']);
-        $user = Auth::user();
+{
+    // Validate incoming data, including file
+    $request->validate([
+        'body' => 'required|string',
+        'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:20480', // Optional file (images or PDFs)
+    ]);
 
-        $message = $conversation->messages()->create([
-            'sender_id' => $user->id,
-            'body' => $request->body,
-            'is_read' => false,
-        ]);
+    $user = Auth::user();
 
-        $conversation->last_message_at = now();
-        $conversation->save();
+    // Prepare message data
+    $messageData = [
+        'sender_id' => $user->id,
+        'body' => $request->body,
+        'is_read' => false,
+    ];
 
-        // Broadcast event (for real-time)
-        broadcast(new \App\Events\MessageSent($message))->toOthers();
-        return response()->json($message->load('sender'));
+    // Handle file upload if present
+    if ($request->hasFile('file')) {
+        // Store the file and retrieve the path
+        $path = $request->file('file')->store('chat_attachments', 'public');
+        $messageData['attachment_path'] = $path;
     }
+
+    // Save the message
+    $message = $conversation->messages()->create($messageData);
+
+    // Update the last message timestamp for the conversation
+    $conversation->last_message_at = now();
+    $conversation->save();
+
+    // Broadcast the message for real-time updates (using Laravel Echo or Pusher)
+    broadcast(new \App\Events\MessageSent($message))->toOthers();
+
+    // Return the saved message with sender details
+    return response()->json($message->load('sender'));
+}
+
 
     public function start(Request $request)
     {
