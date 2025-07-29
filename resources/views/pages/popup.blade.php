@@ -1,5 +1,6 @@
  <!-- Main Search Popup -->
-<div id="searchPopup" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4 overflow-hidden">
+<div id="searchPopup" class="hidden fixed inset-0 z-[60] bg-black bg-opacity-50 flex justify-center items-center p-4 overflow-hidden">
+
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
 
     <!-- Header -->
