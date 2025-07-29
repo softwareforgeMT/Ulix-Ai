@@ -331,7 +331,7 @@ class ServiceRequestController extends Controller
             $offer = MissionOffer::where('provider_id', $mission->selected_provider_id)->where('mission_id', $mission->id)->first()?->delete();
             // Update mission status
             $mission->status = 'published';
-            $mission->payment_status = 'refunded';
+            $mission->payment_status = 'unpaid';
             $mission->selected_provider_id = null;
             $mission->cancelled_by = $request->cancelled_by;
             $mission->cancelled_on = Carbon::parse($request->cancelled_on);

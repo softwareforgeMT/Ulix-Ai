@@ -56,4 +56,9 @@ class ServiceProvider extends Model
     {
         return $this->hasMany(ProviderReview::class, 'provider_id');
     }
+
+    public function missions() : HasMany 
+    {
+        return $this->hasMany(Mission::class, 'selected_provider_id');
+    }
 }

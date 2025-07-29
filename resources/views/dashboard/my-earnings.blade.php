@@ -2,83 +2,86 @@
 @section('title', 'My Earnings')
 
 @section('content')
-    
-    <!-- Main Content -->
-    <div class="flex-1 px-4 sm:px-6 lg:pl-10 lg:pr-8 py-6 space-y-10">
+@php
+    if ($user->user_role === 'service_provider') {
+        $missionsEarnings = \App\Models\Mission::with('transactions')
+            ->where('selected_provider_id', $user->serviceprovider->id)
+            ->where('status', 'completed')
+            ->where('payment_status', 'released')
+            ->get();
 
-      <!-- Wallet Summary -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        
-      </div>
+        $totalEarnings = $missionsEarnings->flatMap->transactions->sum('amount_paid');
+        $providerEarnings = round($totalEarnings * 0.80, 2); // deduct 20%
+    }
 
-      <!-- Total Balance -->
-      <div class="w-full flex justify-center">
-        <div class="w-full max-w-xs mx-auto border-2 border-blue-400 rounded-2xl p-4 bg-white text-center">
-          <h2 class="text-base font-medium text-blue-500 mb-1">My total balance</h2>
-          <div class="text-3xl font-bold text-blue-600 mb-1">292,00 €</div>
-        </div>
+    $canWithdraw = ($user->pending_affiliate_balance >= 50) || ($balance['available'] ?? 0) > 50;
+@endphp
 
-        <div class="mt-6 flex flex-col sm:flex-row gap-3">
-          <!-- <button class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-blue-700 transition">
-            Withdraw Funds
-          </button>
-          <button class="flex-1 bg-white text-gray-700 py-3 px-4 rounded-xl font-medium border border-gray-200 hover:bg-gray-50 transition">
-            View History
-          </button> -->
-        </div>
-      </div>
+<div class="flex-1 px-4 sm:px-6 lg:px-8 py-8 space-y-10">
 
-      <!-- Matching 3 Cards -->
-      <div class="flex flex-col items-center mt-10">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
-          <!-- Affiliate Commissions -->
-          <div class="flex flex-col items-center">
-            <div class="w-full max-w-xs mx-auto border-2 border-blue-400 rounded-2xl p-4 bg-white text-center">
-              <h3 class="text-base font-medium text-blue-500 mb-1">Affiliate commissions</h3>
-              <p class="text-3xl font-bold text-blue-600 mb-1">150,00 €</p>
-            </div>
-            <div class="flex gap-3 mt-4 w-full max-w-xs mx-auto">
-              <button class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-blue-700 transition">
-                Withdraw Funds
-              </button>
-            </div>
-          </div>
-
-          <!-- Missions Carried Out -->
-          <div class="flex flex-col items-center">
-            <div class="w-full max-w-xs mx-auto border-2 border-blue-400 rounded-2xl p-4 bg-white text-center">
-              <h3 class="text-base font-medium text-blue-500 mb-1">Missions carried out</h3>
-              <p class="text-3xl font-bold text-blue-600 mb-1">60,00 €</p>
-            </div>
-            <div class="flex gap-3 mt-4 w-full max-w-xs mx-auto">
-              <button class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-blue-700 transition">
-                Withdraw Funds
-              </button>
-            </div>
-          </div>
-
-          <!-- Refund -->
-          <div class="flex flex-col items-center">
-            <div class="w-full max-w-xs mx-auto border-2 border-blue-400 rounded-2xl p-4 bg-white text-center">
-              <h3 class="text-base font-medium text-blue-500 mb-1">Refund</h3>
-              <p class="text-3xl font-bold text-blue-600 mb-1">92,00 €</p>
-              <p class="text-xs text-blue-400 mt-2">Your refund will be deducted<br>from your next service request</p>
-            </div>
-            <div class="flex gap-3 mt-4 w-full max-w-xs mx-auto">
-              <!-- <button class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-blue-700 transition">
-                Withdraw Funds
-              </button> -->
-        
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- Page Header -->
+    <div class="text-center">
+        <h1 class="text-3xl font-bold text-gray-900">My Earnings</h1>
     </div>
 
-    <style>
-    .blue-card {
-      @apply rounded-2xl p-8 text-white shadow-xl text-center;
-      background: linear-gradient(to bottom right, #2563eb, #1d4ed8); /* same as total balance */
-    }
-  </style>
+    <!-- Wallet Summary -->
+    <div class="flex justify-center">
+        <div class="w-full max-w-xs bg-white border-2 border-blue-400 rounded-2xl p-6 text-center shadow-sm">
+            <h2 class="text-base font-medium text-blue-500 mb-1">My Total Available Balance</h2>
+            <div class="text-4xl font-extrabold text-blue-700">
+                {{ number_format(
+                    $user->user_role === 'service_provider'
+                        ? ($balance['available'] ?? 0.00)
+                        : ($user->pending_affiliate_balance ?? 0.00),
+                    2
+                ) }} €
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-center items-start max-w-6xl mx-auto">
+
+        <!-- Affiliate Commission Card -->
+        <div class="bg-white border-2 border-blue-400 rounded-2xl p-6 text-center shadow-sm">
+            @if($user->user_role === 'service_provider')
+             
+                <h3 class="text-base font-medium text-blue-500 mb-2">Total Affiliate Commission Earned</h3>
+                <p class="text-3xl font-bold text-blue-700 mb-4">
+                    {{ number_format($user->pending_affiliate_balance, 2) }} €
+                </p>
+            @else
+                <h3 class="text-base font-medium text-blue-500 mb-2">Affiliate Balance</h3>
+                <p class="text-3xl font-bold text-blue-700 mb-4">
+                    {{ number_format($user->pending_affiliate_balance, 2) }} €
+                </p>
+            @endif
+        </div>
+
+        <!-- Missions Earnings Card -->
+        @if($user->user_role === 'service_provider')
+        <div class="bg-white border-2 border-blue-400 rounded-2xl p-6 text-center shadow-sm">
+            <h3 class="text-base font-medium text-blue-500 mb-2">Missions Carried Out</h3>
+            <p class="text-3xl font-bold text-blue-700 mb-4">
+                {{ number_format($providerEarnings ?? 0.00, 2) }} €
+            </p>
+        </div>
+        @endif
+
+    </div>
+
+    <!-- Single Withdraw Button -->
+    @if($canWithdraw)
+        <div class="flex justify-center mt-10">
+            <form method="POST" action="{{ route('affiliate.withdraw') }}" class="w-full max-w-sm">
+                @csrf
+                <input type="hidden" name="withdraw_all_balances" value="true">
+                <button class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-blue-700 transition">
+                    Withdraw My Earnings
+                </button>
+            </form>
+        </div>
+    @endif
+</div>
 @endsection

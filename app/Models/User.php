@@ -29,7 +29,9 @@ class User extends Authenticatable
         'is_fake',
         'last_login_at',
         'remember_token',
-        'gender'
+        'gender',
+        'affiliate_balance',
+        'pending_affiliate_balance'
     ];
 
     protected $hidden = [
@@ -69,6 +71,11 @@ class User extends Authenticatable
     public function referrals(): HasMany
     {
         return $this->hasMany(User::class, 'referred_by');
+    }
+
+    public function commissions(): HasMany
+    {
+        return $this->hasMany(AffiliateCommission::class, 'referrer_id');
     }
 }
 

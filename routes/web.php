@@ -126,8 +126,20 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Ulixai Reviews By Users
-
     Route::post('ulixai/review', [UlixaiReviewController::class, 'userReview'])->name('submit-ulixai-review');
+
+
+    //Stripe 
+    Route::get('/provider/stripe/onboarding-link', [StripePaymentController::class, 'getOnboardingLink'])->name('stripe.kyc.link');
+
+    Route::get('/stripe/refresh', fn() => redirect()->back())->name('stripe.refresh');
+    Route::get('/stripe/return', fn() => redirect('/dashboard'))->name('stripe.return');
+
+
+    // Withdraw Funds
+
+    Route::post('/user/funds', [EarningsController::class, 'manageUserFunds'])->name('affiliate.withdraw');
+
 
 });
 

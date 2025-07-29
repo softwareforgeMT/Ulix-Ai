@@ -94,9 +94,9 @@ class PaymentService
 
     public function providerAccountBalance($provider) {
         try {
-            $balance = Balance::retrieve([], [
-                'stripe_account' => $provider->stripe_account_id,
-            ]);
+            $balance = Balance::retrieve( [
+                'stripe_account' => 'acct_1RpkAV0sGl0HW8NS'
+            ] ,[]);
 
             return [
                 'available' => $balance->available[0]->amount / 100,

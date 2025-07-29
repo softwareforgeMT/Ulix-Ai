@@ -29,6 +29,11 @@
         </div>
       </div>
     </div>
+     <div class="flex flex-col sm:flex-row flex-wrap gap-4 mb-6 items-center justify-center">
+        <button class="bg-blue-400 text-white px-4 py-2 rounded-full text-sm">{{ $user->referrals()->count() }} referrals</button>
+        <button class="bg-blue-400 text-white px-6 py-2 rounded-full text-sm">My earnings thanks to my referrals {{ number_format(auth()->user()->commissions->sum('amount'), 2) }}
+ €</button>
+      </div>
   <!-- You can display missions if needed -->
   {{-- 
   <div class="mt-6">
@@ -46,14 +51,13 @@
 @elseif($user->user_role === 'service_provider')
   @php
     $provider = $provider ?? null;
-    // $jobs is available from controller
   @endphp
   <div class="main-content">
     <div class="p-4 sm:p-6 md:p-8">
       <div class="flex flex-wrap gap-4 items-start justify-start mb-6">
         <div class="w-full max-w-xs border-2 border-blue-400 rounded-2xl p-4 bg-white text-center">
           <h2 class="text-base font-medium text-blue-500 mb-1">My total balance</h2>
-          <div class="text-3xl font-bold text-blue-600 mb-1">292,00 €</div>
+          <div class="text-3xl font-bold text-blue-600 mb-1">{{$balance['available'] ?? 00.0}} €</div>
         </div>
       </div>
       <div class="bg-blue-800 p-6 rounded-2xl text-white mb-6 relative overflow-hidden">
@@ -82,7 +86,8 @@
       <!-- Referrals Section -->
       <div class="flex flex-col sm:flex-row flex-wrap gap-4 mb-6 items-center justify-center">
         <button class="bg-blue-400 text-white px-4 py-2 rounded-full text-sm">{{ $user->referrals()->count() }} referrals</button>
-        <button class="bg-blue-400 text-white px-6 py-2 rounded-full text-sm">My earnings thanks to my referrals 938$</button>
+        <button class="bg-blue-400 text-white px-6 py-2 rounded-full text-sm">My earnings thanks to my referrals {{ number_format(auth()->user()->commissions->sum('amount'), 2) }}
+ €</button>
       </div>
       <!-- Progress Bar (Zelper style) -->
       @php
@@ -251,7 +256,7 @@
         <!-- Earnings Card -->
         <div class="bg-white p-6 rounded-2xl shadow-sm flex flex-col items-center">
           <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Total Earned as a Ulixai provider</h3>
-          <div class="text-4xl font-bold text-blue-600">$911.4</div>
+          <div class="text-4xl font-bold text-blue-600"> {{$balance['available'] ?? 00.0}} €</div>
         </div>
       </div>
 

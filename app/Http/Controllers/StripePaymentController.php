@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Mission;
+use App\Models\User;
 use App\Models\MissionOffer;
 use App\Models\ServiceProvider;
 use App\Models\Transaction;
+use App\Models\AffiliateCommission;
 use Stripe\Stripe;
 use Stripe\Charge;
 use Stripe\PaymentIntent;
 use Stripe\Transfer;
+use Stripe\Account;
+use Stripe\AccountLink;
 use Stripe\Account as StripeAccount;
 use Illuminate\Support\Facades\DB;
 
@@ -25,8 +29,14 @@ class StripePaymentController extends Controller
         $offer = MissionOffer::findOrFail($request->offer_id);
 
         if (!$provider->stripe_account_id) {
-            $stripeAccountId = $this->createStripeConnectCustomAccount($provider);
-            $provider->stripe_account_id = $stripeAccountId;
+
+            $stripeAccount = $this->createStripeConnectCustomAccount($provider);
+            
+            $provider->stripe_account_id = $stripeAccount['account_id'];
+            $provider->kyc_status = $stripeAccount['isKYCCompele'] ? 'verified' : 'pending';
+            $provider->stripe_chg_enabled = $stripeAccount['isKYCCompele'] ? true : false;
+            $provider->stripe_pts_enabled = $stripeAccount['isKYCCompele'] ? true : false;
+            $provider->kyc_link = $stripeAccount['onboarding_url'] ?? null;
             $provider->save();
         }
         // Calculate fees
@@ -88,7 +98,6 @@ class StripePaymentController extends Controller
                 $offerId = $paymentIntent->metadata['offer_id'];
                 $clientFee = $paymentIntent->metadata['client_fee'];
                 $missionAmount = $paymentIntent->metadata['mission_amount'];
-
                 // Mark mission as paid
                 $mission = Mission::find($missionId);
                 $mission->status = 'waiting_to_start';
@@ -112,6 +121,59 @@ class StripePaymentController extends Controller
                     'user_role' => auth()->user()->user_role,
                     'status' => 'paid',
                 ]);
+
+                $referee = auth()->user();
+
+                if ($referee->referred_by) {
+                    $referrer = User::find($referee->referred_by);
+
+                    if ($referrer) {
+                        $commissionAmount = round($clientFee * 0.15, 2);
+                        $commissionData = [
+                            'referrer_id' => $referrer->id,
+                            'referee_id' => $referee->id,
+                            'mission_id' => $mission->id,
+                            'amount' => $commissionAmount,
+                            'status' => 'available',
+                        ];
+
+                        if (
+                            $referrer->user_role === 'service_provider' &&
+                            !empty($referrer->serviceProvider->stripe_account_id)
+                        ) {
+                            try {
+                                Stripe::setApiKey(config('services.stripe.secret'));
+                                $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
+
+                                // Transfer to provider via Stripe Connect
+                                $transfer = $stripe->transfers->create([
+                                    'amount' => $commissionAmount * 100,
+                                    'currency' => 'eur',
+                                    'destination' => $referrer->serviceProvider->stripe_account_id,
+                                    'transfer_group' => 'affiliate_commission_' . $mission->id,
+                                ]);
+
+                                $commissionData['status'] = 'paid';
+                                $commissionData['payout_method'] = 'stripe';
+                                $commissionData['stripe_transfer_id'] = $transfer->id;
+                                $referrer->increment('affiliate_balance', $commissionAmount);
+                                $referrer->increment('pending_affiliate_balance', $commissionAmount);
+                                // You may optionally skip updating balances since it's paid out
+                            } catch (\Exception $e) {
+                                // If Stripe transfer fails, fallback to wallet credit
+                                $referrer->increment('affiliate_balance', $commissionAmount);
+                                $referrer->increment('pending_affiliate_balance', $commissionAmount);
+                            }
+                        } else {
+                            // Not a provider or no stripe account — just add to wallet
+                            $referrer->increment('affiliate_balance', $commissionAmount);
+                            $referrer->increment('pending_affiliate_balance', $commissionAmount);
+                        }
+
+                        // Create commission record
+                        AffiliateCommission::create($commissionData);
+                    }
+                }
 
                 return response()->json([
                     'success' => true,
@@ -149,7 +211,8 @@ class StripePaymentController extends Controller
 
     private function createStripeConnectCustomAccount(ServiceProvider $provider)
     {
-        $stripe = Stripe::setApiKey(config('services.stripe.secret'));
+        Stripe::setApiKey(config('services.stripe.secret'));
+
         $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
         $token = $stripe->tokens->create([
             'account' => [
@@ -162,7 +225,6 @@ class StripePaymentController extends Controller
                 'tos_shown_and_accepted' => true,
             ],
         ]);
-
         $account = $stripe->accounts->create([
             'type' => 'custom',
             'country' => 'FR',
@@ -175,8 +237,57 @@ class StripePaymentController extends Controller
             'business_profile' => [
                 'product_description' => 'Ulixai Service Provider',
             ],
-           
         ]);
-        return $account->id;
+
+        if (!$account->details_submitted) {
+           
+            $accountLink = $stripe->accountLinks->create([
+                'account' => $account->id,
+                'refresh_url' => route('stripe.refresh'), 
+                'return_url' => route('stripe.return'),
+                'type' => 'account_onboarding',
+            ]);
+            return [
+                'account_id' => $account->id,
+                'onboarding_url' => $accountLink->url,
+                'isKYCCompele' => false
+            ];
+        }
+
+        return [
+            'account_id' => $account->id,
+            'onboarding_url' => null,
+            'isKYCCompele' => true
+        ];
+    }
+
+    public function getOnboardingLink(Request $request)
+    {
+        $provider = auth()->user()->serviceProvider;
+        $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
+
+        if (!$provider->stripe_account_id) {
+            return response()->json(['error' => 'Stripe account not found.'], 404);
+        }
+
+        $account = $stripe->accounts->retrieve($provider->stripe_account_id);
+
+        if ($account->details_submitted) {
+            $provider->kyc_status = 'verified';
+            $provider->stripe_chg_enabled = true;
+            $provider->stripe_pts_enabled = true;
+            $provider->kyc_link = null;
+            $provider->save();
+            return response()->json(['completed' => true]);
+        }
+
+        $accountLink = $stripe->accountLinks->create([
+            'account' => $provider->stripe_account_id,
+            'refresh_url' => route('stripe.refresh'),
+            'return_url' => route('stripe.return'),
+            'type' => 'account_onboarding',
+        ]);
+
+        return response()->json(['completed' => false, 'url' => $accountLink->url]);
     }
 }

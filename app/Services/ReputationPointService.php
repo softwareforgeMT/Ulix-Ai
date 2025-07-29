@@ -10,8 +10,8 @@ class ReputationPointService
  {
      try {
         $reputationPoint = ReputationPoint::first();
-
-        $provider->update(['points' => $provider->points + $reputationPoint->mission_with_review]);
+        $provider->increment('points', $reputationPoint->mission_with_review);
+        // $provider->update(['points' => $provider->points + $reputationPoint->mission_with_review]);
 
         $this->updateUlysseStatus($provider);
      } catch (\Exception $e) {
@@ -23,11 +23,13 @@ class ReputationPointService
     try {
         $reputationPoint = ReputationPoint::first();
         if($rating >= 5 ) {
-             $provider->update(['points' => $provider->points + $reputationPoint->five_star_review]);
+            $provider->increment('points', $reputationPoint->five_star_review);
+            //  $provider->update(['points' => $provider->points + $reputationPoint->five_star_review]);
         }
        
         if($rating > 4 && $rating < 5 ) {
-             $provider->update(['points' => $provider->points + $reputationPoint->four_star_review]);
+            $provider->increment('points', $reputationPoint->four_star_review);
+            //  $provider->update(['points' => $provider->points + $reputationPoint->four_star_review]);
         }
         $this->updateUlysseStatus($provider);
      } catch (\Exception $e) {
@@ -40,15 +42,14 @@ class ReputationPointService
     
     $reputationPoint = ReputationPoint::first();
 
-    $provider->update(['points' => $provider->points - $reputationPoint->provider_canceled]);
+    $provider->decrement('points', $reputationPoint->provider_canceled);
     $this->updateUlysseStatus($provider);
  }
 
  public function updateReputationPointsBasedOnDisputeResolvedByProvider($provider) {
     
     $reputationPoint = ReputationPoint::first();
-
-    $provider->update(['points' => $provider->points - $reputationPoint->dispute_refund]);
+    $provider->decrement('points', $reputationPoint->dispute_refund);
     $this->updateUlysseStatus($provider);
  }
 

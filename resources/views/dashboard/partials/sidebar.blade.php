@@ -84,13 +84,13 @@
                 <span>My job list</span>
             </a>
             
-
+            @endif
             <a href="{{ route('user.earnings') }}"
                class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->is('my-earnings') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
                 <i class="fa-solid fa-euro-sign w-5 h-5"></i>
                 <span>My earnings</span>
             </a>
-            @endif
+            
             <a href="{{ route('user.conversation') }}"
                class="flex items-center justify-between px-4 py-3 rounded-lg {{ request()->is('conversations') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50' }} nav-link">
                 <div class="flex items-center space-x-3">

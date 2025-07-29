@@ -36,6 +36,7 @@
 
     <!-- Content Area -->
     <main class="flex-1 p-4 pt-20 lg:p-6 lg:pt-6">
+        @include('dashboard.banners.kyc-banner')
         @yield('content')
     </main>
 </div>
