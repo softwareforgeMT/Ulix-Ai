@@ -26,6 +26,7 @@ class ReviewsController extends Controller
     
     public function reviewUlysse(Request $request) {
         // Validate the input
+        $user = Auth::user();
         $missionId = $request->query('mission');
         $validated = $request->validate([
             'rating' => 'required|integer|min:1|max:5',
@@ -65,6 +66,12 @@ class ReviewsController extends Controller
         $this->ReputationPointService->updateReputationPointsBasedOnMissionCompletedWithReviews($provider);
 
         $mission->update(['payment_status' => 'released', 'status' => 'completed']);
+
+        $review = UlixaiReview::where('review_by', $user->id)->first();
+
+        if ($review) {
+            return redirect()->route('user.service.requests')->with('success', 'Thank you for using Ulixai.');
+        }
 
         return view('dashboard.payments.review-ulysse');
     }

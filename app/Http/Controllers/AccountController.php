@@ -9,6 +9,9 @@ use App\Models\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AccountController extends Controller
 {
@@ -318,12 +321,107 @@ class AccountController extends Controller
     }
 
     public function uploadPicture(Request $request) {
-        return view('dashboard.account.upload-picture');
+        $user = Auth::user();
+        return view('dashboard.account.upload-picture', compact('user'));
+    }
+
+    public function uploadProviderProfile(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg',
+        ]);
+
+        try {
+            $user = auth()->user();
+            $provider = $user->serviceprovider;
+
+            if ($provider->profile_photo && File::exists(public_path($provider->profile_photo))) {
+                File::delete(public_path($provider->profile_photo));
+            }
+
+            $image = $request->file('profile_picture');
+            $filename = 'profile-' . $user->id . '-' . time() . '.' . $image->getClientOriginalExtension();
+
+            $path = 'assets/profileImages/' . $filename;
+            $image->move(public_path('assets/profileImages'), $filename);
+
+            $provider->profile_photo = $path;
+            $provider->save();
+
+            return response()->json([
+                'success' => true,
+                'path' => asset($path) 
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while uploading the profile photo: ' . $e->getMessage()
+            ]);
+        }
     }
 
     public function uploadDocument(Request $request) {
-        return view('dashboard.account.upload-document');
+        $user = Auth::user();
+        return view('dashboard.account.upload-document', compact('user'));
     }
+
+
+    public function uploadDocuments(Request $request)
+    {
+        $request->validate([
+            'document_type' => 'required|string|in:passport,european_id,license',
+            'front' => 'required|image|mimes:jpeg,png,jpg',
+            'back' => 'nullable|image|mimes:jpeg,png,jpg',
+        ]);
+
+        try {
+            $user = auth()->user();
+            $provider = $user->serviceProvider;
+            if (!empty($provider->documents)) {
+                $documents = json_decode($provider->documents, true);
+                $docTypes = ['passport', 'european_id', 'license'];
+                foreach ($docTypes as $docType) {
+                    if (isset($documents[$docType])) {
+                        if (File::exists(public_path($documents[$docType]['front']))) {
+                            File::delete(public_path($documents[$docType]['front']));
+                        }
+                        if (isset($documents[$docType]['back']) && File::exists(public_path($documents[$docType]['back']))) {
+                            File::delete(public_path($documents[$docType]['back']));
+                        }
+                    }
+                }
+            }
+            $docType = $request->document_type;
+            $docData = [];
+            $frontImage = $request->file('front');
+            if ($frontImage) {
+                $frontImageName = 'docs-' . $user->id . '-' . $docType . '-front.' . $frontImage->getClientOriginalExtension();
+                $frontImagePath = $frontImage->move(public_path('assets/userDocs'), $frontImageName);
+                $docData['front'] = 'assets/userDocs/' . $frontImageName;
+            }
+
+            if ($request->hasFile('back')) {
+                $backImage = $request->file('back');
+                $backImageName = 'docs-' . $user->id . '-' . $docType . '-back.' . $backImage->getClientOriginalExtension();
+                $backImagePath = $backImage->move(public_path('assets/userDocs'), $backImageName);
+                $docData['back'] = 'assets/userDocs/' . $backImageName;
+            }
+            $newDocuments[$docType] = $docData;
+            $provider->update(['documents' =>  !empty($newDocuments) ? json_encode($newDocuments) : null]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Document uploaded successfully.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error occurred: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
 
     public function affiliationAccounts(Request $request) {
         $user = Auth::user();

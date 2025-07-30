@@ -78,6 +78,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/conversations/{conversation}/message', [ConversationController::class, 'sendMessage'])->name('conversations.sendMessage');
     Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages'])->name('conversations.messages');
     Route::get('/conversations/{conversation}/status', [ConversationController::class, 'status'])->name('conversations.status');
+    Route::get('/attachments/{attachment}/download', [ConversationController::class, 'downloadAttachment'])->name('attachments.download');
     
     Route::get('/payments', [PaymentController::class, 'index'])->name('user.payments');
     Route::get('/payments-validate', [PaymentController::class, 'paymentValidate'])->name('user.payments.validate');
@@ -105,6 +106,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/my-documents', [AccountController::class, 'myDocuments'])->name('my-documents');
     Route::get('/point-calculation', [AccountController::class, 'pointCalculation'])->name('points-calculation');
     Route::get('/upload-picture', [AccountController::class, 'uploadPicture'])->name('upload-picture');
+    Route::post('/update-provider-profile', [AccountController::class, 'uploadProviderProfile'])->name('provider.profile.photo.ajax');
+    Route::post('/provider/upload-document', [AccountController::class, 'uploadDocuments'])->name('provider.upload.document');
+
+
     Route::get('/upload-document', [AccountController::class, 'uploadDocument'])->name('upload-document');
     Route::post('/profile/photo', [AccountController::class, 'uploadProfilePicture'])->name('profile.photo.upload');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

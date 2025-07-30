@@ -32,6 +32,7 @@ class MessageSent implements ShouldBroadcast
                 'body' => $this->message->body,
                 'sender_id' => $this->message->sender->id,
                 'conversation_id' => $this->message->conversation_id,
+                'attachments' => $this->message->attachments,
                 'created_at' => $this->message->created_at->toDateTimeString(),
             ]
         ];

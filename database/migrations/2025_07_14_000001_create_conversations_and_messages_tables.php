@@ -22,9 +22,17 @@ class CreateConversationsAndMessagesTables extends Migration
             $table->foreignId('conversation_id')->constrained('conversations')->onDelete('cascade');
             $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
             $table->text('body');
-            $table->string('attachment_path')->nullable();
-            $table->string('attachment_type')->nullable();
             $table->boolean('is_read')->default(false);
+            $table->timestamps();
+        });
+
+        Schema::create('message_attachments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('message_id')->constrained('messages')->onDelete('cascade');
+            $table->string('filename');
+            $table->string('path');
+            $table->bigInteger('size');
+            $table->string('mime_type'); 
             $table->timestamps();
         });
     }
@@ -33,5 +41,6 @@ class CreateConversationsAndMessagesTables extends Migration
     {
         Schema::dropIfExists('messages');
         Schema::dropIfExists('conversations');
+         Schema::dropIfExists('message_attachments');
     }
 }

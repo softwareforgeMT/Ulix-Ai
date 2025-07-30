@@ -25,10 +25,6 @@
                 <i class="fas fa-cogs w-5 h-5"></i>
                 <span>Settings</span>
             </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50">
-                <i class="fas fa-cogs w-5 h-5"></i>
-                <span>Transactions</span>
-            </a>
         </nav>
     </div>
 </aside>

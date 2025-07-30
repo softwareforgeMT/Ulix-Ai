@@ -56,12 +56,74 @@
         background: #f1f5f9;
         border-color: #cbd5e1;
     }
+    .attachment-preview img {
+        transition: transform 0.2s ease;
+    }
+
+    .attachment-preview:hover img {
+        transform: scale(1.05);
+    }
+
+    .file-icon {
+        font-size: 1.2rem;
+        color: #6b7280;
+    }
+
+    .download-btn {
+        transition: all 0.2s ease;
+    }
+
+    .download-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .modal-overlay {
+        backdrop-filter: blur(4px);
+    }
+
+    .file-preview-container {
+        max-height: 120px;
+        overflow-y: auto;
+    }
+
+    .file-preview-item {
+        transition: all 0.2s ease;
+    }
+
+    .file-preview-item:hover {
+        background-color: #f9fafb;
+        border-color: #d1d5db;
+    }
+
+    .image-thumbnail {
+        border-radius: 4px;
+        border: 1px solid #e5e7eb;
+    }
+
+    /* Loading states */
+    .sending-message {
+        opacity: 0.7;
+        pointer-events: none;
+    }
+
+    .upload-progress {
+        background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+        height: 2px;
+        border-radius: 1px;
+        animation: progress 1s ease-in-out infinite;
+    }
+
+    @keyframes progress {
+        0% { width: 0%; }
+        50% { width: 70%; }
+        100% { width: 100%; }
+    }
 </style>
 
 <div class="min-h-screen p-4">
     <div class="mx-auto">
         <!-- Header Section -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6 border border-white/20">
+        <div class="bg-white/80 backdrop-blur-sm shadow-xl p-6 mb-6 border border-white/20">
             <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
                 Private Messaging
             </h1>
@@ -84,7 +146,7 @@
         <!-- Main Content -->
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-200px)]">
             <!-- Mission List Sidebar -->
-            <div class="lg:col-span-1 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-4 flex flex-col">
+            <div class="lg:col-span-1 bg-white/80 backdrop-blur-sm shadow-xl border border-white/20 p-4 flex flex-col">
                 <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
                     <h2 class="text-lg font-bold text-gray-800">Conversations</h2>
                     <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
@@ -110,7 +172,7 @@
                              data-other-phone="{{ $otherParty->phone_number ?? '' }}">
                             
                             <div class="flex items-start gap-3">
-                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-user text-white text-sm"></i>
                                 </div>
                                 
@@ -145,16 +207,16 @@
             </div>
 
             <!-- Chat Interface -->
-            <div class="lg:col-span-3 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 flex flex-col">
+            <div class="lg:col-span-3 bg-white/80 backdrop-blur-sm  shadow-xl border border-white/20 flex flex-col">
                 <!-- Chat Header -->
-                <div id="chatHeader" class="p-6 border-b border-gray-200 hidden">
+                <div id="chatHeader" class="p-2 border-b border-gray-200 hidden">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                                 <i class="fas fa-user text-white"></i>
                             </div>
                             <div>
-                                <h3 id="chatUserName" class="font-bold text-gray-900 text-lg"></h3>
+                                <h3 id="chatUserName" class="font-bold text-gray-900 text-md"></h3>
                                 <div class="flex items-center gap-2">
                                     <span id="chatPhone" class="text-sm text-gray-600"></span>
                                     <!-- <div class="flex items-center gap-1">
@@ -185,7 +247,7 @@
 
                     <!-- Messages Area -->
                     <div id="messagesContainer" class="flex-1 p-6 overflow-y-auto scrollbar-hide hidden">
-                        <div id="chatMessages" class="space-y-4 max-h-[400px] overflow-y-auto"></div>
+                        <div id="chatMessages" class="space-y-4 md:max-h-[600px] sm:max-h-[400px] overflow-y-auto"></div>
                         <div id="typingIndicator" class="hidden">
                             <div class="flex items-center gap-2 text-gray-500 text-sm">
                                 <div class="flex gap-1">
@@ -299,9 +361,9 @@
                 : 'bg-gray-100 text-gray-800 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl';
 
             messageDiv.innerHTML = `
-                <div class="max-w-xs lg:max-md px-4 py-3 ${bubbleClass} shadow-lg">
-                    <p class="text-sm">${this.escapeHtml(message.body || message.message)}</p>
-                    ${message.attachments ? this.renderAttachments(message.attachments) : ''}
+                <div class="max-w-xs lg:max-w-md px-4 py-3 ${bubbleClass} shadow-lg">
+                    ${message.body ? `<p class="text-sm mb-2">${this.escapeHtml(message.body)}</p>` : ''}
+                    ${message.attachments && message.attachments.length > 0 ? this.renderAttachments(message.attachments, isOwn) : ''}
                     <div class="text-xs mt-1 ${isOwn ? 'text-blue-100' : 'text-gray-500'}">
                         ${utils.formatTime(message.created_at)}
                     </div>
@@ -311,19 +373,76 @@
             return messageDiv;
         },
 
-        renderAttachments(attachments) {
+        renderAttachments(attachments, isOwn) {
             if (!attachments || attachments.length === 0) return '';
             
             return `
-                <div class="mt-2 space-y-1">
-                    ${attachments.map(att => `
-                        <div class="bg-white/20 rounded p-2 text-xs">
-                            <i class="fas fa-paperclip mr-1"></i>
-                            ${att.filename || 'Attachment'}
-                        </div>
-                    `).join('')}
+                <div class="mt-2 space-y-2">
+                    ${attachments.map(att => {
+                        const isImage = att.mime_type && att.mime_type.startsWith('image/');
+                        const iconClass = this.getFileIcon(att.mime_type);
+                        const downloadUrl = `/attachments/${att.id}/download`;
+                        const viewUrl = att.url || `/storage/${att.path}`;
+                        
+                        if (isImage) {
+                            return `
+                                <div class="bg-white/20 rounded-lg p-2 cursor-pointer" onclick="openImageModal('${viewUrl}', '${att.filename}')">
+                                    <img src="${viewUrl}" alt="${att.filename}" class="max-w-full h-32 object-cover rounded">
+                                    <div class="text-xs mt-1 flex items-center justify-between">
+                                        <span class="truncate flex-1">${att.filename}</span>
+                                        <a href="${downloadUrl}" download class="ml-2 ${isOwn ? 'text-blue-100 hover:text-white' : 'text-blue-600 hover:text-blue-800'}" onclick="event.stopPropagation()">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            return `
+                                <div class="bg-white/20 rounded-lg p-3 flex items-center justify-between">
+                                    <div class="flex items-center flex-1 min-w-0">
+                                        <i class="${iconClass} text-lg mr-2"></i>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="text-xs font-medium truncate">${att.filename}</div>
+                                            <div class="text-xs opacity-75">${att.formatted_size || this.formatFileSize(att.size)}</div>
+                                        </div>
+                                    </div>
+                                    <a href="${downloadUrl}" download class="ml-2 ${isOwn ? 'text-blue-100 hover:text-white' : 'text-blue-600 hover:text-blue-800'}">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                </div>
+                            `;
+                        }
+                    }).join('')}
                 </div>
             `;
+        },
+
+        getFileIcon(mimeType) {
+            if (!mimeType) return 'fas fa-file';
+            
+            if (mimeType.startsWith('image/')) return 'fas fa-image';
+            if (mimeType.includes('pdf')) return 'fas fa-file-pdf';
+            if (mimeType.includes('word') || mimeType.includes('document')) return 'fas fa-file-word';
+            if (mimeType.includes('excel') || mimeType.includes('spreadsheet')) return 'fas fa-file-excel';
+            if (mimeType.includes('powerpoint') || mimeType.includes('presentation')) return 'fas fa-file-powerpoint';
+            if (mimeType.startsWith('video/')) return 'fas fa-file-video';
+            if (mimeType.startsWith('audio/')) return 'fas fa-file-audio';
+            
+            return 'fas fa-file';
+        },
+
+        formatFileSize(bytes) {
+            if (!bytes) return '0 bytes';
+            
+            if (bytes >= 1073741824) {
+                return (bytes / 1073741824).toFixed(2) + ' GB';
+            } else if (bytes >= 1048576) {
+                return (bytes / 1048576).toFixed(2) + ' MB';
+            } else if (bytes >= 1024) {
+                return (bytes / 1024).toFixed(2) + ' KB';
+            } else {
+                return bytes + ' bytes';
+            }
         },
 
         escapeHtml(text) {
@@ -366,8 +485,9 @@
         // Handle new message from broadcasted channel
         handleBroadcastMessage(data) {
             const message = data.message;
-            if (message.conversation_id = currentConversationId) {
-              this.addMessage(message);
+            console.log(message)
+            if (message.conversation_id == currentConversationId) {
+                this.addMessage(message);
             }
         }
     };
@@ -486,13 +606,18 @@
                     throw new Error(errorData.message || 'Failed to send message');
                 }
 
-                // Don't manually add the message here - let the broadcast handle it
-                // This ensures consistency and prevents duplicates
+                const result = await response.json();
+                
+                // Clear input and attachments
                 elements.chatInput.value = '';
                 fileManager.clearAttachments();
+                
+                // Show success message
+                utils.showNotification('Message sent successfully', 'success');
+                
             } catch (error) {
                 console.error('Error sending message:', error);
-                utils.showNotification('Failed to send message', 'error');
+                utils.showNotification(error.message || 'Failed to send message', 'error');
             }
         },
 
@@ -521,6 +646,50 @@
         }
     };
 
+    window.openImageModal = function(imageSrc, filename) {
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+        modal.innerHTML = `
+            <div class="max-w-4xl max-h-full p-4">
+                <div class="bg-white rounded-lg overflow-hidden">
+                    <div class="flex items-center justify-between p-4 border-b">
+                        <h3 class="text-lg font-semibold truncate">${filename}</h3>
+                        <button onclick="closeImageModal()" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <img src="${imageSrc}" alt="${filename}" class="max-w-full max-h-96 object-contain mx-auto">
+                    </div>
+                    <div class="p-4 border-t bg-gray-50 flex justify-end">
+                        <a href="${imageSrc.replace('/storage/', '/attachments/').replace('/download', '')}/download" 
+                        download 
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-download mr-2"></i>Download
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Close on outside click
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeImageModal();
+            }
+        });
+    };
+
+    window.closeImageModal = function() {
+        const modal = document.querySelector('.fixed.inset-0.bg-black');
+        if (modal) {
+            modal.remove();
+        }
+    };
+
+
     // File Manager (assuming this exists - add if missing)
     const fileManager = {
         handleFileSelect(files) {
@@ -535,20 +704,61 @@
             }
 
             elements.attachmentPreview.classList.remove('hidden');
-            elements.previewContainer.innerHTML = selectedFiles.map((file, index) => `
-                <div class="flex items-center justify-between bg-gray-100 p-2 rounded">
-                    <span class="text-sm truncate">${file.name}</span>
-                    <button type="button" onclick="removeFile(${index})" class="text-red-500 hover:text-red-700">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            `).join('');
+            elements.previewContainer.innerHTML = selectedFiles.map((file, index) => {
+                const isImage = file.type.startsWith('image/');
+                const fileSize = this.formatFileSize(file.size);
+                
+                return `
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center justify-between min-w-0">
+                        <div class="flex items-center min-w-0 flex-1">
+                            ${isImage ? 
+                                `<img src="${URL.createObjectURL(file)}" alt="Preview" class="w-10 h-10 object-cover rounded mr-3">` :
+                                `<i class="${this.getFileIcon(file.type)} text-lg mr-3 text-gray-600"></i>`
+                            }
+                            <div class="min-w-0 flex-1">
+                                <div class="text-sm font-medium text-gray-900 truncate">${file.name}</div>
+                                <div class="text-xs text-gray-500">${fileSize}</div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="removeFile(${index})" class="ml-2 text-red-500 hover:text-red-700 flex-shrink-0">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        },
+
+        getFileIcon(mimeType) {
+            if (!mimeType) return 'fas fa-file';
+            
+            if (mimeType.startsWith('image/')) return 'fas fa-image';
+            if (mimeType.includes('pdf')) return 'fas fa-file-pdf';
+            if (mimeType.includes('word') || mimeType.includes('document')) return 'fas fa-file-word';
+            
+            return 'fas fa-file';
+        },
+
+        formatFileSize(bytes) {
+            if (bytes >= 1048576) {
+                return (bytes / 1048576).toFixed(2) + ' MB';
+            } else if (bytes >= 1024) {
+                return (bytes / 1024).toFixed(2) + ' KB';
+            } else {
+                return bytes + ' bytes';
+            }
         },
 
         clearAttachments() {
             selectedFiles = [];
             elements.fileInput.value = '';
             elements.attachmentPreview.classList.add('hidden');
+            
+            // Clean up object URLs to prevent memory leaks
+            elements.previewContainer.querySelectorAll('img').forEach(img => {
+                if (img.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(img.src);
+                }
+            });
         }
     };
 

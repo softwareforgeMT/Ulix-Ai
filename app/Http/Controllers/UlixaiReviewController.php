@@ -13,10 +13,6 @@ class UlixaiReviewController extends Controller
     public function userReview(Request $request) 
     {
         $user = Auth::user();
-        $review = UlixaiReview::where('review_by', $user->id)->first();
-        if ($review) {
-            return redirect()->back()->with('success', 'You have already rated the platform.');
-        }
 
         $request->validate([
             'comment' => 'required|string|max:255',

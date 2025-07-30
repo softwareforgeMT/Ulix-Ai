@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\Mission;
+use App\Models\MessageAttachment;
 use App\Models\ServiceProvider;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
 
@@ -16,26 +18,15 @@ class ConversationController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        // Missions where status != published and selected_provider_id is set
-        // $missions = Mission::where('status', '!=', 'published')
-        //     ->where('payment_status', '!=', 'released')
-        //     ->whereNotNull('selected_provider_id')
-        //     ->where(function($q) use ($user) {
-        //         $q->where('requester_id', $user->id)
-        //           ->orWhere('selected_provider_id', optional($user->serviceProvider)->id);
-        //     })
-        //     ->get();
         $providerId = optional($user->serviceProvider)->id;
 
         $missions = Mission::where('status', '!=', 'published')
             ->where('payment_status', '!=', 'released')
             ->whereNotNull('selected_provider_id')
             ->when($request->query('tab') === 'jobs', function ($q) use ($providerId, $user) {
-                // Jobs tab: show where user is selected_provider, but not requester
                 $q->where('selected_provider_id', $providerId)
                 ->where('requester_id', '!=', $user->id);
             }, function ($q) use ($user, $providerId) {
-                // Default tab: show where user is requester
                 $q->where('requester_id', $user->id);
             })
             ->get();
@@ -75,47 +66,93 @@ class ConversationController extends Controller
 
     public function messages(Conversation $conversation)
     {
-        $messages = $conversation->messages()->with('sender')->orderBy('created_at')->get();
+    
+        $user = Auth::user();
+        if ($conversation->mission->requester_id !== $user->id && 
+            $conversation->mission->selectedProvider->user_id !== $user->id) {
+            abort(403, 'Unauthorized access to conversation');
+        }
+        
+        $messages = $conversation->messages()
+            ->with(['sender', 'attachments'])
+            ->orderBy('created_at', 'asc')
+            ->get();
+        
+        $conversation->messages()
+            ->where('sender_id', '!=', $user->id)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+        
         return response()->json($messages);
     }
 
     public function sendMessage(Request $request, Conversation $conversation)
-{
-    // Validate incoming data, including file
-    $request->validate([
-        'body' => 'required|string',
-        'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:20480', // Optional file (images or PDFs)
-    ]);
+    {
+        $request->validate([
+            'body' => 'nullable|string',
+            'files.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:20480', // 20MB max
+        ]);
 
-    $user = Auth::user();
+        $user = Auth::user();
+        
+        // Ensure at least message body or files are provided
+        if (!$request->body && !$request->hasFile('files')) {
+            return response()->json(['error' => 'Message body or files are required'], 422);
+        }
 
-    // Prepare message data
-    $messageData = [
-        'sender_id' => $user->id,
-        'body' => $request->body,
-        'is_read' => false,
-    ];
+        $messageData = [
+            'sender_id' => $user->id,
+            'body' => $request->body ?? '',
+            'is_read' => false,
+        ];
 
-    // Handle file upload if present
-    if ($request->hasFile('file')) {
-        // Store the file and retrieve the path
-        $path = $request->file('file')->store('chat_attachments', 'public');
-        $messageData['attachment_path'] = $path;
+        $message = $conversation->messages()->create($messageData);
+
+        // Handle multiple file attachments
+        $attachments = [];
+        if ($request->hasFile('files')) {
+            $conversationDir = 'public/conversations/conversation_' . $conversation->id;
+            
+            // Create directory if it doesn't exist
+            if (!Storage::exists($conversationDir)) {
+                Storage::makeDirectory($conversationDir);
+            }
+
+            foreach ($request->file('files') as $file) {
+                $originalName = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $fileName = time() . '_' . uniqid() . '.' . $extension;
+                
+                // Store file in public/conversations/conversation_X/
+                $filePath = $file->storeAs($conversationDir, $fileName);
+                
+                // Create attachment record
+                $attachment = $message->attachments()->create([
+                    'filename' => $originalName,
+                    'path' => str_replace('public/', '', $filePath), // Remove 'public/' for web access
+                    'size' => $file->getSize(),
+                    'mime_type' => $file->getMimeType(),
+                ]);
+                
+                $attachments[] = $attachment;
+            }
+        }
+
+        // Update conversation timestamp
+        $conversation->last_message_at = now();
+        $conversation->save();
+
+        // Load relationships for broadcasting
+        $message->load(['sender', 'attachments']);
+        $message->attachments = $message->attachments ?? [];
+        // Broadcast the message with attachments
+        broadcast(new \App\Events\MessageSent($message))->toOthers();
+
+        return response()->json([
+            'message' => $message,
+            'attachments' => $attachments
+        ]);
     }
-
-    // Save the message
-    $message = $conversation->messages()->create($messageData);
-
-    // Update the last message timestamp for the conversation
-    $conversation->last_message_at = now();
-    $conversation->save();
-
-    // Broadcast the message for real-time updates (using Laravel Echo or Pusher)
-    broadcast(new \App\Events\MessageSent($message))->toOthers();
-
-    // Return the saved message with sender details
-    return response()->json($message->load('sender'));
-}
 
 
     public function start(Request $request)
@@ -146,6 +183,27 @@ class ConversationController extends Controller
         $providerUserId = $conversation->provider->user_id;
         $isOnline = cache()->has('user-is-online-' . $providerUserId);
         return response()->json(['online' => $isOnline]);
+    }
+
+
+    public function downloadAttachment(MessageAttachment $attachment)
+    {
+        $user = Auth::user();
+        $message = $attachment->message;
+        $conversation = $message->conversation;
+        
+        if ($conversation->mission->requester_id !== $user->id && 
+            $conversation->mission->selected_provider_id !== $user->id) {
+            abort(403, 'Unauthorized access to attachment');
+        }
+        
+        $filePath = storage_path('app/public/' . $attachment->path);
+        
+        if (!file_exists($filePath)) {
+            abort(404, 'File not found');
+        }
+        
+        return response()->download($filePath, $attachment->filename);
     }
 
     
