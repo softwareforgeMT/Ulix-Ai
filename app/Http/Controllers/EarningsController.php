@@ -65,7 +65,7 @@ class EarningsController extends Controller
 
             if (
                 $user->user_role === 'service_provider' &&
-                $affiliateAmount >= 20 &&
+                $affiliateAmount >= 50 &&
                 isset($user->serviceprovider->stripe_account_id)
             ) {
                 $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
@@ -92,7 +92,7 @@ class EarningsController extends Controller
                 }
             } else {
                 return back()->with('error',
-                    'You must be a service provider with at least 20€ pending affiliate balance and a valid Stripe account.'
+                    'You must be a service provider with at least 50€ pending affiliate balance and a valid Stripe account.'
                 );
             }
 

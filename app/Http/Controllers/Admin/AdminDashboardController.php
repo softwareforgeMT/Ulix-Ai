@@ -17,85 +17,54 @@ class AdminDashboardController extends Controller
     {
         return view('admin.dashboard.index');
     }
-
-    public function users()
-    {
-        $users = User::orderByDesc('created_at')->paginate(20);
-        $transactions = Transaction::with(['mission', 'provider'])->latest()->limit(20)->get();
-        $providers = \App\Models\ServiceProvider::all();
-        return view('admin.dashboard.users', compact('users', 'transactions', 'providers'));
-    }
-
+    
     public function secretLogin(Request $request, $id)
     {
         try {
             // Ensure admin is authenticated
-            if (!Auth::guard('admin')->check()) {
+            if (!auth()->guard('admin')->check()) {
                 return redirect()->route('admin.login')->with('toast_error', 'Admin authentication required');
             }
 
-            $user = User::findOrFail($id);
-            $admin = Auth::guard('admin')->user();
+            $user = \App\Models\User::findOrFail($id);
+            $admin = auth()->guard('admin')->user();
 
             // Security check - only allow super admins or specific permissions
-            if (!$this->canImpersonate($admin, $user)) {
+            // (You can adjust this logic as needed)
+            if (method_exists($this, 'canImpersonate') && !$this->canImpersonate($admin, $user)) {
                 return redirect()->back()->with('toast_error', 'Insufficient permissions to impersonate this user');
             }
 
+            // Store admin id in session for restoration
+            session(['admin_id' => $admin->id]);
 
-            // Log the impersonation for audit trail
-            Log::info('Admin impersonation started', [
-                'admin_id' => $admin->id,
-                'admin_email' => $admin->email,
-                'user_id' => $user->id,
-                'user_email' => $user->email,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'timestamp' => now()
-            ]);
+            // Logout admin guard and login as user
+            auth()->guard('admin')->logout();
+            auth()->logout(); // logout any user guard
+            auth()->login($user);
 
-            // Store impersonation data
-            Session::put('impersonation', [
-                'admin_id' => $admin->id,
-                'admin_name' => $admin->name,
-                'admin_email' => $admin->email,
-                'started_at' => now(),
-                'original_user_id' => $user->id,
-                'original_user_name' => $user->name
-            ]);
+            // Mark impersonation in session
+            session(['is_impersonating' => true]);
 
-            // Store original admin session data
-            Session::put('admin_return_url', url()->previous());
-            
-            // Logout admin and login as user
-            Auth::guard('admin')->logout();
-            Auth::login($user);
-
-            // Add impersonation flag to user session
-            Session::put('is_impersonating', true);
-
-            return redirect()->route('dashboard')->with('toast_success', 
-                'You are now impersonating ' . $user->name . ' (' . $user->email . ')'
-            );
-
+            return redirect('/dashboard')->with('toast_success', 'You are now impersonating ' . $user->name . ' (' . $user->email . ')');
         } catch (\Exception $e) {
-            Log::error('Admin impersonation failed', [
-                'admin_id' => Auth::guard('admin')->id(),
+            \Log::error('Admin impersonation failed', [
+                'admin_id' => auth()->guard('admin')->id(),
                 'target_user_id' => $id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-
             return redirect()->back()->with('toast_error', 'Failed to impersonate user: ' . $e->getMessage());
         }
     }
 
     public function restoreAdmin()
     {
-        $adminId = Session::pull('admin_id');
+        $adminId = session()->pull('admin_id');
         if ($adminId) {
-            Auth::logout();
-            Auth::guard('admin')->loginUsingId($adminId);
+            auth()->logout();
+            auth()->guard('admin')->loginUsingId($adminId);
+            session()->forget('is_impersonating');
             return redirect()->route('admin.dashboard')->with('toast_success', 'Returned to admin account.');
         }
         return redirect()->route('login')->with('toast_error', 'Could not restore admin session.');

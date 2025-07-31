@@ -18,6 +18,7 @@ use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\TransactionController;
+use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ProviderReviewController;
 use App\Http\Controllers\MissionMessageController;
 use App\Http\Controllers\StripePaymentController;
@@ -162,15 +163,17 @@ Route::post('/save-request', [ServiceRequestController::class, 'saveRequestForm'
 
 
 // Admin routes
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['web'])->group(function () {
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login.form');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 
-    Route::middleware('auth:admin')->group(function () {
+    Route::middleware(['auth:admin', \App\Http\Middleware\AdminAuthenticate::class])->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('/transactions', [AdminDashboardController::class, 'transactions'])->name('transactions');
-        Route::get('/users', [AdminDashboardController::class, 'users'])->name('users');
+        Route::get('/users', [UserManagementController::class, 'users'])->name('users');
+        Route::match(['get', 'patch'], '/users/{user}/manage', [UserManagementController::class, 'manage'])->name('users.manage');
+        Route::patch('/missions/{mission}/manage', [UserManagementController::class, 'manageMission'])->name('missions.manage');
         Route::post('/secret-login/{id}', [AdminDashboardController::class, 'secretLogin'])->name('secret-login');
         Route::post('/restore-admin', [AdminDashboardController::class, 'restoreAdmin'])->name('restore-admin');
         Route::post('/commission/update', [AdminDashboardController::class, 'updateCommission'])->name('commission.update');

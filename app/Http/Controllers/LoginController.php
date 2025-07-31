@@ -23,18 +23,23 @@ class LoginController extends Controller
         $user = \App\Models\User::where('email', $request->email)->first();
         if (!$user) {
             return back()->withInput($request->only('email'))
-                ->with('toast_error', 'No account found with this email.');
+                ->with('error', 'No account found with this email.');
         }
 
         // Check for admin roles
         if (in_array($user->user_role, ['super_admin', 'regional_admin', 'moderator'])) {
             return redirect()->route('admin.login.form')
-                ->with('toast_error', 'Please use the admin login page for admin accounts.');
+                ->with('error', 'Please use the admin login page for admin accounts.');
         }
 
         if (!\Hash::check($request->password, $user->password)) {
             return back()->withInput($request->only('email'))
-                ->with('toast_error', 'Incorrect password.');
+                ->with('error', 'Incorrect password.');
+        }
+
+        if($user->status !== 'active') {
+            return back()->withInput($request->only('email'))
+                ->with('error', 'Your account is suspended temporairly. Please contact support.');
         }
 
         \Auth::login($user, $request->filled('remember'));

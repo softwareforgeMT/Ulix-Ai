@@ -28,13 +28,13 @@ class AdminAuthController extends Controller
             if (!$admin->isAdmin()) {
                 Auth::guard('admin')->logout();
                 return back()->withInput($request->only('email'))
-                    ->with('toast_error', 'Access denied. Not an admin account.');
+                    ->with('error', 'Access denied. Not an admin account.');
             }
             $request->session()->regenerate();
-            return redirect()->route('admin.dashboard')->with('toast_success', 'Welcome, admin!');
+            return redirect()->route('admin.dashboard')->with('success', 'Welcome, admin!');
         }
         return back()->withInput($request->only('email'))
-            ->with('toast_error', 'Invalid credentials.');
+            ->with('error', 'Invalid credentials.');
     }
 
     public function logout(Request $request)
@@ -42,6 +42,6 @@ class AdminAuthController extends Controller
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('admin.login.form')->with('toast_success', 'Logged out.');
+        return redirect()->route('admin.login.form')->with('success', 'Logged out.');
     }
 }

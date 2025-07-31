@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- CDN (Free version) -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 	<link rel="stlesheet" href="css/styles.css">
@@ -15,6 +16,9 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <title>ULIXAI - Modern Navbar</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+        
   <script>
     tailwind.config = {
       theme: {
@@ -48,29 +52,20 @@
     }
   </script>
 
-  <!-- <style>
-  #searchPopup {
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-  }
-
-  @media (max-width: 768px) {
-    #searchPopup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 9999;
-      background-color: rgba(0, 0, 0, 0.6);
-    }
-  }
-</style> -->
-
 </head>
 <body class="min-h-screen bg-white">
+<!-- //For showuing toast meassages across plateform -->
+@if (session('success'))
+    <script>
+        toastr.success('{{ session('success') }}', 'Success');
+    </script>
+@endif
 
+@if (session('error'))
+    <script>
+        toastr.error('{{ session('error') }}', 'Error');
+    </script>
+@endif
 <!-- Navbar -->
 <nav class="top-0 z-50 border-b border-white/20 shadow-xl">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

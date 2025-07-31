@@ -10,7 +10,7 @@
 </head>
 <body class="bg-gray-100">
  @include('includes.header')
-      @include('pages.popup')
+  @include('pages.popup')
 <div class="min-h-screen flex items-center justify-center px-4">
   <div class="w-full max-w-xl bg-white shadow-2xl rounded-2xl overflow-hidden">
     
