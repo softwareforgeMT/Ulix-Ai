@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ServiceProvider;
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 
@@ -13,16 +14,17 @@ class MapController extends Controller
     public function getProviders(Request $request): JsonResponse
     {
         try {
-            // Cache the providers data for 15 minutes to improve performance
-            $providers = Cache::remember('map_providers', 900, function () {
-                return ServiceProvider::with([
-                    'user:id,name,name,email',
+            // Directly fetch providers without caching
+            $providers = ServiceProvider::with([
+                    'user:id,name,email',
                     'reviews:id,provider_id,rating'
                 ])
+                ->whereHas('user', fn ($q) => $q->where('status', 'active'))
                 ->whereNotNull('profile_photo')
                 ->whereNotNull('country')
                 ->whereNotNull('provider_address')
                 ->where('profile_photo', '!=', '')
+                ->where('provider_visibility', true)// Only show visible providers
                 ->select([
                     'id',
                     'user_id',
@@ -44,11 +46,13 @@ class MapController extends Controller
                     'email',
                     'slug',
                     'created_at',
-                    'updated_at'
+                    'updated_at',
+                    'provider_visibility',
+                    'country_coords',
+                    'city_coords'
                 ])
                 ->get()
                 ->map(function ($provider) {
-                    // Calculate average rating and review count
                     $reviews = $provider->reviews;
                     $averageRating = $reviews->avg('rating') ?? 0;
                     $reviewCount = $reviews->count();
@@ -58,34 +62,36 @@ class MapController extends Controller
                         'first_name' => $provider->first_name,
                         'last_name' => $provider->last_name,
                         'native_language' => $provider->native_language,
-                        'spoken_language' => $provider->spoken_language ?? [],
+                        'spoken_language' => is_string($provider->spoken_language) ? json_decode($provider->spoken_language, true) ?? [] : ($provider->spoken_language ?? []),
                         'services_to_offer' => $provider->services_to_offer,
                         'services_to_offer_category' => $provider->services_to_offer_category,
                         'provider_address' => $provider->provider_address,
-                        'operational_countries' => $provider->operational_countries ?? [],
+                        'operational_countries' => is_string($provider->operational_countries) ? json_decode($provider->operational_countries, true) ?? [] : ($provider->operational_countries ?? []),
                         'communication_online' => $provider->communication_online,
                         'communication_inperson' => $provider->communication_inperson,
                         'profile_description' => $provider->profile_description,
                         'profile_photo' => $provider->profile_photo,
                         'phone_number' => $provider->phone_number,
                         'country' => $provider->country,
-                        'special_status' => $provider->special_status ?? [],
+                        'special_status' => is_string($provider->special_status) ? json_decode($provider->special_status, true) ?? [] : ($provider->special_status ?? []),
                         'email' => $provider->email,
                         'slug' => $provider->slug ?? null,
                         'average_rating' => round($averageRating, 1),
                         'reviews_count' => $reviewCount,
+                        'user_id' => $provider->user_id,
+                        'country_coords' => $provider->country_coords,
+                        'city_coords' => $provider->city_coords,
                         'created_at' => $provider->created_at,
                         'updated_at' => $provider->updated_at,
                     ];
                 });
-            });
 
-            // Apply filters if provided
             $filteredProviders = $this->applyFilters($providers, $request)
-                                ->map(function ($provider) {
-                                    $provider['services_to_offer_category'] = $this->fetchCategoryNames($provider['services_to_offer_category']);
-                                    return $provider;
-                                });
+                ->map(function ($provider) {
+                    $provider['services_to_offer_category'] = $this->fetchCategoryNames($provider['services_to_offer_category']);
+                    return $provider;
+                });
+
             return response()->json([
                 'success' => true,
                 'message' => 'Providers loaded successfully',
@@ -93,7 +99,6 @@ class MapController extends Controller
                 'total' => $filteredProviders->count(),
                 'filters' => $this->getAvailableFilters($providers)
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

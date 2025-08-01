@@ -182,6 +182,8 @@ Route::prefix('admin')->name('admin.')->middleware(['web'])->group(function () {
         // Transaction management
         Route::get('/transactions/{transaction}/edit', [TransactionController::class, 'edit'])->name('transactions.edit');
         Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
+        Route::get('/users/{id}/edit-profile', [UserManagementController::class, 'editProfileView'])->name('users.edit-profile');
+        
     });
 });
 

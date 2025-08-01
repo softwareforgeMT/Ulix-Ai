@@ -95,7 +95,7 @@ class PaymentService
     public function providerAccountBalance($provider) {
         try {
             $balance = Balance::retrieve( [
-                'stripe_account' => 'acct_1RpkAV0sGl0HW8NS'
+                'stripe_account' => $provider->stripe_account_id
             ] ,[]);
 
             return [
@@ -109,4 +109,21 @@ class PaymentService
             return ['error' => $e->getMessage()];
         }
     }
+
+    public function ulixaiPlatformBalance() {
+        try {
+            $balance = \Stripe\Balance::retrieve(); // No connected account passed here
+
+            return [
+                'available' => $balance->available[0]->amount / 100,
+                'pending' => $balance->pending[0]->amount / 100,
+                'currency' => strtoupper($balance->available[0]->currency)
+            ];
+
+        } catch (\Exception $e) {
+            \Log::error('Stripe platform balance fetch failed: ' . $e->getMessage());
+            return ['error' => $e->getMessage()];
+        }
+    }
+
 }

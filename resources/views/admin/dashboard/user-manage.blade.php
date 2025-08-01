@@ -22,6 +22,27 @@
                             {{ ucfirst($user->status) }}
                         </span>
                         <span class="text-sm text-gray-500">{{ ucfirst($user->user_role === 'service_requester' ? 'Requester' : 'Provider') }}</span>
+                        @if($provider)
+                        <div class="flex items-center space-x-2">
+                            <label class="text-sm text-gray-500" for="providerVisibilityToggle">Ulysse Map Visibility:</label>
+                            <input type="checkbox"
+                                id="providerVisibilityToggle"
+                                data-provider-id="{{ $provider->id }}"
+                                {{ $provider->provider_visibility ? 'checked' : '' }}
+                                style="width: 18px; height: 18px;"
+                            >
+                            <span class="ml-2 text-sm text-gray-700" id="providerVisibilityLabel">
+                                {{ $provider->provider_visibility ? 'Visible' : 'Hidden' }}
+                            </span>
+                        </div>
+                        <!-- Edit Coordinates Button -->
+
+                        <button type="button"
+                            class="ml-4 px-3 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
+                            onclick="openCoordsModal({{ $provider->id }})">
+                            Edit Coordinates
+                        </button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -58,6 +79,15 @@
                             <span>Transactions</span>
                         </div>
                     </button>
+                    <a href="{{ route('admin.users.edit-profile', $user->id) }}"
+                       class="tab-link py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm whitespace-nowrap focus:outline-none">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13h6m2 7a2 2 0 002-2v-7.586a1 1 0 00-.293-.707l-7-7a1 1 0 00-1.414 0l-7 7A1 1 0 002 10.414V18a2 2 0 002 2h12z" />
+                            </svg>
+                            <span>Edit Profile</span>
+                        </div>
+                    </a>
                 </nav>
             </div>
         </div>
@@ -442,6 +472,34 @@
         </form>
     </div>
 </div>
+@if($provider)
+@php
+    $countryCoords = $provider->country_coords ? preg_replace('/[\[\]]/', '', $provider->country_coords) : '';
+    $cityCoords = $provider->city_coords ? preg_replace('/[\[\]]/', '', $provider->city_coords) : '';
+@endphp
+<!-- Coordinates Modal -->
+<div id="coordsModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">User Location Coordinates</h3>
+        <form id="coordsForm">
+            @csrf
+            <input type="hidden" id="coordsProviderId" value="{{$provider->id}}">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">City Coordinates (lat, lng)</label>
+                <input type="text" value="{{$cityCoords}}" id="cityCoordsInput" name="city_coords" class="w-full border rounded px-3 py-2" placeholder="e.g. 48.8566, 2.3522">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Country Coordinates (lat, lng)</label>
+                <input type="text" value="{{ $countryCoords}}" id="countryCoordsInput" name="country_coords" class="w-full border rounded px-3 py-2" placeholder="e.g. 46.6034, 1.8883">
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button type="button" onclick="closeCoordsModal()" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endif
 
 <script>
 function showTab(evt, tabId) {
@@ -454,12 +512,17 @@ function showTab(evt, tabId) {
         el.classList.add('border-transparent', 'text-gray-500');
     });
     
-    // Show selected tab content
-    document.getElementById(tabId).classList.remove('hidden');
-    
+    // Show selected tab content (guard against missing element)
+    var tabContent = document.getElementById(tabId);
+    if (tabContent) {
+        tabContent.classList.remove('hidden');
+    }
+
     // Add active state to selected tab
-    evt.currentTarget.classList.remove('border-transparent', 'text-gray-500');
-    evt.currentTarget.classList.add('border-blue-500', 'text-blue-600');
+    if (evt && evt.currentTarget) {
+        evt.currentTarget.classList.remove('border-transparent', 'text-gray-500');
+        evt.currentTarget.classList.add('border-blue-500', 'text-blue-600');
+    }
 }
 
 // Initialize first tab on page load
@@ -508,27 +571,65 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-// AJAX for affiliate filters
-$('#affiliate-filters-form').on('submit', function(e) {
+
+function openCoordsModal(providerId) {
+    $('#coordsModal').removeClass('hidden');
+}
+function closeCoordsModal() {
+    $('#coordsModal').addClass('hidden');
+}
+
+// AJAX submit for coordinates
+$('#coordsForm').on('submit', function(e) {
     e.preventDefault();
-    let $form = $(this);
-    let url = "{{ route('admin.users.manage', $user->id) }}";
+    var providerId = $('#coordsProviderId').val();
+    var cityCoords = $('#cityCoordsInput').val().split(',').map(Number);
+    var countryCoords = $('#countryCoordsInput').val().split(',').map(Number);
+
     $.ajax({
-        url: url,
-        type: 'GET',
-        data: $form.serialize() + '&ajax_affiliate=1',
-        beforeSend: function() {
-            $('#affiliate-accounts-content').html('<div class="py-8 text-center text-gray-500">Loading...</div>');
+        url: '/api/admin/provider/' + providerId + '/update-coords',
+        type: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        data: {
+            city_coords: cityCoords.length === 2 ? JSON.stringify(cityCoords) : null,
+            country_coords: countryCoords.length === 2 ? JSON.stringify(countryCoords) : null
         },
         success: function(data) {
-            $('#affiliate-accounts-content').html(data.html);
+            alert('Coordinates updated successfully');
+            closeCoordsModal();
+            location.reload();
         },
-        error: function() {
-            $('#affiliate-accounts-content').html('<div class="py-8 text-center text-red-500">Failed to load data.</div>');
+        error: function(xhr) {
+            alert('Failed to update coordinates');
         }
+    });
+});
+
+$(document).ready(function() {
+    $('#providerVisibilityToggle').on('change', function() {
+        var providerId = $(this).data('provider-id');
+        var checked = $(this).is(':checked');
+        var $label = $('#providerVisibilityLabel');
+        $(this).prop('disabled', true);
+        $.ajax({
+            url: '/api/admin/provider/' + providerId + '/toggle-visibility',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            success: function(data) {
+                if (data.success) {
+                    $label.text(data.visible ? 'Visible' : 'Hidden');
+                }
+            },
+            complete: function() {
+                $('#providerVisibilityToggle').prop('disabled', false);
+            }
+        });
     });
 });
 </script>
