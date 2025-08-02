@@ -24,7 +24,7 @@
 </div>
 
 <!-- Subcategories Popup -->
-<div id="expatriesPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+<div id="expatriesPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4">
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
     <div class="sticky top-0 bg-white rounded-t-2xl border-b border-gray-100 p-6 flex items-center justify-between">
       <div class="flex items-center">
@@ -67,7 +67,7 @@
 
 
 <!-- Vacanciers - Autres besoins sub-subcategories Popup -->
-<div id="vacanciersAutresBesoinsPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+<div id="vacanciersAutresBesoinsPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4">
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
     <!-- Header with back and close buttons -->
     <div class="sticky top-0 bg-white rounded-t-2xl border-b border-gray-100 p-6 flex items-center justify-between">
