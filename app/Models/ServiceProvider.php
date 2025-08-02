@@ -37,7 +37,11 @@ class ServiceProvider extends Model
         'kyc_link',
         'kyc_status' ,
         'points',
-        'ulysse_status' 
+        'ulysse_status' ,
+        'provider_visibility',
+        'country_coords',
+        'city_coords',
+        'pinned'
     ];
 
     protected $casts = [

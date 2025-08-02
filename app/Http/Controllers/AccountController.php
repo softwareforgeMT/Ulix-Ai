@@ -108,7 +108,7 @@ class AccountController extends Controller
                 }
                 
                 if ($request->spoken_languages) {
-                    $providerData['spoken_language'] = json_encode($request->spoken_languages);
+                    $providerData['spoken_language'] = $request->spoken_languages;
                 }
 
                 if (!empty($providerData)) {

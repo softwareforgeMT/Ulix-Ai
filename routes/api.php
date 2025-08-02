@@ -8,6 +8,8 @@ use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\JobListController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\ServiceProviderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +37,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/world-map', [UserManagementController::class, 'getProviders'])->name('w-map-view');
 
     
 // Account information routes
@@ -45,3 +48,13 @@ Route::post('/mission/cancel/by-provider', [ServiceRequestController::class, 'pr
 
 //Get Filtered Transactions
 Route::get('transactions/filter', [TransactionController::class, 'filterTransactions']);
+
+// Admin World Map View
+Route::get('/admin/world-map', [UserManagementController::class, 'adminWorldMap'])->name('admin.w-map-view');
+
+// Toggle provider visibility (AJAX)
+Route::post('/admin/provider/{id}/toggle-visibility', [UserManagementController::class, 'toggleProviderVisibility'])->name('admin.provider.toggle-visibility');
+Route::post('/admin/provider/{id}/update-coords', [UserManagementController::class, 'updateProviderCoords'])->name('admin.provider.update-coords');
+Route::post('/admin/provider/{id}/toggle-pin', [\App\Http\Controllers\Admin\UserManagementController::class, 'toggleProviderPin'])->name('admin.provider.toggle-pin');
+Route::patch('/admin/users/{id}/edit-profile', [UserManagementController::class, 'editUserProfile'])->name('admin.users.edit-profile');
+Route::patch('/admin/providers/{id}/edit-profile', [UserManagementController::class, 'editProviderProfile'])->name('admin.providers.edit-profile');

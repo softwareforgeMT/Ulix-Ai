@@ -590,62 +590,159 @@ body {
                 $statuses = json_decode($provider->special_status, true) ?? [];
             @endphp
 
-            <a href="{{ route('provider-details', ['id' => $provider->slug]) }}" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor:pointer">
-                <div class="relative aspect-[9/12] w-full">
+            <a href="{{ route('provider-details', ['id' => $provider->slug]) }}" 
+              class="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:border-gray-200 transition-all duration-300 hover:-translate-y-1 block">
+                
+                <!-- Image Container -->
+                <div class="relative aspect-[4/5] sm:aspect-[3/4] md:aspect-[4/5] w-full overflow-hidden">
                     <img src="{{ $provider->profile_photo ?? 'images/attachment.png'}}" 
-                        alt="profile" class="absolute inset-0 w-full h-full object-cover">
-
-                    <div class="absolute top-2 left-2 flex items-center flex-wrap">
-                        <img src="https://flagcdn.com/w20/th.png" alt="Thailand Flag" class="w-4 h-3 mr-1">
-                        
-                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">{{ $provider->country ?? 'Visas' }}</span>
-                           
+                        alt="{{ $provider->first_name ?? 'Provider' }} profile" 
+                        class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy">
+                    
+                    <!-- Gradient Overlay for Better Text Readability -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10"></div>
+                    
+                    <!-- Country and Service Type -->
+                    <div class="absolute top-3 left-3 flex items-center gap-2 flex-wrap">
+                        @if($provider->country)
+                            <div class="flex items-center bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 shadow-sm">
+                                <img src="https://flagcdn.com/w20/{{ strtolower(substr($provider->country, 0, 2)) }}.png" 
+                                    alt="{{ $provider->country }} Flag" 
+                                    class="w-4 h-3 mr-1.5 rounded-sm"
+                                    onerror="this.style.display='none'">
+                                <span class="text-xs font-medium text-gray-700">{{ $provider->country }}</span>
+                            </div>
+                        @else
+                            <span class="bg-blue-600/90 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow-sm">
+                                Visas
+                            </span>
+                        @endif
                     </div>
 
-                    <div class="absolute bottom-2 left-2">
-                        <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">{{ $provider->preferred_language ?? 'English' }}</span>
+                    <!-- Language Badge -->
+                    @if($provider->preferred_language)
+                        <div class="absolute bottom-3 left-3">
+                            <span class="bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-1.5 rounded-lg text-xs font-medium shadow-sm border border-white/20">
+                                {{ $provider->preferred_language }}
+                            </span>
+                        </div>
+                    @endif
+
+                    <!-- Online Status Indicator -->
+                    <div class="absolute top-3 right-3">
+                        <div class="w-3 h-3 bg-green-400 rounded-full border-2 border-white shadow-sm animate-pulse"></div>
                     </div>
                 </div>
 
-                <div class="p-4">
-                    <div class="flex items-center mb-2">
-                        <h3 class="font-semibold text-lg">{{ $provider->first_name ?? '_' }}</h3>
-                        <span class="ml-auto text-lg font-semibold">45€/h</span>
+                <!-- Card Content -->
+                <div class="p-4 sm:p-5">
+                    <!-- Provider Name and Rating -->
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-bold text-lg text-gray-900 truncate">
+                                {{ $provider->first_name ?? 'Provider' }}
+                                @if($provider->last_name)
+                                    {{ substr($provider->last_name, 0, 1) }}.
+                                @endif
+                            </h3>
+                            
+                            <!-- Rating -->
+                            <div class="flex items-center mt-1">
+                                <div class="flex text-yellow-400 mr-2">
+                                    @php
+                                        $rating = $provider->reviews()->avg('rating') ?? 5.0;
+                                        $fullStars = floor($rating);
+                                        $hasHalfStar = $rating - $fullStars >= 0.5;
+                                    @endphp
+                                    
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= $fullStars)
+                                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            </svg>
+                                        @elseif ($i == $fullStars + 1 && $hasHalfStar)
+                                            <svg class="w-4 h-4 text-yellow-400" viewBox="0 0 20 20">
+                                                <defs>
+                                                    <linearGradient id="half-star">
+                                                        <stop offset="50%" stop-color="currentColor"/>
+                                                        <stop offset="50%" stop-color="#e5e7eb"/>
+                                                    </linearGradient>
+                                                </defs>
+                                                <path fill="url(#half-star)" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            </svg>
+                                        @else
+                                            <svg class="w-4 h-4 text-gray-300" viewBox="0 0 20 20">
+                                                <path fill="currentColor" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            </svg>
+                                        @endif
+                                    @endfor
+                                </div>
+                                <span class="text-sm font-medium text-gray-700">{{ number_format($rating, 1) }}</span>
+                                <span class="text-sm text-gray-500 ml-1">({{ $reviewCount ?? 0 }})</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Price or Verified Badge -->
+                        <div class="ml-3 flex-shrink-0">
+                            <div class="flex items-center bg-green-50 border border-green-200 rounded-lg px-2 py-1">
+                                <svg class="w-3 h-3 text-green-600 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span class="text-xs font-medium text-green-700">Verified</span>
+                            </div>
+                        </div>
                     </div>
-                    @php 
-                      $operationalCountriesRaw = $provider->operational_countries ?? [];
 
-                      // If first decode gave a string, decode again
-                      if (is_string($operationalCountriesRaw)) {
-                          $operationalCountries = json_decode($operationalCountriesRaw, true) ?? [];
-                      } else {
-                          $operationalCountries = $operationalCountriesRaw;
-                      }
+                    <!-- Operational Countries -->
+                    @php 
+                        $operationalCountriesRaw = $provider->operational_countries ?? [];
+                        if (is_string($operationalCountriesRaw)) {
+                            $operationalCountries = json_decode($operationalCountriesRaw, true) ?? [];
+                        } else {
+                            $operationalCountries = $operationalCountriesRaw;
+                        }
                     @endphp
 
-                    @foreach($operationalCountries as $country)
-                      <span class="bg-gray-100 px-2 py-1 rounded">{{ $country }}</span>
-                    @endforeach
-
-                    <div class="flex items-center mb-3">
-                        <div class="flex text-yellow-400">
-                            @for ($i = 1; $i <= 5; $i++)
-                                @if ($i <= $avgRating)
-                                    <i class="fas fa-star"></i>
-                                @else
-                                    <i class="far fa-star"></i>
+                    @if(!empty($operationalCountries))
+                        <div class="mb-4">
+                            <p class="text-xs font-medium text-gray-500 mb-2">Operational Countries</p>
+                            <div class="flex flex-wrap gap-1.5">
+                                @foreach(array_slice($operationalCountries, 0, 3) as $country)
+                                    <span class="bg-gray-50 border border-gray-200 text-gray-700 px-2.5 py-1 rounded-md text-xs font-medium">
+                                        {{ $country }}
+                                    </span>
+                                @endforeach
+                                @if(count($operationalCountries) > 3)
+                                    <span class="bg-blue-50 border border-blue-200 text-blue-700 px-2.5 py-1 rounded-md text-xs font-medium">
+                                        +{{ count($operationalCountries) - 3 }} more
+                                    </span>
                                 @endif
-                            @endfor
+                            </div>
                         </div>
-                        <span class="text-sm text-gray-600 ml-2">{{ number_format($provider->reviews()->avg('rating') ?? 5.0, 1) }} ({{ $reviewCount }} Reviews)</span>
-                    </div>
+                    @endif
 
-                    <div class="flex gap-2 text-xs text-gray-500">
-                      @foreach ($statuses as $index => $status)
-                        <span class="bg-gray-100 px-2 py-1 rounded">{{ $index }}</span>
-                      @endforeach
-                    </div>
+                    <!-- Service Categories/Statuses -->
+                    @if(isset($statuses) && !empty($statuses))
+                        <div class="pt-3 border-t border-gray-100">
+                            <div class="flex flex-wrap gap-1.5">
+                                @foreach(array_slice($statuses, 0, 2) as $index => $status)
+                                    <span class="bg-blue-50 border border-blue-200 text-blue-700 px-2.5 py-1 rounded-md text-xs font-medium">
+                                        {{ $index }}
+                                    </span>
+                                @endforeach
+                                @if(count($statuses) > 2)
+                                    <span class="bg-gray-50 border border-gray-200 text-gray-600 px-2.5 py-1 rounded-md text-xs font-medium">
+                                        +{{ count($statuses) - 2 }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
                 </div>
+
+                <!-- Hover Effect Indicator -->
+                <div class="absolute inset-0 border-2 border-transparent group-hover:border-blue-200 rounded-xl transition-colors duration-300 pointer-events-none"></div>
             </a>
         @endforeach
 
@@ -1676,7 +1773,40 @@ document.getElementById('filterButton').addEventListener('click', function() {
                 filterLanguage = data.filters.languages;
                 // Transform API data to match our map format
                 providers = data.data.map(provider => {
-                    const coords = getCoordinates(provider.country, provider.provider_address);
+                    let coords = [0, 0];
+                    if (provider.city_coords) {
+                        let cityCoords = provider.city_coords;
+                        if (typeof cityCoords === 'string') {
+                            try {
+                                cityCoords = JSON.parse(cityCoords);
+                            } catch (e) {
+                                cityCoords = null;
+                            }
+                        }
+                        if (Array.isArray(cityCoords) && cityCoords.length === 2) {
+                            coords = [
+                                parseFloat(cityCoords[0]) + (Math.random() - 0.5) * 0.1,
+                                parseFloat(cityCoords[1]) + (Math.random() - 0.5) * 0.1
+                            ];
+                        }
+                    } else if (provider.country_coords) {
+                        let countryCoords = provider.country_coords;
+                        if (typeof countryCoords === 'string') {
+                            try {
+                                countryCoords = JSON.parse(countryCoords);
+                            } catch (e) {
+                                countryCoords = null;
+                            }
+                        }
+                        if (Array.isArray(countryCoords) && countryCoords.length === 2) {
+                            coords = [
+                                parseFloat(countryCoords[0]) + (Math.random() - 0.5) * 2,
+                                parseFloat(countryCoords[1]) + (Math.random() - 0.5) * 2
+                            ];
+                        }
+                    } else {
+                        coords = getCoordinates(provider.country, provider.provider_address);
+                    }
                     const spokenLanguages = provider.spoken_language || [];
                     const reviewCount = provider.reviews_count || 0;
                     const avgRating = provider.average_rating || 0;

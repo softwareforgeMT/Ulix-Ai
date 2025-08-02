@@ -10,7 +10,13 @@ use App\Models\Category;
 class ServiceProviderController extends Controller
 {
     public function main(Request $request) {
-        $providers = ServiceProvider::with(['user', 'reviews'])->latest()->get();
+        $providers = ServiceProvider::with(['user', 'reviews'])
+            ->wherehas('user', function ($query) {
+                $query->where('status', 'active');
+            })
+            ->orderByDesc('pinned')
+            ->latest()
+            ->get();
         $category = Category::where('level', 1)->with('subcategories')->get();
         return view('pages.index', compact('providers', 'category'));
     }

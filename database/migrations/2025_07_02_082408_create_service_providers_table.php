@@ -29,10 +29,12 @@ class CreateServiceProvidersTable extends Migration
             $table->string('country')->nullable();
             $table->string('preferred_language')->nullable();
             $table->json('special_status')->nullable();
-            
+            $table->boolean('provider_visibility')->default(true);
+            $table->json('country_coords')->nullable();
+            $table->json('city_coords')->nullable();
             $table->string('email')->unique()->nullable();
             $table->json('documents')->nullable();
-            
+            $table->boolean('pinned')->default(false);
             // Stripe related columns
             $table->string('stripe_account_id')->nullable();
             $table->boolean('stripe_chg_enabled')->default(false);
