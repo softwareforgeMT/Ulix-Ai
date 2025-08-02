@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\ServiceProvider;
 use App\Models\Category;
+use App\Models\User;
 
 class ServiceProviderController extends Controller
 {
@@ -86,6 +87,24 @@ class ServiceProviderController extends Controller
         });
         
         return response()->json($providers);
+    }
+
+    public function updateProviderCategories(Request $request) {
+        $user = User::findorFail($request->user_id);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $provider = ServiceProvider::where('user_id', $user->id)->first();
+        if (!$provider) {
+            return response()->json(['error' => 'Provider not found'], 404);
+        }
+        $provider->services_to_offer = $request->categories;
+        $provider->services_to_offer_category = $request->subcategories;
+        $provider->save();
+
+        return response()->json(['success' => true, 'message' => 'Categories updated successfully']);
     }
 
 

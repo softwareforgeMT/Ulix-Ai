@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\MissionAdminController;
 */
 // routes/web.php
 Route::get('/categories', [CategoryController::class, 'fetchMainCategories']);
+Route::post('/provider/save-categories', [ServiceProviderController::class, 'updateProviderCategories']);
 Route::get('/categories/{parentId}/subcategories', [CategoryController::class, 'fetchSubCategories']);
 Route::get('/categories/{parentId}/children', [CategoryController::class, 'fetchChildCategories']);
 Route::get('/providers/map', [MapController::class, 'getProviders']);

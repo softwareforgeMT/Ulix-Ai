@@ -25,7 +25,7 @@
     </div>
 
     <div class="group bg-white border-2 border-gray-200 hover:border-blue-400 rounded-xl px-4 py-6 text-center font-semibold text-sm cursor-pointer transition-all duration-300 hover:shadow-md">
-      <button onclick="openSearchPopup()" class="text-gray-700 group-hover:text-blue-600">Categories</button>
+      <button type="button" onclick="openCategoryPopup()" class="text-gray-700 group-hover:text-blue-600">Categories</button>
     </div>
 
     <div class="group bg-white border-2 border-gray-200 hover:border-blue-400 rounded-xl px-4 py-6 text-center font-semibold text-sm cursor-pointer transition-all duration-300 hover:shadow-md" onclick="openAboutYouPopup()">

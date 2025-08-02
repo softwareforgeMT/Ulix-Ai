@@ -4,7 +4,7 @@
 
 @endphp
 @if($user->user_role === 'service_provider')
-    @if ($provider->kyc_status != 'verified')
+    @if ($provider->kyc_status != 'verified' && $provider->stripe_account_id)
       <div id="kyc-banner" class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-md shadow-md flex justify-between items-center mb-4 animate-pulse">
           <div>
               <h3 class="font-semibold text-lg">Complete Your KYC</h3>
@@ -20,7 +20,7 @@
   @endif
 @endif
 
-  <!-- <script>
+  <script>
     document.getElementById('start-kyc-btn').addEventListener('click', function () {
     fetch("{{ route('stripe.kyc.link') }}")
         .then(res => res.json())
@@ -39,4 +39,4 @@
             alert("Something went wrong. Please try again later.");
         });
     });
-</script> -->
+</script>
