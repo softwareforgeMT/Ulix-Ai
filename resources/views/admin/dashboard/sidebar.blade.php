@@ -11,9 +11,9 @@
                 <i class="fas fa-users w-5 h-5"></i>
                 <span>Manage Users</span>
             </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50">
+            <a href="{{ route('admin.missions') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50">
                 <i class="fas fa-briefcase w-5 h-5"></i>
-                <span>Service Requests</span>
+                <span>Missions</span>
             </a>
 
             <a href="{{ route('admin.transactions') }}"

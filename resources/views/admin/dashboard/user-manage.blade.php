@@ -431,33 +431,64 @@
             @method('PATCH')
             <input type="hidden" name="mission_id" id="modal_mission_id" value="">
             
-            <div>
+            <!-- Status Dropdown -->
+            <div class="relative">
                 <label for="modal_status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select name="status" id="modal_status" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="pending">Pending</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
+                <div class="relative">
+                    <select name="status" id="modal_status" class="appearance-none block w-full bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="published">Published</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="disputed">Disputed</option>
+                        <option value="waiting_to_start">Waiting to Start</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500">
+                        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                        </svg>
+                    </div>
+                </div>
             </div>
-            
-            <div>
+
+            <!-- Payment Status Dropdown -->
+            <div class="relative">
                 <label for="modal_payment_status" class="block text-sm font-medium text-gray-700 mb-2">Payment Status</label>
-                <select name="payment_status" id="modal_payment_status" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="unpaid">Unpaid</option>
-                    <option value="paid">Paid</option>
-                </select>
+                <div class="relative">
+                    <select name="payment_status" id="modal_payment_status"
+                            class="appearance-none block w-full bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="unpaid">Unpaid</option>
+                        <option value="paid">Paid</option>
+                        <option value="held">Held</option>
+                        <option value="released">Released</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500">
+                        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                        </svg>
+                    </div>
+                </div>
             </div>
-            
-            <div>
+
+            <!-- Assign Provider Dropdown -->
+            <div class="relative">
                 <label for="modal_selected_provider_id" class="block text-sm font-medium text-gray-700 mb-2">Assign Provider</label>
-                <select name="selected_provider_id" id="modal_selected_provider_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="">-- Select Provider --</option>
-                    @foreach(\App\Models\ServiceProvider::all() as $prov)
-                        <option value="{{ $prov->id }}">{{ $prov->first_name }} {{ $prov->last_name }} ({{ $prov->email }})</option>
-                    @endforeach
-                </select>
+                <div class="relative">
+                    <select name="selected_provider_id" id="modal_selected_provider_id"
+                            class="appearance-none block w-full bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">-- Select Provider --</option>
+                        @foreach(\App\Models\ServiceProvider::all() as $prov)
+                            <option value="{{ $prov->id }}">{{ $prov->first_name }} {{ $prov->last_name }} ({{ $prov->email }})</option>
+                        @endforeach
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500">
+                        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                        </svg>
+                    </div>
+                </div>
             </div>
+
             
             <div class="flex justify-end space-x-3 pt-4">
                 <button type="button" onclick="closeMissionActionModal()" 

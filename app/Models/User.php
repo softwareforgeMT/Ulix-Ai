@@ -80,6 +80,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(AffiliateCommission::class, 'referrer_id');
     }
+    
+    public function isSuspended(): bool
+    {
+        return $this->status === 'suspended';
+    }
 }
 
 

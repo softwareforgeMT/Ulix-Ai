@@ -19,11 +19,13 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\Admin\MissionAdminController;
 use App\Http\Controllers\ProviderReviewController;
 use App\Http\Controllers\MissionMessageController;
 use App\Http\Controllers\StripePaymentController;
 use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\UlixaiReviewController;
+use App\Http\Middleware\AdminAuthenticate;
 
 // AJAX user signup
 Route::post('/signup/store', [UserController::class, 'storeViaSignup']);
@@ -168,7 +170,7 @@ Route::prefix('admin')->name('admin.')->middleware(['web'])->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 
-    Route::middleware(['auth:admin', \App\Http\Middleware\AdminAuthenticate::class])->group(function () {
+    Route::middleware(['auth:admin', AdminAuthenticate::class])->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('/transactions', [AdminDashboardController::class, 'transactions'])->name('transactions');
         Route::get('/users', [UserManagementController::class, 'users'])->name('users');
@@ -183,7 +185,14 @@ Route::prefix('admin')->name('admin.')->middleware(['web'])->group(function () {
         Route::get('/transactions/{transaction}/edit', [TransactionController::class, 'edit'])->name('transactions.edit');
         Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
         Route::get('/users/{id}/edit-profile', [UserManagementController::class, 'editProfileView'])->name('users.edit-profile');
+        Route::post('/users/{id}/update-profile', [UserManagementController::class, 'editUserProfile'])->name('users.update-profile');
         
+        Route::get('/missions', [MissionAdminController::class, 'index'])->name('missions');
+        Route::get('/missions/{id}', [MissionAdminController::class, 'show'])->name('missions.show');
+        Route::get('/missions', [MissionAdminController::class, 'index'])->name('missions');
+        Route::get('/admin/missions/{id}', [MissionAdminController::class, 'show'])->name('missions.show');
+        Route::get('/missions/{id}/edit', [MissionAdminController::class, 'edit'])->name('missions.edit');
+        Route::post('/missions/{id}/edit', [MissionAdminController::class, 'update'])->name('missions.update');
     });
 });
 

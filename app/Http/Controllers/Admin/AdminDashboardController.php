@@ -23,11 +23,16 @@ class AdminDashboardController extends Controller
     }
     public function index()
     {
+        
+        $now = Carbon::now();
+        $lastMonthStart = $now->copy()->subMonth()->startOfMonth();
+        $lastMonthEnd = $now->copy()->subMonth()->endOfMonth();
         // Total users
         $totalUsers = User::count();
         $totalProviders = ServiceProvider::count();
         $totalRequesters = User::where('user_role', 'service_requester')->count();
 
+        $newUsersLastMonth = User::whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count();
         // Recent users
         $recentUsers = User::latest()->limit(5)->get();
 
@@ -67,7 +72,8 @@ class AdminDashboardController extends Controller
             'pendingTransactions',
             'totalRevenue',
             'totalPendingPayouts',
-            'recentMissions'
+            'recentMissions',
+            'newUsersLastMonth',
         ));
     }
     

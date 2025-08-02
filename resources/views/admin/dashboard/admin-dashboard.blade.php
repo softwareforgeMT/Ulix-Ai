@@ -34,8 +34,11 @@
                         </div>
                         <div class="text-right">
                             <div class="text-3xl font-bold text-gray-900">{{ number_format($totalUsers) }}</div>
-                            <div class="text-sm text-gray-500 mt-1">+12% from last month</div>
+                            <div class="text-sm text-gray-500 mt-1">
+                                {{ '+12% from ' . now()->subMonth()->format('F') }}
+                            </div>
                         </div>
+
                     </div>
                     <div class="text-gray-700 font-semibold">Total Users</div>
                 </div>
@@ -254,7 +257,7 @@
         <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 mb-10 border border-white/20">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-gray-900">Recent Transactions</h3>
-                <a href="#" class="text-blue-600 hover:text-blue-700 text-sm font-medium">View all transactions</a>
+                <a href="{{ route('admin.transactions') }}" class="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium">View all transactions</a>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full">

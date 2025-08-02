@@ -69,6 +69,15 @@ class UserManagementController extends Controller
                 return back()->with('success', 'Affiliate account blocked.');
             }
 
+            if ($request->has('unblock_affiliate_user_id')) {
+                $refUser = User::find($request->input('unblock_affiliate_user_id'));
+                if ($refUser) {
+                    $refUser->status = 'active';
+                    $refUser->save();
+                }
+                return back()->with('success', 'Affiliate account is unblocked.');
+            }
+
             // User status update
             if ($request->has('status')) {
                 $request->validate([
@@ -111,7 +120,6 @@ class UserManagementController extends Controller
     public function manageMission(Request $request, $missionId)
     {
         $mission = Mission::findOrFail($missionId);
-
         $request->validate([
             'status' => 'required|in:pending,in_progress,completed,cancelled',
             'payment_status' => 'required|in:paid,unpaid',
@@ -431,8 +439,9 @@ class UserManagementController extends Controller
 
     public function editProfileView($id)
     {
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
         $provider = ServiceProvider::where('user_id', $user->id)->first();
         return view('admin.dashboard.edit-profile', compact('user', 'provider'));
     }
+
 }

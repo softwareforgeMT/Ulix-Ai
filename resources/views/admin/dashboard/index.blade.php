@@ -7,11 +7,25 @@
     <link rel="icon" type="image/png" sizes="64x64" href="images/logoblue-64.png" />
     <script src="https://cdn.tailwindcss.com"></script>   
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 </head>
 <body class="bg-gray-50">
+@if (session('success'))
+    <script>
+        toastr.success('{{ session('success') }}', 'Success');
+    </script>
+@endif
+
+@if (session('error'))
+    <script>
+        toastr.error('{{ session('error') }}', 'Error');
+    </script>
+@endif
+
     <!-- Admin Navbar -->
     <nav class="bg-white shadow px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-3">

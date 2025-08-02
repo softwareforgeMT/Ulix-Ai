@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ServiceProviderController;
+use App\Http\Controllers\Admin\MissionAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,3 +59,6 @@ Route::post('/admin/provider/{id}/update-coords', [UserManagementController::cla
 Route::post('/admin/provider/{id}/toggle-pin', [\App\Http\Controllers\Admin\UserManagementController::class, 'toggleProviderPin'])->name('admin.provider.toggle-pin');
 Route::patch('/admin/users/{id}/edit-profile', [UserManagementController::class, 'editUserProfile'])->name('admin.users.edit-profile');
 Route::patch('/admin/providers/{id}/edit-profile', [UserManagementController::class, 'editProviderProfile'])->name('admin.providers.edit-profile');
+
+Route::get('/admin/missions', [MissionAdminController::class, 'apiList']);
+Route::get('/admin/missions/{id}', [MissionAdminController::class, 'apiShow']);

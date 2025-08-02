@@ -1,4 +1,5 @@
 @if($referredUsers->count())
+
 <div class="overflow-x-auto">
     
     <table class="min-w-full divide-y divide-gray-200 text-sm">
@@ -46,8 +47,14 @@
                     <form method="POST" action="{{ route('admin.users.manage', $user->id) }}">
                         @csrf
                         @method('PATCH')
-                        <input type="hidden" name="block_affiliate_user_id" value="{{ $refUser->id }}">
-                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs">Block</button>
+                        
+                        @if($refUser->isSuspended())
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs">Unblock</button>
+                            <input type="hidden" name="unblock_affiliate_user_id" value="{{ $refUser->id }}">
+                        @else
+                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs">Block</button>
+                            <input type="hidden" name="block_affiliate_user_id" value="{{ $refUser->id }}">
+                        @endif
                     </form>
                     <a href="{{ route('admin.users.manage', $refUser->id) }}" 
                         class="inline-flex items-center justify-center w-6 h-6 border border-gray-300 shadow-sm rounded-full text-gray-400 bg-white hover:bg-gray-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">

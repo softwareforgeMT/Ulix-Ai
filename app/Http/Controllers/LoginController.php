@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Hash;
 class LoginController extends Controller
 {
     function showLoginForm () {
+        if(auth()->check()) {
+            return redirect('dashboard');
+        }
         return view('user-auth.login');
     }
 
