@@ -6,6 +6,13 @@
     @php 
       $user = auth()->user();
     @endphp
+
+
+
+   <script>
+  const LOGGED_IN_USER_ID = {{ auth()->user()->id }};
+</script>
+
 <!-- Main Content -->
 <div class="flex flex-col lg:flex-row min-h-screen">
   <div class="flex-1 p-4 sm:p-6 space-y-10">
@@ -39,8 +46,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // === MODAL FUNCTIONS ===
 function openAboutYouPopup() {
-  showModal("aboutYouPopup");
+  document.getElementById("aboutYouPopup").classList.remove("hidden");
 }
+
+function closeAboutYouPopup() {
+  document.getElementById("aboutYouPopup").classList.add("hidden");
+}
+function submitAboutYou() {
+  const description = document.getElementById("aboutYouText").value;
+
+  fetch('/api/update-about-you', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      user_id: LOGGED_IN_USER_ID,
+      description: description
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      showNotification('About updated successfully!', 'success'); // ✅ use your custom function
+      closeAboutYouPopup();
+    } else {
+      showNotification(data.message || 'Update failed!', 'error');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showNotification('An error occurred. Please try again.', 'error');
+  });
+}
+
+
+
+
+
+
 
 function closeAboutYouPopup() {
   hideModal("aboutYouPopup");
@@ -631,18 +675,7 @@ function initializeToggleButtons() {
   });
 }
 
-// === FORM SUBMISSION ===
-function submitAboutYou() {
-  const text = document.getElementById("aboutYouText").value;
-  if (text.trim() === "") {
-    alert("Please tell us something about yourself.");
-    return;
-  }
-  
-  // Here you would typically send the data to your server
-  alert("Submitted:\n" + text);
-  closeAboutYouPopup();
-}
+
 
 // === CATEGORY FUNCTIONS ===
 function showExpatriesSubcategories() {
@@ -672,5 +705,10 @@ document.addEventListener('keydown', function (event) {
   }
 });
 </script>
+
+
+
+
+
 
 @endsection

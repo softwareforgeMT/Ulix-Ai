@@ -28,6 +28,10 @@ Route::post('/provider/save-categories', [ServiceProviderController::class, 'upd
 Route::get('/categories/{parentId}/subcategories', [CategoryController::class, 'fetchSubCategories']);
 Route::get('/categories/{parentId}/children', [CategoryController::class, 'fetchChildCategories']);
 Route::get('/providers/map', [MapController::class, 'getProviders']);
+Route::post('/update-about-you', [ServiceProviderController::class, 'updateAboutYou']);
+
+
+
 
 //Servic Provider Action 
 Route::post('/provider/jobs/start', [JobListController::class, 'startMission']);

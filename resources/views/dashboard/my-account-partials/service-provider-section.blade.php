@@ -31,6 +31,17 @@
     <div class="group bg-white border-2 border-gray-200 hover:border-blue-400 rounded-xl px-4 py-6 text-center font-semibold text-sm cursor-pointer transition-all duration-300 hover:shadow-md" onclick="openAboutYouPopup()">
       <div class="text-gray-700 group-hover:text-blue-600">About You</div>
     </div>
+  <div id="aboutYouPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-2xl border border-gray-200 w-96 p-8 shadow-2xl">
+    <h2 class="text-center text-xl font-bold text-gray-900 mb-6">Update About You</h2>
+    <textarea id="aboutYouText" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" rows="6" placeholder="Write about yourself..."></textarea>
+    <div class="flex justify-end space-x-3 mt-6">
+      <button onclick="closeAboutYouPopup()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium px-6 py-2.5 rounded-xl transition-all duration-200">Cancel</button>
+      <button onclick="submitAboutYou()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-6 py-2.5 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg">Save</button>
+    </div>
+  </div>
+</div>
+
 
     <div class="group bg-white border-2 border-gray-200 hover:border-blue-400 rounded-xl px-4 py-6 text-center font-semibold text-sm transition-all duration-300 hover:shadow-md">
       <a id="openSpecialStatusModal" href="#" class="text-gray-700 group-hover:text-blue-600">Special Status</a>

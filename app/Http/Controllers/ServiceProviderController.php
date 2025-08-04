@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\ServiceProvider;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\SpecialStatus;
+
 
 class ServiceProviderController extends Controller
 {
@@ -106,6 +108,35 @@ class ServiceProviderController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Categories updated successfully']);
     }
+
+
+
+public function updateAboutYou(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'description' => 'required|string|max:1000',
+    ]);
+
+    $provider = ServiceProvider::where('user_id', $request->user_id)->first();
+
+    if (!$provider) {
+        return response()->json(['success' => false, 'message' => 'Service provider not found'], 404);
+    }
+
+    // ✅ Fixed column name
+    $provider->profile_description = $request->description;
+    $provider->save();
+
+    return response()->json(['success' => true, 'message' => 'About You updated successfully']);
+}
+
+
+
+
+
+
+
 
 
 }
