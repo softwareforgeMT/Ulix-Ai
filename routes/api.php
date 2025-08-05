@@ -11,6 +11,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ServiceProviderController;
 use App\Http\Controllers\Admin\MissionAdminController;
+use App\Http\Controllers\BugReportController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,9 @@ Route::get('/categories/{parentId}/subcategories', [CategoryController::class, '
 Route::get('/categories/{parentId}/children', [CategoryController::class, 'fetchChildCategories']);
 Route::get('/providers/map', [MapController::class, 'getProviders']);
 Route::post('/update-about-you', [ServiceProviderController::class, 'updateAboutYou']);
+
+
+Route::post('/report-bug', [BugReportController::class, 'store']);
 
 
 
