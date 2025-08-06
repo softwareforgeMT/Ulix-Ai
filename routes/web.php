@@ -173,6 +173,8 @@ Route::prefix('admin')->name('admin.')->middleware(['web'])->group(function () {
     Route::middleware(['auth:admin', AdminAuthenticate::class])->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('/transactions', [AdminDashboardController::class, 'transactions'])->name('transactions');
+        // Route::get('/badges', [AdminDashboardController::class, 'badges'])->name('badges');
+        Route::match(['get', 'post', 'patch', 'delete'], '/badges', [AdminDashboardController::class, 'badges'])->name('badges');
         Route::get('/users', [UserManagementController::class, 'users'])->name('users');
         Route::match(['get', 'patch'], '/users/{user}/manage', [UserManagementController::class, 'manage'])->name('users.manage');
         Route::patch('/missions/{mission}/manage', [UserManagementController::class, 'manageMission'])->name('missions.manage');
@@ -192,7 +194,14 @@ Route::prefix('admin')->name('admin.')->middleware(['web'])->group(function () {
         Route::get('/missions', [MissionAdminController::class, 'index'])->name('missions');
         Route::get('/admin/missions/{id}', [MissionAdminController::class, 'show'])->name('missions.show');
         Route::get('/missions/{id}/edit', [MissionAdminController::class, 'edit'])->name('missions.edit');
+        Route::get('/missions/{id}/conversation', [MissionAdminController::class, 'conversation'])->name('missions.conversation');
         Route::post('/missions/{id}/edit', [MissionAdminController::class, 'update'])->name('missions.update');
+        // Route::post('/users/{user}/block', [UserManagementController::class, 'suspendUser'])->name('users.block');
+
+        // In your routes/web.php or api.php
+        Route::post('/users/{user}/block', [UserManagementController::class, 'suspendUser'])->name('users.block');
+        Route::post('/users/{user}/unblock', [UserManagementController::class, 'unblockUser'])->name('users.unblock');
+
     });
 });
 

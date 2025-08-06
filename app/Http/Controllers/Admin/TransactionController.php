@@ -15,6 +15,7 @@ use Stripe\PaymentIntent;
 use Stripe\Transfer;
 use Stripe\Account as StripeAccount;
 use Illuminate\Support\Facades\DB;
+use App\Services\PaymentService;
 
 class TransactionController extends Controller
 {
@@ -79,5 +80,52 @@ class TransactionController extends Controller
         });
         // Return the filtered transactions as a JSON response
         return response()->json($transactions);
+    }
+
+    public function refund($id)
+    {
+        try {
+            $transaction = Transaction::with(['mission', 'provider'])->findOrFail($id);
+
+            if ($transaction->status === 'released' || $transaction->status === 'refunded') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot refund a released or already refunded transaction'
+                ], 400);
+            }
+
+            $paymentService = new PaymentService();
+            $result = $paymentService->refundTransaction($transaction);
+
+            if ($result) {
+                // Update transaction status
+                $transaction->status = 'refunded';
+                $transaction->save();
+
+                // Update mission payment status
+                if ($transaction->mission) {
+                    $transaction->mission->payment_status = 'refunded';
+                    $transaction->mission->status = 'published';
+                    $transaction->mission->selected_provider_id = null;
+                    $transaction->mission->save();
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Transaction refunded successfully'
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process refund'
+            ], 500);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to refund transaction: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

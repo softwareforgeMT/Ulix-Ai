@@ -67,10 +67,10 @@
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Provider Pays</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Country</th>
-                            <!-- <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th> -->
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
-                    <tbody  id="transaction-table-body" class="bg-white divide-y divide-gray-200">
+                    <tbody id="transaction-table-body" class="bg-white divide-y divide-gray-200">
                         @forelse($transactions as $txn)
                         <tr class="hover:bg-gray-50 transition-colors duration-200">
                             <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -114,25 +114,23 @@
                                     {{ $txn->country }}
                                 </div>
                             </td>
-                            <!-- <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('admin.transactions.edit', $txn->id) }}" 
-                                       class="inline-flex items-center px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md transition-colors duration-200">
-                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                        Edit
-                                    </a>
-                                    <a href="{{ route('admin.transactions.show', $txn->id) }}" 
-                                       class="inline-flex items-center px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs font-medium rounded-md transition-colors duration-200">
-                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                        </svg>
-                                        View
-                                    </a>
+                                    @if($txn->mission->payment_status !== 'released' && $txn->mission->payment_status !== 'refunded')
+                                        <button onclick="handleRefund({{ $txn->id }})"
+                                                class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded transition-colors duration-200">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+                                            </svg>
+                                            Refund
+                                        </button>
+                                    @else
+                                        <span class="text-sm text-gray-500">
+                                            {{ ucfirst($txn->mission->payment_status) }}
+                                        </span>
+                                    @endif
                                 </div>
-                            </td> -->
+                            </td>
                         </tr>
                         @empty
                         <tr>
@@ -261,7 +259,7 @@
                                 </span>
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
-                                @if(!$provider->stripe_charges_enabled || !$provider->stripe_payouts_enabled)
+                                @if(!$provider->stripe_chg_enabled || !$provider->stripe_pts_enabled)
                                     <form method="POST" action="{{ route('admin.stripe.kyc.remind', $provider->id) }}" class="inline">
                                         @csrf
                                         <button type="submit" 
@@ -276,8 +274,8 @@
                                     <span class="inline-flex items-center px-3 py-2 bg-green-100 text-green-800 text-xs font-medium rounded-md">
                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        Complete
+                                    </svg>
+                                    Complete
                                     </span>
                                 @endif
                             </td>
@@ -319,7 +317,6 @@
 
                 // Update transaction count
                 document.getElementById('transaction-count').innerText = data.length;
-console.log(data);
                 // Loop through the data and populate the table
                 data.forEach(txn => {
                     let row = document.createElement('tr');
@@ -342,6 +339,33 @@ console.log(data);
             })
             .catch(error => console.error('Error:', error));
     });
+
+    function handleRefund(transactionId) {
+        if (!confirm('Are you sure you want to refund this transaction?')) {
+            return;
+        }
+
+        fetch(`/api/admin/transactions/${transactionId}/refund`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Transaction refunded successfully');
+                location.reload(); // Refresh to see updated status
+            } else {
+                alert(data.message || 'Failed to refund transaction');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to refund transaction');
+        });
+    }
 </script>
 
 @endsection

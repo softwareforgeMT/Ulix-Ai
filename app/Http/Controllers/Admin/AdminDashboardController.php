@@ -7,12 +7,15 @@ use App\Models\User;
 use App\Models\Transaction;
 use App\Models\ServiceProvider;
 use App\Models\Mission;
+use App\Models\Badge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use App\Services\PaymentService;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AdminDashboardController extends Controller
 {
@@ -135,8 +138,23 @@ class AdminDashboardController extends Controller
 
     public function remindKyc($providerId)
     {
-        // Send KYC reminder to provider/admin
-        // ...
+        $provider = ServiceProvider::findOrFail($providerId);
+        $user = $provider->user;
+
+        // Send KYC reminder email to provider
+        Mail::send([], [], function ($message) use ($provider, $user) {
+            $message->to($provider->email)
+                ->subject('KYC Verification Reminder')
+                ->html("
+                    Dear {$provider->first_name},<br><br>
+                    This is a reminder to complete your KYC verification on Ulixai.<br>
+                    Please log in to your account and complete the required steps.<br><br>
+                    If you have any questions, contact support.<br><br>
+                    Thank you,<br>
+                    Ulixai Team
+                ");
+        });
+
         return back()->with('success', 'KYC reminder sent!');
     }
 
@@ -161,5 +179,54 @@ class AdminDashboardController extends Controller
         }
 
         return false; 
+    }
+
+    public function badges(Request $request)
+    {
+        // Handle create
+        if ($request->isMethod('post')) {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'slug' => 'nullable|string|max:255|unique:badges,slug',
+                'icon' => 'nullable|string|max:255',
+                'type' => 'required|string|max:50',
+                'threshold' => 'nullable|integer',
+                'is_active' => 'boolean',
+                'is_auto' => 'boolean',
+                'sort_order' => 'integer',
+            ]);
+            $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title']);
+            Badge::create($validated);
+            return redirect()->route('admin.badges')->with('success', 'Badge created!');
+        }
+
+        // Handle update
+        if ($request->isMethod('patch')) {
+            $badge = Badge::findOrFail($request->input('id'));
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'slug' => 'nullable|string|max:255|unique:badges,slug,' . $badge->id,
+                'icon' => 'nullable|string|max:255',
+                'type' => 'required|string|max:50',
+                'threshold' => 'nullable|integer',
+                'is_active' => 'boolean',
+                'is_auto' => 'boolean',
+                'sort_order' => 'integer',
+            ]);
+            $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title']);
+            $badge->update($validated);
+            return redirect()->route('admin.badges')->with('success', 'Badge updated!');
+        }
+
+        // Handle delete
+        if ($request->isMethod('delete')) {
+            $badge = Badge::findOrFail($request->input('id'));
+            $badge->delete();
+            return redirect()->route('admin.badges')->with('success', 'Badge deleted!');
+        }
+
+        // Show all badges
+        $badges = Badge::orderBy('sort_order')->get();
+        return view('admin.dashboard.badges.index', compact('badges'));
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 
 use App\Models\User;
 use App\Models\Transaction;
@@ -442,6 +443,24 @@ class UserManagementController extends Controller
         $user = User::findOrFail($id);
         $provider = ServiceProvider::where('user_id', $user->id)->first();
         return view('admin.dashboard.edit-profile', compact('user', 'provider'));
+    }
+
+
+    public function suspendUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->status = 'suspended';
+        $user->save();
+
+       return response()->json(['success' => true, 'message' => 'User blocked successfully']);
+    }
+    public function unblockUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->status = 'active';
+        $user->save();
+
+       return response()->json(['success' => true, 'message' => 'User unblocked successfully']);
     }
 
 }

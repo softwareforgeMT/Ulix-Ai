@@ -2,6 +2,8 @@
 
 namespace App\Services;
 use App\Models\ReputationPoint;
+use App\Models\Badge;
+use App\Models\UserBadge;
 use Illuminate\Support\Facades\Log;
 
 class ReputationPointService
@@ -53,23 +55,39 @@ class ReputationPointService
     $this->updateUlysseStatus($provider);
  }
 
- public function updateUlysseStatus($provider) 
- {
-    try {
-        if($provider->points <= 200) {
-            $provider->update(['ulysse_status' => 'Ulysse+']);
-        } 
+ public function updateUlysseStatus($provider)
+    {
+        try {
+            
+            $autoBadges = Badge::where('type', 'reputation')->where('is_auto', true)->get();
+            foreach ($autoBadges as $badge) {
+                $provider->user->badges()->detach($badge->id);
+            }
 
-        if($provider->points > 200 && $provider->points <= 300) {
-            $provider->update(['ulysse_status' => 'Top Ulysse']);
-        }
+            $badge = Badge::where('type', 'reputation')
+                ->where('is_auto', true)
+                ->where('threshold', '<=', $provider->points)
+                ->orderByDesc('threshold')
+                ->first();
 
-        if($provider->points > 300) {
-            $provider->update(['ulysse_status' => 'Ulysse Diamond']);
+            if ($badge) {
+                UserBadge::updateOrCreate(
+                    [
+                        'user_id' => $provider->user_id,
+                        'badge_id' => $badge->id,
+                    ],
+                    [
+                        'assigned_by' => 'system',
+                        'assigned_at' => now(),
+                        'revoked_at' => null,
+                    ]
+                );
+                $provider->update(['ulysse_status' => $badge->title]);
+            } else {
+                $provider->update(['ulysse_status' => null]);
+            }
+        } catch (\Exception $e) {
+            \Log::error("Failed to update reputation badge for provider ID: {$provider->id}. Error: {$e->getMessage()}");
         }
-    } catch (\Exception $e) {
-        Log::error("Failed to update reputation points for provider ID: {$providerId}. Error: {$e->getMessage()}");
     }
- 
-}
 }

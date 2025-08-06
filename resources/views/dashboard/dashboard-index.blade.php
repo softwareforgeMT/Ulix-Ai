@@ -97,51 +97,50 @@
         $circleCircumference = 2 * pi() * $circleRadius;
         $offset = $circleCircumference - ($progress / 100 * $circleCircumference);
 
-        $milestones = [
-            ['label' => 'Ulysse', 'point' => 0],
-            ['label' => 'Ulysse ++', 'point' => 100],
-            ['label' => 'Top Ulysse', 'point' => 200],
-            ['label' => 'Ulysse diamond', 'point' => 300],
-        ];
+        // Fetch all auto reputation badges, sorted by threshold
+        $badges = \App\Models\Badge::where('type', 'reputation')->where('is_auto', true)->orderBy('threshold')->get();
+        $currentBadge = $user->badges()->where('type', 'reputation')->where('is_auto', true)->orderByDesc('threshold')->first();
       @endphp
 
 <div class="relative bg-blue-100 rounded-2xl px-2 py-6 mb-6 overflow-visible">
   <div class="relative h-10 flex items-center">
     <!-- Full background bar -->
     <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-6 bg-blue-200 rounded-full w-full"></div>
-    
     <!-- Filled progress -->
     <div class="absolute left-0 top-1/2 -translate-y-1/2 h-6 bg-blue-500 rounded-full transition-all duration-500" style="width: {{ $progress }}%"></div>
-
     <!-- Dots -->
     <div class="relative flex justify-between items-center w-full z-10 px-2">
-      @foreach ($milestones as $milestone)
-        <div class="flex flex-col items-center w-1/4">
-          <div class="w-5 h-5 rounded-full z-10 border-2 
-            {{ $points >= $milestone['point'] ? 'bg-blue-600 border-blue-600' : 'bg-white border-blue-500' }}">
+      @foreach ($badges as $badge)
+        <div class="flex flex-col items-center w-1/{{ count($badges) }}">
+          <div class="w-5 h-5 rounded-full z-10 border-2
+            {{ ($points >= $badge->threshold) ? 'bg-blue-600 border-blue-600' : 'bg-white border-blue-500' }}">
           </div>
         </div>
       @endforeach
     </div>
   </div>
-
   <!-- Labels above -->
-  <div class="grid grid-cols-4 text-center mt-2 mb-1 text-sm font-semibold text-blue-900">
-    @foreach ($milestones as $milestone)
-      <span>{{ $milestone['label'] }}</span>
+  <div class="grid grid-cols-{{ count($badges) }} text-center mt-2 mb-1 text-sm font-semibold text-blue-900">
+    @foreach ($badges as $badge)
+      <span>{{ $badge->title }}</span>
     @endforeach
   </div>
-
   <!-- Points below -->
-  <div class="grid grid-cols-4 text-center text-xs text-gray-700">
-    @foreach ($milestones as $milestone)
-      <span>{{ $milestone['point'] }} pts</span>
+  <div class="grid grid-cols-{{ count($badges) }} text-center text-xs text-gray-700">
+    @foreach ($badges as $badge)
+      <span>{{ $badge->threshold }} pts</span>
     @endforeach
   </div>
-
-  <!-- Current score below bar -->
+  <!-- Current score and badge below bar -->
   <p class="text-center text-sm mt-4 font-medium text-blue-700">
-    Your Points: <strong>{{ $points }} / 300</strong>
+    Your Points: <strong>{{ $points }}</strong>
+    @if($currentBadge)
+      <span class="inline-flex items-center ml-2 px-2 py-1 bg-blue-200 text-blue-800 rounded-full text-xs font-semibold">
+        <img src="/images/badges/{{ $currentBadge->icon }}" alt="{{ $currentBadge->title }}" class="w-5 h-5 mr-1 inline-block" />
+        {{ $currentBadge->title }}
+      </span>
+    @endif
+    / {{ $badges->max('threshold') }}
   </p>
 </div>
 

@@ -126,4 +126,46 @@ class PaymentService
         }
     }
 
+    public function refundTransaction($transaction)
+    {
+        try {
+            if (!$transaction->stripe_payment_intent_id) {
+                throw new \Exception('No Stripe payment intent found');
+            }
+
+            $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
+            
+            // Get the payment intent to find the charge ID
+            $paymentIntent = $stripe->paymentIntents->retrieve($transaction->stripe_payment_intent_id);
+            
+            if (!$paymentIntent->latest_charge) {
+                throw new \Exception('No charge found for this payment');
+            }
+
+            // Create the refund
+            $refund = $stripe->refunds->create([
+                'charge' => $paymentIntent->latest_charge,
+                'metadata' => [
+                    'transaction_id' => $transaction->id,
+                    'refunded_by' => 'admin',
+                    'mission_id' => $transaction->mission_id
+                ]
+            ]);
+
+            // Log the refund
+            \Log::info('Transaction refunded', [
+                'transaction_id' => $transaction->id,
+                'refund_id' => $refund->id,
+                'amount' => $refund->amount
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            \Log::error('Refund failed', [
+                'transaction_id' => $transaction->id,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
 }

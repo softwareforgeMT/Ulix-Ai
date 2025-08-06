@@ -85,6 +85,18 @@ class User extends Authenticatable
     {
         return $this->status === 'suspended';
     }
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class, 'user_badges')
+            ->withPivot(['assigned_by', 'assigned_by_id', 'meta', 'assigned_at', 'revoked_at'])
+            ->withTimestamps();
+    }
+
+    public function userBadge()
+    {
+        return $this->hasOne(UserBadge::class,'user_id');
+    }
 }
 
 

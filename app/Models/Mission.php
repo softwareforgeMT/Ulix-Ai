@@ -65,6 +65,11 @@ class Mission extends Model
     public function transactions() {
         return $this->hasMany(Transaction::class, 'mission_id');
     }
+    // Mission.php
+    public function conversation() {
+        return $this->hasOne(Conversation::class);
+    }
+
 
 
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Mission;
+use App\Models\Message;
 use App\Models\ServiceProvider;
 use App\Models\User;
 use App\Models\Category;
@@ -91,4 +92,17 @@ class MissionAdminController extends Controller
 
         return redirect()->route('admin.missions.show', $mission->id)->with('success', 'Mission updated successfully.');
     }
+
+    public function conversation($id)
+    {
+        $mission = Mission::findOrFail($id);
+
+        // Eager load conversation, messages, and sender (user)
+        $conversation = $mission->conversation()
+            ->with(['messages.sender'])
+            ->first();
+
+        return view('admin.dashboard.mission-conversation', compact('mission', 'conversation'));
+    }
+
 }

@@ -71,3 +71,4 @@ Route::patch('/admin/providers/{id}/edit-profile', [UserManagementController::cl
 
 Route::get('/admin/missions', [MissionAdminController::class, 'apiList']);
 Route::get('/admin/missions/{id}', [MissionAdminController::class, 'apiShow']);
+Route::post('/admin/transactions/{id}/refund', [TransactionController::class, 'refund'])->name('admin.transactions.refund');
