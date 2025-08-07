@@ -188,7 +188,7 @@ class AdminDashboardController extends Controller
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
                 'slug' => 'nullable|string|max:255|unique:badges,slug',
-                'icon' => 'nullable|string|max:255',
+                'icon' => 'nullable|string|max:1000',
                 'type' => 'required|string|max:50',
                 'threshold' => 'nullable|integer',
                 'is_active' => 'boolean',

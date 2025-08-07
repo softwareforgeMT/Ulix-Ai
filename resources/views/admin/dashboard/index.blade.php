@@ -43,7 +43,7 @@
         <!-- Sidebar -->
         @include('admin.dashboard.sidebar')
         <!-- Main Content Area -->
-        <main class="flex-1 p-8">
+        <main class="flex-1 p-2">
             {{-- Child admin components will load here --}}
             @yield('admin-content')
         </main>

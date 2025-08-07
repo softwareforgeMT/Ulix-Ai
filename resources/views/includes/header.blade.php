@@ -53,6 +53,10 @@
   </script>
 
 </head>
+@php
+    $settings = \App\Models\SiteSetting::first();
+    $legal = $settings->legal_info ?? [];
+@endphp
 <body class="min-h-screen bg-white">
 <!-- //For showuing toast meassages across plateform -->
 @if (session('success'))
@@ -314,7 +318,7 @@
 </div>
 
       @if(Auth::check() && Auth::user()->user_role != 'service_provider' || Auth::check() === false)
-        <a href="/serviceProvider" class="nav-button border-2 border-gradient-to-r from-purple-500 to-blue-500 bg-gradient-to-r from-purple-50 to-blue-50 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-3 rounded-full text-sm font-semibold hover:bg-gradient-to-r hover:from-purple-100 hover:to-blue-100 transition-all duration-300 transform hover:scale-105 shadow-lg border-blue-300">
+        <a href="/become-service-provider" class="nav-button border-2 border-gradient-to-r from-purple-500 to-blue-500 bg-gradient-to-r from-purple-50 to-blue-50 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-3 rounded-full text-sm font-semibold hover:bg-gradient-to-r hover:from-purple-100 hover:to-blue-100 transition-all duration-300 transform hover:scale-105 shadow-lg border-blue-300">
           <span class="flex items-center space-x-2 text-blue-600">
             <!-- Simple Icon -->
             <i class="fas fa-file-signature text-blue-600 text-2xl"></i>
@@ -512,7 +516,7 @@ YOUR PROVIDER ACCOUNT IS CREATED</h2>
     </button>
   </div>
 
-  <a href="/serviceProvider" class="block text-gray-800 text-base font-semibold hover:text-blue-600">Become a provider</a>
+  <a href="/become-service-provider" class="block text-gray-800 text-base font-semibold hover:text-blue-600">Become a provider</a>
   <a href="/login" class="block text-gray-800 text-base font-semibold hover:text-blue-600">Log in</a>
   <a href="/signup"class="block text-gray-800 text-base font-semibold hover:text-blue-600">Sign up</a>
   <a href="/affiliate" class="block text-gray-800 text-base font-semibold hover:text-blue-600">Affiliate Program</a> <!-- New link added here -->
@@ -1113,86 +1117,79 @@ YOUR PROVIDER ACCOUNT IS CREATED</h2>
     openHelpPopup();
   }
 
-function closeAllPopups() {
-  document.getElementById('searchPopup').classList.add('hidden');
-  document.getElementById('expatriesPopup').classList.add('hidden');
-  document.getElementById('vacanciersPopup').classList.add('hidden');
-  document.getElementById('vacanciersPreparationPopup').classList.add('hidden');
-  // Add other popups here as well if needed
-}
+  function closeAllPopups() {
+    document.getElementById('searchPopup').classList.add('hidden');
+    document.getElementById('expatriesPopup').classList.add('hidden');
+    document.getElementById('vacanciersPopup').classList.add('hidden');
+    document.getElementById('vacanciersPreparationPopup').classList.add('hidden');
+    // Add other popups here as well if needed
+  }
 
 
 
-function closeAllPopups() {
-  const popups = [
-    'searchPopup',
-    'expatriesPopup',
-    'vacanciersPopup',
-    'vacanciersPreparationPopup',
-    'vacanciersUrgencePopup',
-    'vacanciersProblemesVoyagesPopup',
-    'expatriesUrgencePopup',
-    'expatriesPreparationPopup',
-    'expatriesAssurancePopup',
-    'expatriesBesoinsPopup',
-    'expatriesSantePopup',
-    "vacanciersAutresBesoinsPopup",
-    'investisseursPopup',
-    'investisseurBienImmobilierPopup',
-    "Acheter un bien immobilier",
-    "investirMarchesFinanciersPopup",
-    "investisseurSecuriserInvestissementsPopup",
-    "investisseurOptimisationFiscalePopup",
-    "investisseurObligationsLegalesPopup",
-    "travailleursFreelancesPopup",
-    "travailleursCreerEntreprisePopup",
-    "travailleursDevelopperReseauPopup",
-    "travailleursGestionFinancierePopup",
-    "travailleursProtectionSocialePopup",
-    "travailleursTrouverEmploiPopup",
-    "travailleursVisaAutorisationsPopup",
-    "travailleursCreerEntrepriseSubSubcategoriesPopup",
-    "travailleursDevelopperReseauSubSubcategoriesPopup",
-    "travailleursGestionFinanciereSubSubcategoriesPopup",
-    "travailleursProtectionSocialeSubSubcategoriesPopup",
-    "travailleursTrouverEmploiSubSubcategoriesPopup",
-    "travailleursVisaAutorisationsSubSubcategoriesPopup"
-    // Add more popup IDs here if you have them
-  ];
-  popups.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.add('hidden');
-  });
-  localStorage.removeItem('create-request');
-}
+  function closeAllPopups() {
+    const popups = [
+      'searchPopup',
+      'expatriesPopup',
+      'vacanciersPopup',
+      'vacanciersPreparationPopup',
+      'vacanciersUrgencePopup',
+      'vacanciersProblemesVoyagesPopup',
+      'expatriesUrgencePopup',
+      'expatriesPreparationPopup',
+      'expatriesAssurancePopup',
+      'expatriesBesoinsPopup',
+      'expatriesSantePopup',
+      "vacanciersAutresBesoinsPopup",
+      'investisseursPopup',
+      'investisseurBienImmobilierPopup',
+      "Acheter un bien immobilier",
+      "investirMarchesFinanciersPopup",
+      "investisseurSecuriserInvestissementsPopup",
+      "investisseurOptimisationFiscalePopup",
+      "investisseurObligationsLegalesPopup",
+      "travailleursFreelancesPopup",
+      "travailleursCreerEntreprisePopup",
+      "travailleursDevelopperReseauPopup",
+      "travailleursGestionFinancierePopup",
+      "travailleursProtectionSocialePopup",
+      "travailleursTrouverEmploiPopup",
+      "travailleursVisaAutorisationsPopup",
+      "travailleursCreerEntrepriseSubSubcategoriesPopup",
+      "travailleursDevelopperReseauSubSubcategoriesPopup",
+      "travailleursGestionFinanciereSubSubcategoriesPopup",
+      "travailleursProtectionSocialeSubSubcategoriesPopup",
+      "travailleursTrouverEmploiSubSubcategoriesPopup",
+      "travailleursVisaAutorisationsSubSubcategoriesPopup"
+      // Add more popup IDs here if you have them
+    ];
+    popups.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    });
+    localStorage.removeItem('create-request');
+  }
 
 
     // Close popups when clicking outside
-    document.addEventListener('click', function(event) {
-      const popups = [
-        document.getElementById('searchPopup'),
-        document.getElementById('expatriesPopup'),
-        document.getElementById('vacanciersPopup')
-      ];
-      const searchInput = document.getElementById('searchInput');
-      const searchButton = document.getElementById('searchButton');
+  document.addEventListener('click', function(event) {
+    const popups = [
+      document.getElementById('searchPopup'),
+      document.getElementById('expatriesPopup'),
+      document.getElementById('vacanciersPopup')
+    ];
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
 
-      const isAnyPopupVisible = popups.some(popup => popup && !popup.classList.contains('hidden'));
-      if (isAnyPopupVisible) {
-        const clickedInsidePopup = popups.some(popup => popup && popup.contains(event.target));
-        if (!clickedInsidePopup && !searchInput.contains(event.target) && !searchButton.contains(event.target)) {
-          closeAllPopups();
-        }
+    const isAnyPopupVisible = popups.some(popup => popup && !popup.classList.contains('hidden'));
+    if (isAnyPopupVisible) {
+      const clickedInsidePopup = popups.some(popup => popup && popup.contains(event.target));
+      if (!clickedInsidePopup && !searchInput.contains(event.target) && !searchButton.contains(event.target)) {
+        closeAllPopups();
       }
-    });
-
-
-
-
-
-  </script>
-
-
+    }
+  });
+</script>
 
 <script>
   function openHelpPopup() {
@@ -1334,13 +1331,5 @@ function closeAllPopups() {
   }
 
 </script>
-
-
-
-
-
-
-
-
 </body>
 </html>

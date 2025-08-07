@@ -54,7 +54,7 @@
         <div class="flex flex-col lg:flex-row">
             <!-- Sidebar (mobile is absolutely positioned and hidden by default) -->
             @include('dashboard.partials.sidebar')
-
+        
             <!-- Content Area -->
             <main class="flex-1 p-4 pt-20 lg:p-6 lg:pt-6">
                 @include('dashboard.banners.kyc-banner')

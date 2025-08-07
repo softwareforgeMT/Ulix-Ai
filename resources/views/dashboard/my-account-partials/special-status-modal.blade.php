@@ -6,33 +6,94 @@
     <h2 class="font-bold mb-4 text-lg sm:text-xl text-gray-800">Do you have a special status?</h2>
     
     <div class="space-y-3 mb-6">
+      
+
       @php
-        $statuses = [
-          ['label' => 'Expatriates for 2 to 5 years', 'color' => 'bg-blue-400'],
-          ['label' => 'Expatriates for 6 to 10 years', 'color' => 'bg-blue-500'],
-          ['label' => 'Expatriates for more than 10 years', 'color' => 'bg-blue-600'],
-          ['label' => 'Lawyer', 'color' => 'bg-purple-400'],
-          ['label' => 'Legal advice', 'color' => 'bg-purple-500'],
-          ['label' => 'Insurer', 'color' => 'bg-green-400'],
-          ['label' => 'Real estate agent', 'color' => 'bg-green-500'],
-          ['label' => 'Translator', 'color' => 'bg-orange-400'],
-          ['label' => 'Guide', 'color' => 'bg-orange-500'],
-          ['label' => 'Language teacher', 'color' => 'bg-cyan-400']
-        ];
+          $special_status = json_decode($provider->special_status, true) ?? [];
+          $statuses = \App\Models\SpecialStatus::pluck('stitle')->toArray();
       @endphp
 
       @foreach ($statuses as $status)
-        <div class="flex flex-col sm:flex-row items-center justify-between border border-gray-200 rounded-xl px-4 py-3 special-status-item hover:border-gray-300 transition-colors">
-          <div class="flex items-center space-x-3 mb-2 sm:mb-0">
-            <div class="w-4 h-4 rounded-full {{ $status['color'] }}"></div>
-            <span class="text-sm text-gray-700">{{ $status['label'] }}</span>
+          @php
+              $selected = $special_status[$status] ?? null; // true for Yes, false for No, null for unset
+          @endphp
+          <div class="flex flex-col sm:flex-row items-center justify-between border border-gray-200 rounded-xl px-4 py-3 special-status-item hover:border-gray-300 transition-colors">
+              <div class="flex items-center space-x-3 mb-2 sm:mb-0">
+                  <div class="w-4 h-4 rounded-full bg-blue-300"></div>
+                  <span class="text-sm text-gray-700">{{ $status }}</span>
+              </div>
+              <div class="flex space-x-2">
+                  <button type="button"
+                      class="toggle-btn yes-btn bg-white border px-4 py-1 text-sm rounded-full transition-colors
+                          {{ $selected === true ? 'border-blue-500 text-blue-700 font-semibold bg-blue-50' : 'border-gray-300 text-gray-600 hover:border-blue-400 hover:text-blue-600' }}"
+                      data-status="{{ $status }}" data-value="yes">
+                      Yes
+                  </button>
+                  <button type="button"
+                      class="toggle-btn no-btn bg-white border px-4 py-1 text-sm rounded-full transition-colors
+                          {{ $selected === false ? 'border-blue-500 text-blue-700 font-semibold bg-blue-50' : 'border-gray-300 text-gray-600 hover:border-blue-400 hover:text-blue-600' }}"
+                      data-status="{{ $status }}" data-value="no">
+                      No
+                  </button>
+              </div>
           </div>
-          <div class="flex space-x-2">
-            <button type="button" class="toggle-btn bg-white text-gray-600 border border-gray-300 hover:border-blue-400 hover:text-blue-600 rounded-full px-4 py-1 text-sm transition-colors">Yes</button>
-            <button type="button" class="toggle-btn bg-white text-gray-600 border border-gray-300 hover:border-blue-400 hover:text-blue-600 rounded-full px-4 py-1 text-sm transition-colors">No</button>
-          </div>
-        </div>
       @endforeach
+      <div class="flex justify-end mt-4">
+          <button id="saveSpecialStatusBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-full transition-colors shadow-md hover:shadow-lg">
+              Save Special Status
+          </button>
+      </div>
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const statusData = @json($special_status);
+    let selections = {...statusData};
+
+    document.querySelectorAll('.special-status-item').forEach(item => {
+         const yesBtn = item.querySelector('.yes-btn');
+          const noBtn = item.querySelector('.no-btn');
+          if (!yesBtn || !noBtn) return;
+
+          const status = yesBtn.getAttribute('data-status');
+
+        yesBtn.addEventListener('click', function () {
+            selections[status] = true;
+            yesBtn.classList.add('border-blue-500', 'text-blue-700', 'font-semibold', 'bg-blue-50');
+            yesBtn.classList.remove('border-gray-300', 'text-gray-600');
+            noBtn.classList.remove('border-blue-500', 'text-blue-700', 'font-semibold', 'bg-blue-50');
+            noBtn.classList.add('border-gray-300', 'text-gray-600');
+        });
+
+        noBtn.addEventListener('click', function () {
+            selections[status] = false;
+            noBtn.classList.add('border-blue-500', 'text-blue-700', 'font-semibold', 'bg-blue-50');
+            noBtn.classList.remove('border-gray-300', 'text-gray-600');
+            yesBtn.classList.remove('border-blue-500', 'text-blue-700', 'font-semibold', 'bg-blue-50');
+            yesBtn.classList.add('border-gray-300', 'text-gray-600');
+        });
+    });
+
+ 
+    document.getElementById('saveSpecialStatusBtn')?.addEventListener('click', function () {
+        fetch('/account/provider/special-status/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: JSON.stringify({ special_status: selections })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+              document.getElementById('specialStatusModal').classList.add('hidden');
+              toastr.success('Special statuses saved successfully!', 'Success');
+            }
+        });
+    });
+});
+</script>
+

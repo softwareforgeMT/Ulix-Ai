@@ -18,7 +18,9 @@ class UserManagementController extends Controller
 {
     public function users()
     {
-        $users = User::orderByDesc('created_at')->paginate(20);
+        $users = User::whereNotIn('user_role', ['super_admin', 'regional_admin', 'moderator'])
+                ->orderByDesc('created_at')
+                ->paginate(20);
         $transactions = Transaction::with(['mission', 'provider'])->latest()->limit(20)->get();
         $providers = ServiceProvider::all();
         return view('admin.dashboard.users', compact('users', 'transactions', 'providers'));

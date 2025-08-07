@@ -11,12 +11,16 @@
 
 @include('includes.header')
 
+@php
+    $settings = \App\Models\SiteSetting::first();
+    $legal = $settings->legal_info ?? [];
+@endphp
 <!-- Hero Section -->
 <section class="bg-gradient-to-r from-blue-600 to-blue-400 py-20 px-6 text-white text-center">
   <div class="max-w-3xl mx-auto">
     <div class="text-4xl mb-4">📜</div>
     <h1 class="text-4xl font-bold mb-2">Legal Notice</h1>
-    <p class="text-lg">Understand your rights, responsibilities, and how we handle legal matters at ULIX AI.</p>
+    <p class="text-lg">Understand your rights, responsibilities, and how we handle legal matters at {{ $settings->site_name ?? 'ULIX AI' }}.</p>
   </div>
 </section>
 
@@ -44,44 +48,31 @@
       <!-- Section 1 -->
       <div id="publisher" class="bg-white p-8 rounded-2xl shadow-md border border-gray-200" data-aos="fade-up">
         <h2 class="text-2xl font-semibold text-blue-700 mb-4">📇 Publisher Information</h2>
-        <p>
-          This website is operated by <strong>ULIX AI</strong>. For inquiries:<br>
-          📧 Email: <a href="mailto:legal@ulixai.com" class="text-blue-600 underline">legal@ulixai.com</a><br>
-          📍 Address: 123 Innovation Street, Global City, Earth 00001
-        </p>
+        <p>{!! nl2br(e($legal['publisher'] ?? '')) !!}</p>
       </div>
 
       <!-- Section 2 -->
       <div id="ip" class="bg-white p-8 rounded-2xl shadow-md border border-gray-200" data-aos="fade-up">
         <h2 class="text-2xl font-semibold text-blue-700 mb-4">🧠 Intellectual Property</h2>
-        <p>
-          All content including text, images, code, and design belongs to ULIX AI or its partners. Unauthorized reproduction or distribution is strictly prohibited.
-        </p>
+        <p>{!! nl2br(e($legal['ip'] ?? '')) !!}</p>
       </div>
 
       <!-- Section 3 -->
       <div id="liability" class="bg-white p-8 rounded-2xl shadow-md border border-gray-200" data-aos="fade-up">
         <h2 class="text-2xl font-semibold text-blue-700 mb-4">⚖️ Liability Disclaimer</h2>
-        <p>
-          We strive for accuracy but cannot guarantee completeness. Users are responsible for how they use the information provided.
-        </p>
+        <p>{!! nl2br(e($legal['liability'] ?? '')) !!}</p>
       </div>
 
       <!-- Section 4 -->
       <div id="privacy" class="bg-white p-8 rounded-2xl shadow-md border border-gray-200" data-aos="fade-up">
         <h2 class="text-2xl font-semibold text-blue-700 mb-4">🔒 Privacy and Data Protection</h2>
-        <p>
-          We follow legal standards to handle your personal data. For more details, refer to our 
-          <a href="/privacy-policy.php" class="text-blue-600 underline">Privacy Policy</a>.
-        </p>
+        <p>{!! nl2br(e($legal['privacy'] ?? '')) !!}</p>
       </div>
 
       <!-- Section 5 -->
       <div id="law" class="bg-white p-8 rounded-2xl shadow-md border border-gray-200" data-aos="fade-up">
         <h2 class="text-2xl font-semibold text-blue-700 mb-4">📚 Governing Law</h2>
-        <p>
-          These terms are governed by the laws of the country where ULIX AI is headquartered. Disputes are subject to that jurisdiction’s courts.
-        </p>
+        <p>{!! nl2br(e($legal['law'] ?? '')) !!}</p>
       </div>
 
     </div>

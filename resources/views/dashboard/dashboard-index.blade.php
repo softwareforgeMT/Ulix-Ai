@@ -136,7 +136,7 @@
     Your Points: <strong>{{ $points }}</strong>
     @if($currentBadge)
       <span class="inline-flex items-center ml-2 px-2 py-1 bg-blue-200 text-blue-800 rounded-full text-xs font-semibold">
-        <img src="/images/badges/{{ $currentBadge->icon }}" alt="{{ $currentBadge->title }}" class="w-5 h-5 mr-1 inline-block" />
+        <!-- <img src="/images/badges/{{ $currentBadge->icon }}" alt="{{ $currentBadge->title }}" class="w-5 h-5 mr-1 inline-block" /> -->
         {{ $currentBadge->title }}
       </span>
     @endif

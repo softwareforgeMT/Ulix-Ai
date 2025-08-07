@@ -11,7 +11,7 @@
                     <p class="mt-1 text-sm text-gray-600">Manage all users and their access permissions</p>
                 </div>
                 <div>
-                    <a href="{{ route('admin.w-map-view') }}" class="text-white bg-blue-400 rounded-full p-2 hover:bg-blue-500">Ulysse World Map</a>
+                    <a href="{{ route('admin.w-map-view') }}" class="text-white bg-blue-400 rounded-2xl p-2 hover:bg-blue-500">Ulysse World Map</a>
                 </div>
                 @if(session('admin_id'))
                 <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3">

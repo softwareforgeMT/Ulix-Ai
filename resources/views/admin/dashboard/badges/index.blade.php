@@ -1,7 +1,7 @@
 @extends('admin.dashboard.index')
 
 @section('admin-content')
-<div class="container mx-auto px-4 py-8">
+<div class="mx-auto px-4 py-8">
     <!-- Header Section -->
     <div class="flex items-center justify-between mb-8">
         <div>

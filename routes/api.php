@@ -59,8 +59,7 @@ Route::post('/mission/cancel/by-provider', [ServiceRequestController::class, 'pr
 //Get Filtered Transactions
 Route::get('transactions/filter', [TransactionController::class, 'filterTransactions']);
 
-// Admin World Map View
-Route::get('/admin/world-map', [UserManagementController::class, 'adminWorldMap'])->name('admin.w-map-view');
+
 
 // Toggle provider visibility (AJAX)
 Route::post('/admin/provider/{id}/toggle-visibility', [UserManagementController::class, 'toggleProviderVisibility'])->name('admin.provider.toggle-visibility');

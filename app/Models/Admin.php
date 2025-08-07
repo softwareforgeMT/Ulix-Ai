@@ -22,4 +22,12 @@ class Admin extends Authenticatable
     {
         return in_array($this->user_role, ['super_admin', 'regional_admin', 'moderator']);
     }
+     public function hasAdminRole($role = null)
+    {
+        $roles = ['super_admin', 'regional_admin', 'moderator'];
+        if ($role) {
+            return $this->user_role === $role;
+        }
+        return in_array($this->user_role, $roles);
+    }
 }

@@ -32,7 +32,7 @@
 <!-- Modals for Service Providers -->
 @if(auth()->user()->user_role === 'service_provider')
   @include('dashboard.my-account-partials.about-you-modal')
-  @include('dashboard.my-account-partials.special-status-modal')
+  @include('dashboard.my-account-partials.special-status-modal', ['provider' => auth()->user()->serviceProvider])
   @include('dashboard.my-account-partials.category-search-modal')
 @endif
 
@@ -68,14 +68,13 @@ function submitAboutYou() {
   .then(res => res.json())
   .then(data => {
     if (data.success) {
-      showNotification('About updated successfully!', 'success'); // ✅ use your custom function
+      toastr.success('About updated successfully!', 'Success');
       closeAboutYouPopup();
     } else {
-      showNotification(data.message || 'Update failed!', 'error');
+        toastr.error('Update failed!', 'Error');
     }
   })
   .catch(error => {
-    console.error('Error:', error);
     showNotification('An error occurred. Please try again.', 'error');
   });
 }

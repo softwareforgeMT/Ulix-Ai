@@ -15,11 +15,15 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ServiceProviderController;
 use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\MissionAdminController;
+use App\Http\Controllers\Admin\AdminSettingsController;
+use App\Http\Controllers\Admin\ExpatsLeaderboardController;
+use App\Http\Controllers\Admin\RolesAndPermissionsController;
 use App\Http\Controllers\ProviderReviewController;
 use App\Http\Controllers\MissionMessageController;
 use App\Http\Controllers\StripePaymentController;
@@ -33,6 +37,9 @@ Route::post('/signup/store', [UserController::class, 'storeViaSignup']);
 // User Login
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('user.login');
+
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 // Forgot Password
 Route::get('/forgot-password', function() {
@@ -51,6 +58,9 @@ Route::get('/', [ServiceProviderController::class, 'main']);
 Route::get('/get-providers', [ServiceProviderController::class, 'getProviders']);
 Route::get('/get-subcategories/{categoryId}', [ServiceProviderController::class, 'getSubcategories']);
 
+Route::get('/become-service-provider',  function() {
+    return view('pages.service-provider');
+})->name('become.service.provider');
 
 // provider Profile
 Route::get('/provider/{slug}', [ServiceProviderController::class, 'providerProfile']);
@@ -61,7 +71,10 @@ Route::post('/verify-email-otp', [RegisterController::class, 'verifyEmailOtp'])-
 Route::post('/signup/register', [RegisterController::class, 'signupRegister'])->name('user.signupRegister');
 Route::post('/resend-email-otp', [RegisterController::class, 'resendEmailOtp'])->name('user.resendEmailOtp');
 
-
+//Legal Information
+Route::get('/legal-notice', function() {
+    return view('pages.legal-notice');
+});
 
 
 Route::middleware(['auth'])->group(function () {
@@ -155,6 +168,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/update-personal-info', [AccountController::class, 'updatePersonalInfo']);
         Route::post('/update-field', [AccountController::class, 'updateField']);
         Route::post('/update-password', [AccountController::class, 'updatePassword']);
+        Route::post('/provider/special-status/save', [AccountController::class, 'saveSpecialStatus']);
+
     });
 });
 
@@ -173,8 +188,14 @@ Route::prefix('admin')->name('admin.')->middleware(['web'])->group(function () {
     Route::middleware(['auth:admin', AdminAuthenticate::class])->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('/transactions', [AdminDashboardController::class, 'transactions'])->name('transactions');
-        // Route::get('/badges', [AdminDashboardController::class, 'badges'])->name('badges');
         Route::match(['get', 'post', 'patch', 'delete'], '/badges', [AdminDashboardController::class, 'badges'])->name('badges');
+        Route::match(['get', 'post', 'patch', 'delete'], '/point-leaderboard', [ExpatsLeaderboardController::class, 'index'])->name('reputation-points');
+        Route::post('/provider/{provider}/adjust-points', [ExpatsLeaderboardController::class, 'adjustPoints'])->name('provider.adjust-points');
+        
+        Route::get('/reputation-points', [ExpatsLeaderboardController::class, 'showConfig'])->name('reputation.config');
+        Route::post('/adjust-reputation-points', [ExpatsLeaderboardController::class, 'adjustReputationPoints'])->name('adjust-reputation-points');
+
+        Route::match(['get', 'post', 'patch', 'delete'], '/settings', [AdminSettingsController::class, 'settings'])->name('settings');
         Route::get('/users', [UserManagementController::class, 'users'])->name('users');
         Route::match(['get', 'patch'], '/users/{user}/manage', [UserManagementController::class, 'manage'])->name('users.manage');
         Route::patch('/missions/{mission}/manage', [UserManagementController::class, 'manageMission'])->name('missions.manage');
@@ -201,7 +222,13 @@ Route::prefix('admin')->name('admin.')->middleware(['web'])->group(function () {
         // In your routes/web.php or api.php
         Route::post('/users/{user}/block', [UserManagementController::class, 'suspendUser'])->name('users.block');
         Route::post('/users/{user}/unblock', [UserManagementController::class, 'unblockUser'])->name('users.unblock');
+        Route::get('/roles-permissions', [RolesAndPermissionsController::class, 'index'])->name('roles-permissions');
+        Route::post('/roles-permissions/{id}/assign', [RolesAndPermissionsController::class, 'assignRole'])->name('roles-permissions.assign');
+        Route::post('/roles-permissions/{id}/revoke', [RolesAndPermissionsController::class, 'revokeRole'])->name('roles-permissions.revoke');
+        Route::post('/roles-permissions/create', [RolesAndPermissionsController::class, 'createAdmin'])->name('roles-permissions.create');
 
+        // Admin World Map View
+        Route::get('/world-map', [UserManagementController::class, 'adminWorldMap'])->name('w-map-view');
     });
 });
 

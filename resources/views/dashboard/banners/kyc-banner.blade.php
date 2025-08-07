@@ -12,6 +12,7 @@
           </div>
           <button
               id="start-kyc-btn"
+              onclick=completeKYC()
               class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded font-semibold text-sm transition-all"
           >
               Continue
@@ -20,9 +21,9 @@
   @endif
 @endif
 
-  <script>
-    document.getElementById('start-kyc-btn').addEventListener('click', function () {
-    fetch("{{ route('stripe.kyc.link') }}")
+<script>
+    function completeKYC() {
+        fetch("{{ route('stripe.kyc.link') }}")
         .then(res => res.json())
         .then(data => {
             if (data.completed) {
@@ -38,5 +39,6 @@
             console.error(err);
             alert("Something went wrong. Please try again later.");
         });
-    });
+    }
+    
 </script>

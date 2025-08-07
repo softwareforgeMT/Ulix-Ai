@@ -345,6 +345,10 @@ class RegisterController extends Controller
             }
         );
 
+        \Auth::login($user, $request->filled('remember'));
+        $request->session()->regenerate();
+        \Auth::user()->update(['last_login_at' => now()]);
+        
         return response()->json([
             'status' => 'success',
             'user' => $user,

@@ -431,5 +431,14 @@ class AccountController extends Controller
         }
     }
 
+    public function saveSpecialStatus(Request $request)
+    {
+        $user = auth()->user();
+        $provider = $user->serviceProvider;
+        $statuses = $request->input('special_status', []);
+        $provider->special_status = json_encode($statuses);
+        $provider->save();
 
+        return response()->json(['success' => true]);
+    }
 }
