@@ -16,11 +16,11 @@
 
     <!-- Navigation Section -->
     <nav class="px-4 py-6">
-        <!-- Main Menu -->
+
         <div class="space-y-1 mb-8">
             <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Main Menu</p>
             
-            <!-- Dashboard Home -->
+
             <a href="{{ route('admin.dashboard') }}"
                 class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('admin.dashboard') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                 <svg class="mr-3 h-5 w-5 {{ request()->routeIs('admin.dashboard') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,7 +32,7 @@
                 @endif
             </a>
 
-            <!-- Manage Users -->
+  
             <a href="{{ route('admin.users') }}" 
                 class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('admin.users') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                 <svg class="mr-3 h-5 w-5 {{ request()->routeIs('admin.users') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,8 +55,25 @@
                     <div class="ml-auto w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
                 @endif
             </a>
+            @if(auth()->guard('admin')->user()->hasAdminRole('super_admin'))
+            <a href="{{ route('admin.fake-content-generation') }}"
+                class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('admin.fake-content-generation') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                <svg class="mr-3 h-5 w-5 {{ request()->routeIs('admin.dashboard') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                FCG Dashboard
+                @if(request()->routeIs('admin.dashboard'))
+                    <div class="ml-auto w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
+                @endif
 
-            <!-- Payments & Commissions -->
+                <span class="ml-auto">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                        Super
+                    </span>
+                </span>
+            </a>
+            @endif
+
             <a href="{{ route('admin.transactions') }}"
                 class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('admin.transactions') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                 <svg class="mr-3 h-5 w-5 {{ request()->routeIs('admin.transactions') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,11 +86,11 @@
             </a>
         </div>
 
-        <!-- Gamification Section -->
+ 
         <div class="space-y-1 mb-8">
             <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Ulix AI Dynamics</p>
             
-            <!-- Badges -->
+
             <a href="{{ route('admin.badges') }}"
                 class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('admin.badges') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                 <svg class="mr-3 h-5 w-5 {{ request()->routeIs('admin.badges') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,7 +102,7 @@
                 @endif
             </a>
 
-            <!-- User Leaderboard -->
+
             <a href="{{ route('admin.reputation-points') }}"
                 class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('admin.reputation-points') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                 <svg class="mr-3 h-5 w-5 {{ request()->routeIs('admin.reputation-points') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,12 +115,12 @@
             </a>
         </div>
 
-        <!-- System Section -->
+
         <div class="space-y-1">
             <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">System</p>
             
             @if(auth()->guard('admin')->user()->hasAdminRole('super_admin'))
-            <!-- Roles & Permissions (Super Admin Only) -->
+
             <a href="{{ route('admin.roles-permissions') }}"
                 class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('admin.roles-permissions') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                 <svg class="mr-3 h-5 w-5 {{ request()->routeIs('admin.roles-permissions') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,7 +138,7 @@
             </a>
             @endif
 
-            <!-- Settings -->
+
             <a href="{{ route('admin.settings') }}" 
                 class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('admin.settings') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                 <svg class="mr-3 h-5 w-5 {{ request()->routeIs('admin.settings') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">

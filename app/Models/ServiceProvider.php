@@ -49,6 +49,8 @@ class ServiceProvider extends Model
         'operational_countries' => 'array',
         'special_status' => 'array',
         'documents' => 'array',
+        // 'services_to_offer' => 'array',
+        // 'services_to_offer_category' => 'array',
     ];
 
     public function user(): BelongsTo
