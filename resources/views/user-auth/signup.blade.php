@@ -15,15 +15,15 @@
                          <!-- Social Login Buttons -->
           <div class="space-y-3 mb-6">
             <!-- Facebook -->
-            <button class="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition">
+            <!-- <button class="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition">
               <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Facebook_icon.svg" class="w-5 h-5" alt="Facebook logo">
               Continue with Facebook
-            </button>
+            </button> -->
             
-            <button class="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
+            <a href="{{ route('google.login') }}" class="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
               Continue with Google
-            </button>
+            </a>
           </div>
             @php 
                   $affiliateCode = request()->query('code') ?? null;

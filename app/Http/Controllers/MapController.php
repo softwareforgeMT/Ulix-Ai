@@ -86,12 +86,14 @@ class MapController extends Controller
                     ];
                 });
 
+                
+
             $filteredProviders = $this->applyFilters($providers, $request)
                 ->map(function ($provider) {
                     $provider['services_to_offer_category'] = $this->fetchCategoryNames($provider['services_to_offer_category']);
                     return $provider;
                 });
-
+                
             return response()->json([
                 'success' => true,
                 'message' => 'Providers loaded successfully',

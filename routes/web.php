@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\MissionAdminController;
 use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\ExpatsLeaderboardController;
 use App\Http\Controllers\Admin\RolesAndPermissionsController;
+use App\Http\Controllers\Admin\FakeContentController;
 use App\Http\Controllers\ProviderReviewController;
 use App\Http\Controllers\MissionMessageController;
 use App\Http\Controllers\StripePaymentController;
@@ -229,6 +230,15 @@ Route::prefix('admin')->name('admin.')->middleware(['web'])->group(function () {
 
         // Admin World Map View
         Route::get('/world-map', [UserManagementController::class, 'adminWorldMap'])->name('w-map-view');
+
+        // Admin Fake Content Generation
+        Route::get('/fake-content-generation', [FakeContentController::class, 'index'])->name('fake-content-generation');
+        Route::get('/fake-content-generation/create-requester', [FakeContentController::class, 'createRequesterForm'])->name('fake-content.create-requester-form');
+        Route::get('/fake-content-generation/create-provider', [FakeContentController::class, 'createProviderForm'])->name('fake-content.create-provider-form');
+        Route::get('/fake-content-generation/create-mission', [FakeContentController::class, 'createMissionForm'])->name('fake-content.create-mission-form');
+        Route::post('/fake-content-generation/create', [FakeContentController::class, 'createFake'])->name('fake-content.create');
+        Route::post('/fake-content-generation/{type}/{id}/update', [FakeContentController::class, 'updateFake'])->name('fake-content.update');
+        Route::post('/fake-content-generation/{type}/{id}/delete', [FakeContentController::class, 'deleteFake'])->name('fake-content.delete');
     });
 });
 
