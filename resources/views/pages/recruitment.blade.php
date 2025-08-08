@@ -127,38 +127,39 @@
     </div>
   </section>
 
-  <!-- Modal -->
-  <div id="popupModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg w-full max-w-md p-6 relative shadow-lg">
-      <button onclick="closeModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
-      <h2 id="modalTitle" class="text-xl font-bold text-blue-800 text-center mb-4">Postule pour : [Titre]</h2>
-      <form class="space-y-3">
-        <select class="w-full border border-gray-300 rounded px-3 py-2">
-          <option selected disabled>Choisissez votre pays</option>
-          <option>France</option>
-          <option>Canada</option>
-          <option>Belgique</option>
-        </select>
-        <input type="text" placeholder="Votre prénom" class="w-full border border-gray-300 rounded px-3 py-2" />
-        <input type="text" placeholder="Votre nom" class="w-full border border-gray-300 rounded px-3 py-2" />
-        <input type="text" placeholder="Votre téléphone (+33...)" class="w-full border border-gray-300 rounded px-3 py-2" />
-        <input type="email" placeholder="Votre email" class="w-full border border-gray-300 rounded px-3 py-2" />
-        <textarea placeholder="Votre message" class="w-full border border-gray-300 rounded px-3 py-2 h-24"></textarea>
-        <input type="file" class="w-full border border-gray-300 rounded px-3 py-2" />
-        <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 rounded">
-          Envoyer ma candidature
-        </button>
-        <p class="text-center text-gray-500 text-xs">Nous répondons sous 7 jours maximum.</p>
-      </form>
-    </div>
+<!-- Modal -->
+<div id="popupModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-lg w-full max-w-md p-6 relative shadow-lg">
+    <button onclick="closeModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+    <h2 id="modalTitle" class="text-xl font-bold text-blue-800 text-center mb-4">Apply for: [Title]</h2>
+    <form class="space-y-3">
+      <select class="w-full border border-gray-300 rounded px-3 py-2">
+        <option selected disabled>Select your country</option>
+        <option>France</option>
+        <option>Canada</option>
+        <option>Belgium</option>
+      </select>
+      <input type="text" placeholder="First name" class="w-full border border-gray-300 rounded px-3 py-2" />
+      <input type="text" placeholder="Last name" class="w-full border border-gray-300 rounded px-3 py-2" />
+      <input type="text" placeholder="Phone number (+33...)" class="w-full border border-gray-300 rounded px-3 py-2" />
+      <input type="email" placeholder="Email address" class="w-full border border-gray-300 rounded px-3 py-2" />
+      <textarea placeholder="Your message" class="w-full border border-gray-300 rounded px-3 py-2 h-24"></textarea>
+      <input type="file" class="w-full border border-gray-300 rounded px-3 py-2" />
+      <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 rounded">
+        Submit my application
+      </button>
+      <p class="text-center text-gray-500 text-xs">We will respond within 7 days.</p>
+    </form>
   </div>
+</div>
+
 
  @include('includes.footer')
 
   <script>
     function openModal(title) {
       document.getElementById('popupModal').classList.remove('hidden');
-      document.getElementById('modalTitle').innerText = 'Postule pour : ' + title;
+      document.getElementById('modalTitle').innerText = 'Apply For : ' + title;
     }
 
     function closeModal() {

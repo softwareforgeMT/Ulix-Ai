@@ -40,7 +40,7 @@
       <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-pink-400 hover:bg-pink-600 transition">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" class="w-5 h-5" />
       </a>
-      <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-black hover:bg-gray-800 transition">
+      <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-white hover:bg-white transition">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok" class="w-5 h-5" />
       </a>
       <a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition">

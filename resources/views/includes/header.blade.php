@@ -464,7 +464,7 @@ YOUR PROVIDER ACCOUNT IS CREATED</h2>
 			<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm">
 				<img src="https://flagcdn.com/24x18/fr.png" alt="FR" class="w-full h-full object-cover" />
 			</div>
-			<button id="menu-toggle" class="p-2 rounded-lg bg-sky-300 hover:bg-sky-400 transition-colors shadow">
+			<button id="menu-toggle" class="p-2 rounded-lg bg-blue-600 hover:bg-sky-400 transition-colors shadow">
 
 				<svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -505,7 +505,7 @@ YOUR PROVIDER ACCOUNT IS CREATED</h2>
 </div>
 
 <!-- Mobile Dropdown Menu -->
-<div id="mobile-menu" class="lg:hidden fixed top-[64px] left-0 w-full bg-sky-100 z-40 shadow-md hidden px-6 py-4 space-y-4 animate-slide-down">
+<div id="mobile-menu" class="lg:hidden fixed top-[64px] left-0 w-full bg-white z-40 shadow-md hidden px-6 py-4 space-y-4 animate-slide-down">
 
   <!-- Close (X) Button for mobile menu -->
   <div class="flex justify-end mb-2">
@@ -677,27 +677,37 @@ YOUR PROVIDER ACCOUNT IS CREATED</h2>
 		});
 
 		// Step 3: Multiple selection
-    let selectedLanguage = [];
-		document.querySelectorAll('#step3 .lang-btn').forEach(btn => {
-      
-			btn.addEventListener('click', () => {
-				btn.classList.toggle('bg-blue-900');
-				btn.classList.toggle('text-white');
-				btn.classList.toggle('bg-blue-600');
-        const lang = btn.textContent.trim();
+   let selectedLanguage = [];
 
-        if (selectedLanguage.includes(lang)) {
-            selectedLanguage = selectedLanguage.filter(item => item !== lang);
-        } else {
-            selectedLanguage.push(lang);
-        }
+document.querySelectorAll('#step3 .lang-btn').forEach(btn => {
 
-        // Store in localStorage
-        const expats = JSON.parse(localStorage.getItem('expats')) || {};
-        expats.spoken_language = selectedLanguage;
-        localStorage.setItem('expats', JSON.stringify(expats));
-		});
+  btn.addEventListener('click', () => {
+    const lang = btn.textContent.trim();
+
+    const isSelected = btn.classList.contains('bg-blue-900');
+
+    if (isSelected) {
+      // Unselect
+      btn.classList.remove('bg-blue-900', 'text-white', 'bg-blue-600');
+      btn.classList.add('bg-white', 'text-blue-700');
+
+      selectedLanguage = selectedLanguage.filter(item => item !== lang);
+    } else {
+      // Select
+      btn.classList.remove('bg-white', 'text-blue-700', 'bg-blue-600');
+      btn.classList.add('bg-blue-900', 'text-white');
+
+      selectedLanguage.push(lang);
+    }
+
+    // Store in localStorage
+    const expats = JSON.parse(localStorage.getItem('expats')) || {};
+    expats.spoken_language = selectedLanguage;
+    localStorage.setItem('expats', JSON.stringify(expats));
   });
+
+});
+
 		// Step 4: Help icon toggle
 		document.querySelectorAll('#step4 .help-icon').forEach(btn => {
 			btn.addEventListener('click', () => {

@@ -31,6 +31,10 @@
 body {
   font-family: 'Inter', sans-serif;
 }
+html, body {
+  overflow-x: hidden;
+}
+
 
 
 
@@ -313,24 +317,13 @@ body {
  
 
 
-<!-- <section class="relative bg-blue-600 text-center py-32 px-4 overflow-hidden">
-
- 
-  <div class="absolute inset-0 opacity-10 z-0" 
-       style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.3) 1px, transparent 0); 
-              background-size: 40px 40px;">
-  </div>  -->
-<!-- Hero Section -->
 <section data-aos="fade-up" class="search-popup min-h-[600px] w-full flex items-center justify-center p-6 bg-blue-700 relative font-inter">
   <!-- Hero Content -->
   <div class="max-w-4xl mx-auto relative z-10">
     <div class="space-y-6 mb-12">
       <h1 class="text-4xl md:text-7xl font-bold mb-6 leading-tight text-white">
         <span>Need help? Want to help?</span><br>
-        <!-- <span class="text-white/90">when facing your</span><br>
-        <span class="text-white/90 text-transparent">
-          needs abroad
-        </span> -->
+    
       </h1>
     <p class="text-white/90 text-xl md:text-2xl mb-12 font-light leading-relaxed text-center">
   ulixai connects, expats and service provider worldwide
@@ -348,14 +341,11 @@ body {
             type="text"
             placeholder="Search Here"
             class="w-full px-8 py-5 text-lg text-gray-700 bg-transparent focus:outline-none placeholder-gray-500"
-            onfocus="openSearchPopup()"
+            onclick="openHelpPopup()"
             
           />
           <div class="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400">
-            <!-- <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="7" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg> -->
+        
           </div>
         </div>
         <button
@@ -376,15 +366,7 @@ body {
 
 
 
-<!---Demo--->
- 
-  <!-- <div class="max-w-6xl mx-auto text-center relative z-10">
-    <h1 class="text-4xl md:text-6xl font-bold leading-tight">Welcome Abroad</h1>
-    <p class="text-lg mt-4">Find services tailored to your journey</p>
-  </div> -->
 
-  <!-- Floating Categories Section -->
-  <!-- Floating Categories Section (Desktop only) -->
 <div class="hidden md:block absolute left-1/2 bottom-0 translate-y-[80%] -translate-x-1/2 z-20 w-full max-w-6xl px-4 mb-2">
 
 
@@ -1149,7 +1131,8 @@ body {
           <span class="flex-1 text-xl">How does your service work?</span>
           <div class="faq-icon text-3xl text-gray-600 font-light">+</div>
         </button>
-        <div class="faq-content px-8 pb-0 text-gray-800 hidden">
+        <div class="faq-content px-8 pb-0 text-gray-800 
+        ">
           <div class="pb-8 pt-4 border-t border-gray-200">
             <p class="text-lg leading-relaxed">
               Our service connects you with industry experts who provide step-by-step guidance 
@@ -1168,7 +1151,7 @@ body {
           <span class="flex-1 text-xl">How long does it take to receive my report?</span>
           <div class="faq-icon text-3xl text-gray-600 font-light">+</div>
         </button>
-        <div class="faq-content px-8 pb-0 text-gray-800 hidden">
+        <div class="faq-content px-8 pb-0 text-gray-800 ">
           <div class="pb-8 pt-4 border-t border-gray-200">
             <p class="text-lg leading-relaxed">
               Our advanced processing system ensures you receive your comprehensive report 
@@ -1186,7 +1169,7 @@ body {
           <span class="flex-1 text-xl">How much does the service cost?</span>
           <div class="faq-icon text-3xl text-gray-600 font-light">+</div>
         </button>
-        <div class="faq-content px-8 pb-0 text-gray-800 hidden">
+        <div class="faq-content px-8 pb-0 text-gray-800 ">
           <div class="pb-8 pt-4 border-t border-gray-200">
             <p class="text-lg leading-relaxed">
               Our transparent pricing starts from just $5 for basic requests. The final cost 
@@ -1204,7 +1187,7 @@ body {
           <span class="flex-1 text-xl">What payment methods do you accept?</span>
           <div class="faq-icon text-3xl text-gray-600 font-light">+</div>
         </button>
-        <div class="faq-content px-8 pb-0 text-gray-800 hidden">
+        <div class="faq-content px-8 pb-0 text-gray-800 ">
           <div class="pb-8 pt-4 border-t border-gray-200">
             <p class="text-lg leading-relaxed">
               We accept all major credit cards (Visa, MasterCard, American Express), 
@@ -1222,7 +1205,7 @@ body {
           <span class="flex-1 text-xl">Is my data secure and confidential?</span>
           <div class="faq-icon text-3xl text-gray-600 font-light">+</div>
         </button>
-        <div class="faq-content px-8 pb-0 text-gray-800 hidden">
+        <div class="faq-content px-8 pb-0 text-gray-800 ">
           <div class="pb-8 pt-4 border-t border-gray-200">
             <p class="text-lg leading-relaxed">
               Absolutely! We employ enterprise-grade security measures including end-to-end 
@@ -1244,31 +1227,39 @@ body {
 
 @include('includes.footer')
 <script>
-  document.querySelectorAll(".faq-toggle").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const content = btn.nextElementSibling;
-    const icon = btn.querySelector(".faq-icon");
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".faq-toggle").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const content = btn.nextElementSibling;
+        const icon = btn.querySelector(".faq-icon");
 
-    // Close all other FAQ items
-    document.querySelectorAll(".faq-content").forEach((item) => {
-      if (item !== content) {
-        item.classList.add("hidden");
-      }
+        const isOpen = content.classList.contains("active");
+
+        // Close all other contents
+        document.querySelectorAll(".faq-content").forEach((item) => {
+          item.style.maxHeight = null;
+          item.classList.remove("active");
+        });
+
+        // Reset icons
+        document.querySelectorAll(".faq-icon").forEach((item) => {
+          item.textContent = "+";
+        });
+
+        // If it was already open, close and return
+        if (isOpen) return;
+
+        // Open current content
+        content.classList.add("active");
+        content.style.maxHeight = content.scrollHeight + "px"; // dynamically set height
+        icon.textContent = "–";
+      });
     });
-
-    document.querySelectorAll(".faq-icon").forEach((item) => {
-      if (item !== icon) {
-        item.textContent = "+";
-      }
-    });
-
-    // Toggle current item
-    content.classList.toggle("hidden");
-    icon.textContent = content.classList.contains("hidden") ? "+" : "–";
   });
-});
-
 </script>
+
+
+
 
   <script>
   
@@ -2129,6 +2120,8 @@ window.addEventListener('resize', () => {
     map.invalidateSize();
 });
 </script>
+
+
 
 </body>
 </html>
