@@ -22,7 +22,7 @@
                     Having trouble using the platform?
                 </h2>
                 <p class="text-gray-600 text-sm">
-                    Got ideas to improve Ulixai? Report any bugs or share your suggestions below — your feedback helps us make Ulixar better for everyone.
+                    Got ideas to improve @site? Report any bugs or share your suggestions below — your feedback helps us make Ulixar better for everyone.
                 </p>
             </div>
 
@@ -77,7 +77,7 @@
 
                 <!-- Suggestions -->
                 <div>
-                    <label class="block text-blue-700 font-semibold mb-2">Do you have any suggestions for improving Ulixai?</label>
+                    <label class="block text-blue-700 font-semibold mb-2">Do you have any suggestions for improving @site?</label>
                     <textarea name="suggestions" 
                         class="w-full p-3 border border-gray-300 rounded-lg resize-none h-24 focus:outline-none focus:border-blue-500" 
                         placeholder="Tell us how we could improve the platform..."
@@ -107,14 +107,14 @@
                 <h3 class="text-2xl font-bold text-blue-700 mb-2">Thank You!</h3>
                 <p class="text-gray-600 mb-2">We've received your feedback.</p>
                 <p class="text-gray-600 mb-2">Our team will review your message carefully.</p>
-                <p class="text-gray-600 mb-6">Thank you for helping us improve Ulixai!</p>
+                <p class="text-gray-600 mb-6">Thank you for helping us improve @site!</p>
             </div>
             <button 
                 id="backToUlixar" 
                 class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center mx-auto"
             >
                 <span class="mr-2">←</span>
-               <a href="/index"> Back to Ulixai </a>
+               <a href="/index"> Back to @site</a>
             </button>
         </div>
     </div>
