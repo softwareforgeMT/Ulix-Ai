@@ -203,7 +203,7 @@
       
       <div class="max-w-3xl mx-auto">
         <p class="text-lg text-gray-600 leading-relaxed mb-4">
-         @site supports everyone living abroad, regardless of their language or country of origin.
+          Ulixai supports everyone living abroad, regardless of their language or country of origin.
         </p>
         
         <div class="inline-flex items-center gap-3 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-2xl px-6 py-3">
@@ -384,7 +384,7 @@
 <!-- Benefits Preview Section -->
 <section class="py-16 px-6 bg-gradient-to-r from-blue-50 to-indigo-50">
   <div class="max-w-6xl mx-auto text-center">
-    <h3 class="text-3xl font-bold text-blue-800 mb-8">Why Partner with @site?</h3>
+    <h3 class="text-3xl font-bold text-blue-800 mb-8">Why Partner with Ulixai?</h3>
     
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <!-- Benefit 1 -->

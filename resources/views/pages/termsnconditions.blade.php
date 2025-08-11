@@ -256,7 +256,7 @@
                 </div>
               </div>
               <p class="text-gray-700 leading-relaxed text-lg pl-16">
-                By accessing or using @site's platform, you agree to be bound by these Terms and Conditions, our Privacy Policy, and any additional terms applicable to specific services.
+                By accessing or using Ulixai's platform, you agree to be bound by these Terms and Conditions, our Privacy Policy, and any additional terms applicable to specific services.
               </p>
             </section>
 
@@ -271,7 +271,7 @@
                 </div>
               </div>
               <p class="text-gray-700 leading-relaxed text-lg pl-16">
-                @site reserves the right to update these terms at any time. Continued use signifies acceptance.
+                Ulixai reserves the right to update these terms at any time. Continued use signifies acceptance.
               </p>
             </section>
 
@@ -286,7 +286,7 @@
                 </div>
               </div>
               <p class="text-gray-700 leading-relaxed text-lg pl-16">
-                @site provides digital documents and connects users with international service providers. We do not guarantee governmental outcomes.
+                Ulixai provides digital documents and connects users with international service providers. We do not guarantee governmental outcomes.
               </p>
             </section>
 
@@ -316,7 +316,7 @@
                 </div>
               </div>
               <p class="text-gray-700 leading-relaxed text-lg pl-16">
-                All shared content must respect legal and community guidelines. @site may remove inappropriate material.
+                All shared content must respect legal and community guidelines. Ulixai may remove inappropriate material.
               </p>
             </section>
 
@@ -331,7 +331,7 @@
                 </div>
               </div>
               <p class="text-gray-700 leading-relaxed text-lg pl-16">
-                You retain ownership of your content but grant @site limited rights to display and distribute it on the platform.
+                You retain ownership of your content but grant Ulixai limited rights to display and distribute it on the platform.
               </p>
             </section>
 
@@ -346,7 +346,7 @@
                 </div>
               </div>
               <p class="text-gray-700 leading-relaxed text-lg pl-16">
-                Report copyright violations to support@site.com. We respect valid DMCA takedown requests.
+                Report copyright violations to support@ulixai.com. We respect valid DMCA takedown requests.
               </p>
             </section>
 
@@ -376,7 +376,7 @@
                 </div>
               </div>
               <p class="text-gray-700 leading-relaxed text-lg pl-16">
-                @site is not liable for direct or indirect damages caused by misuse of services or incorrect data.
+                Ulixai is not liable for direct or indirect damages caused by misuse of services or incorrect data.
               </p>
             </section>
 

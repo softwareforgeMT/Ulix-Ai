@@ -4,13 +4,13 @@
 
     <section class="bg-white py-16 px-4">
       <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-xl md:text-2xl font-bold text-blue-800 mb-2">🌍 Who are we at @site?</h2>
+        <h2 class="text-xl md:text-2xl font-bold text-blue-800 mb-2">🌍 Who are we at Ulixai?</h2>
         <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-6">A platform designed for everyone living, traveling, or investing abroad</h3>
         <p class="text-gray-700 text-sm md:text-base mb-4">
-         @site is more than just a website. It’s your co-pilot. A human (and digital) partner ready to help you, wherever you are.
+          Ulixai is more than just a website. It’s your co-pilot. A human (and digital) partner ready to help you, wherever you are.
         </p>
         <p class="text-gray-800 text-sm md:text-base font-medium mb-8">
-          Whether you’re on vacation, on assignment, in exile, an expat, in transition, or simply on the move… @site is with you everywhere 👋
+          Whether you’re on vacation, on assignment, in exile, an expat, in transition, or simply on the move… Ulixai is with you everywhere 👋
         </p>
 
         <div class="aspect-[16/10] md:aspect-[16/9] lg:aspect-[16/8] relative">

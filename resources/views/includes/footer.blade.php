@@ -56,20 +56,20 @@
                                 <span class="text-white font-bold text-xl">U</span>
                             </div>
                             <h3 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                                 @site
+                                Ulixai
                             </h3>
                         </div>
 
                         <!-- About Text -->
                         <div class="space-y-4 text-gray-600 leading-relaxed">
                             <p class="text-sm lg:text-base">
-                                <span class="font-semibold text-blue-800"> @site.com</span> is the solution for anyone who needs a helping hand — wherever they are in the world.
+                                <span class="font-semibold text-blue-800">Ulixai.com</span> is the solution for anyone who needs a helping hand — wherever they are in the world.
                             </p>
                             <p class="text-sm lg:text-base">
                                 Need trusted, hassle-free assistance? Our platform connects you with verified providers who are available and ready to help.
                             </p>
                             <p class="text-sm lg:text-base font-medium text-blue-700">
-                                At  @site, we never leave you alone.
+                                At Ulixai, we never leave you alone.
                             </p>
                         </div>
 
@@ -172,7 +172,7 @@
                 <div class="mt-12 pt-8 border-t border-gray-200">
                     <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
                         <p class="text-sm text-gray-500 text-center sm:text-left">
-                            © 2025 <span class="font-semibold text-blue-700"> @site.com</span> – Helping expatriates and travelers connect.
+                            © 2025 <span class="font-semibold text-blue-700">Ulixai.com</span> – Helping expatriates and travelers connect.
                         </p>
                         <div class="flex items-center space-x-4 text-xs text-gray-400">
                             <span>Made with ❤️ for travelers</span>

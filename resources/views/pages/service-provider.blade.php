@@ -24,7 +24,7 @@
 <!-- 💡 Why Join Section -->
 <section class="py-20 px-6 text-center bg-white">
   <div class="max-w-6xl mx-auto">
-<h2 class="text-4xl font-extrabold text-blue-900 mb-10">Why Join @site?</h2>
+<h2 class="text-4xl font-extrabold text-blue-900 mb-10">Why Join ULIXAI?</h2>
 <!-- Mobile Register Button -->
 <div class="block md:hidden text-center px-6 mb-12">
   <a href="/paymentsvalidate"  class="bg-blue-700 hover:bg-blue-800 text-white text-base font-semibold px-8 py-3 rounded-full shadow-md transition">
@@ -77,7 +77,7 @@ Create My Free profile
       <table class="w-full text-sm text-left bg-white border border-blue-100">
         <thead class="bg-blue-800 text-white">
           <tr>
-            <th class="p-4">@site Services</th>
+            <th class="p-4">Ulixai Services</th>
             <th class="p-4 text-center">Individual</th>
             <th class="p-4 text-center">Professional</th>
           </tr>

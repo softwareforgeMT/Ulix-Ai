@@ -35,7 +35,7 @@
   </div>
 
   <section class="py-16 px-6 max-w-4xl mx-auto">
-    <h2 class="text-3xl font-bold text-blue-800 mb-8 text-center">🚀 Join the @site Adventure</h2>
+    <h2 class="text-3xl font-bold text-blue-800 mb-8 text-center">🚀 Join the Ulixai Adventure</h2>
     <p class="text-gray-700 max-w-2xl mx-auto mb-16 text-center">
       Are you a freelancer or independent worker? Want to work on a meaningful project, from anywhere, with a cool team? 🌍
     </p>
@@ -45,7 +45,7 @@
       <div class="flex flex-col md:flex-row border border-blue-200 rounded-xl overflow-hidden shadow-md bg-white">
         <img src="images/whyulix.png" alt="Why Ulixai" class="w-full md:w-1/2 object-cover">
         <div class="p-6 md:w-1/2 flex flex-col justify-center">
-          <h3 class="text-lg font-bold text-blue-700 mb-4">Why @site? ✨</h3>
+          <h3 class="text-lg font-bold text-blue-700 mb-4">Why Ulixai? ✨</h3>
           <ul class="list-disc list-inside space-y-2">
             <li>Total flexibility: work when you want, from wherever you want</li>
             <li>A real project to help people far from their home country</li>
@@ -59,7 +59,7 @@
       <!-- Block 2 -->
       <div class="flex flex-col md:flex-row border border-blue-200 rounded-xl overflow-hidden shadow-md bg-white">
         <div class="p-6 md:w-1/2 flex flex-col justify-center order-2 md:order-1">
-          <h3 class="text-lg font-bold text-blue-700 mb-4">The @site Mindset 🧠</h3>
+          <h3 class="text-lg font-bold text-blue-700 mb-4">The Ulixai Mindset 🧠</h3>
           <ul class="list-disc list-inside space-y-2">
             <li>We love motivated, curious and independent people</li>
             <li>You can ask questions, suggest ideas</li>
@@ -88,7 +88,7 @@
 
   <!-- Roles Section -->
   <section class="bg-white py-10 px-6 max-w-6xl mx-auto text-center">
-    <h2 class="text-3xl font-bold text-blue-800 mb-10">🎯 @site Opportunities</h2>
+    <h2 class="text-3xl font-bold text-blue-800 mb-10">🎯 Ulixai Opportunities</h2>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-left">
       <!-- Role Cards -->
@@ -96,11 +96,11 @@
       <!-- Use consistent text color classes -->
       <?php
         $roles = [
-          ["📹 Field Videographer / Content Creator", "Capture real @site life (team, users, behind-the-scenes).", "text-blue-700"],
+          ["📹 Field Videographer / Content Creator", "Capture real Ulixai life (team, users, behind-the-scenes).", "text-blue-700"],
           ["📱 Social Media Video Editor", "Create dynamic Reels, Shorts, and TikToks.", "text-pink-600"],
           ["🎞️ Motion Designer", "Animate visuals for tutorials and ads.", "text-indigo-600"],
           ["📚 Educational Video Producer", "Create onboarding and how-to videos.", "text-purple-600"],
-          ["📈 Video Marketing Manager", "Design and manage @site video strategy.", "text-pink-600"],
+          ["📈 Video Marketing Manager", "Design and manage Ulixai’s video strategy.", "text-pink-600"],
           ["🎬 Documentary Video Editor", "Create emotionally powerful visual stories.", "text-blue-700"],
           ["🎥 Multi-Cam Operator / Events", "Record interviews, conferences, professional shoots.", "text-gray-800"],
           ["📊 Growth Marketer", "Boost acquisition across all channels.", "text-blue-500"],

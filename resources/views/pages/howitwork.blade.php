@@ -78,7 +78,7 @@
             <div class="text-white bg-blue-700 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mr-2">5</div>
             <h3 class="text-blue-800 font-semibold text-base">Make a prepayment for the service</h3>
           </div>
-          <p class="text-sm text-gray-600">You make a prepayment for the service. Your money is secured on the @site platform via our financial partners.</p>
+          <p class="text-sm text-gray-600">You make a prepayment for the service. Your money is secured on the Ulixai platform via our financial partners.</p>
         </div>
       </div>
     </div>
