@@ -326,7 +326,7 @@ html, body {
     
       </h1>
     <p class="text-white/90 text-xl md:text-2xl mb-12 font-light leading-relaxed text-center">
-  ulixai connects, expats and service provider worldwide
+   @site connects, expats and service provider worldwide
 </p>
 
     </div>
@@ -400,7 +400,7 @@ html, body {
           </div>
 
           <!-- Popup -->
-          <div id="expat-popup" class="absolute top-full left-1/2 transform -translate-x-1/2 mt-4 scale-100 opacity-100 transition-all duration-300 z-50 hidden">
+          <!-- <div id="expat-popup" class="absolute top-full left-1/2 transform -translate-x-1/2 mt-4 scale-100 opacity-100 transition-all duration-300 z-50 hidden">
             <div class="w-80 bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border-2 border-white/30">
               <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white/90 rotate-45 border-l border-t border-white/30"></div>
               <div class="flex justify-center mb-4">
@@ -424,7 +424,7 @@ html, body {
                 </button>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
          <!-- Migrants -->
       <div class="group relative">
@@ -452,7 +452,7 @@ html, body {
   </div>
 
   <!-- Popup -->
-  <div id="refugeePopup" class="absolute top-full left-1/2 transform -translate-x-1/2 mt-4 scale-95 opacity-0 invisible transition-all duration-300">
+  <!-- <div id="refugeePopup" class="absolute top-full left-1/2 transform -translate-x-1/2 mt-4 scale-95 opacity-0 invisible transition-all duration-300">
     <div class="w-80 bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border-2 border-white/30">
       <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white/90 rotate-45 border-l border-t border-white/30"></div>
       <h3 class="text-xl font-bold text-green-700 mb-6 text-center">I'M…</h3>
@@ -470,7 +470,7 @@ html, body {
         </button>
       </div>
     </div>
-  </div>
+  </div> -->
 </div>
 
 
@@ -970,7 +970,7 @@ html, body {
                             </div>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            I was about to board my flight when I realized my visa had errors. Thanks to Ulixai, I got a personalized file in under 10 minutes and solved everything. What a relief!
+                            I was about to board my flight when I realized my visa had errors. Thanks to  @site, I got a personalized file in under 10 minutes and solved everything. What a relief!
                         </p>
                     </div>
                     
@@ -984,7 +984,7 @@ html, body {
                             </div>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            I was stuck in a country where no one spoke English. Ulixai sent me the exact documents to show, and I was able to resolve the situation peacefully.
+                            I was stuck in a country where no one spoke English.  @site sent me the exact documents to show, and I was able to resolve the situation peacefully.
                         </p>
                     </div>
                 </div>
@@ -1003,7 +1003,7 @@ html, body {
                         <h3 class="text-2xl font-bold mb-4">Remarquable</h3>
                         <div class="text-yellow-300 text-xl mb-4">★★★★★</div>
                         <p class="text-black/90 leading-relaxed">
-                            En moins de 10 minutes, j'ai retrouvé un poids en moins sur les épaules. Ulixai m'a aidé à trouver toutes les solutions adaptées à ma situation.
+                            En moins de 10 minutes, j'ai retrouvé un poids en moins sur les épaules.  @site m'a aidé à trouver toutes les solutions adaptées à ma situation.
                             <br><br>
                             <strong class="text-yellow-700">Un immense soulagement.</strong>
                         </p>
@@ -1022,7 +1022,7 @@ html, body {
                             </div>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Voler son passeport dans un pays inconnu est un cauchemar. Ulixai m'a guidé étape par étape pour refaire mes papiers et m'en sortir sans galère.
+                            Voler son passeport dans un pays inconnu est un cauchemar.  @site m'a guidé étape par étape pour refaire mes papiers et m'en sortir sans galère.
                         </p>
                     </div>
                     
@@ -1036,7 +1036,7 @@ html, body {
                             </div>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Toutes les démarches compliquées pour s'installer à l'étranger sont devenues faciles grâce à Ulixai. Un vrai changement de vie.
+                            Toutes les démarches compliquées pour s'installer à l'étranger sont devenues faciles grâce à  @site. Un vrai changement de vie.
                         </p>
                     </div>
                 </div>
@@ -1092,7 +1092,7 @@ html, body {
         </div>
         <div class="p-6">
           <a href="https://blog.ulixai.com/lancer-un-business-a-letranger-1ere-checklist/" class="text-blue-700 font-semibold text-lg block hover:underline transition-colors">
-            Essential Tip: Avoid Traps with Ulixai
+            Essential Tip: Avoid Traps with  @site
           </a>
           <p class="text-gray-500 mt-3 text-sm">May 25, 2025</p>
         </div>

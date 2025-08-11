@@ -21,7 +21,7 @@
 <!-- 🔴 HERO -->
 <section class="bg-gradient-to-br from-red-700 to-red-600 text-white py-24 px-4 text-center">
   <div class="max-w-3xl mx-auto animate-fade-in">
-    <h1 class="text-4xl font-extrabold mb-4">🚨 ULIXAI SOS Emergency Help</h1>
+    <h1 class="text-4xl font-extrabold mb-4">🚨  @site SOS Emergency Help</h1>
     <p class="text-lg font-medium mb-2">Talk to a trusted expert in under 5 minutes.</p>
     <p class="text-base text-white/90">Legal, medical, real estate, or personal help — we're here when it matters most.</p>
   </div>
@@ -299,7 +299,7 @@
     <!-- Close (X) button -->
     <button type="button" onclick="closeLawyerSignupPopup()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl font-bold z-10" aria-label="Close">&times;</button>
     <form id="lawyer-signup-form" class="bg-red-100 rounded-xl p-3 sm:p-4" onsubmit="submitLawyerSignup(event)">
-      <h2 class="text-xl md:text-2xl font-bold text-red-700 mb-1 flex items-center gap-2">🧑‍⚖️ Join Ulixai SOS – Lawyer Registration</h2>
+      <h2 class="text-xl md:text-2xl font-bold text-red-700 mb-1 flex items-center gap-2">🧑‍⚖️ Join  @site  SOS – Lawyer Registration</h2>
       <div class="text-gray-700 text-xs md:text-sm mb-3">Fill out this form to be available on-demand for 20-minute legal calls.</div>
       <div class="grid grid-cols-1 gap-3 mb-3">
         <div class="grid grid-cols-2 gap-2">
@@ -419,7 +419,7 @@
 <!-- Registration Confirmation Popup -->
 <div id="lawyer-confirm-popup" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center min-h-screen px-2 sm:px-4 hidden">
   <div class="bg-white rounded-xl p-4 sm:p-6 shadow-2xl max-w-lg w-full text-center" style="background: repeating-linear-gradient(0deg, #fff, #fff 28px, #f8dada 28px, #f8dada 29px);">
-    <h2 class="text-2xl font-bold text-red-700 mb-2">Thank you for registering with Ulixai SOS <span class="align-middle">🙏</span></h2>
+    <h2 class="text-2xl font-bold text-red-700 mb-2">Thank you for registering with  @site SOS <span class="align-middle">🙏</span></h2>
     <div class="text-gray-700 text-base mb-2">You should have received a confirmation email with your login credentials.</div>
     <div class="text-gray-700 text-base mb-2">You can now access your personal dashboard to manage your account and respond to requests.</div>
     <div class="text-gray-700 text-base mb-4">We're glad to have you on board to help expatriates around the world.</div>
@@ -546,7 +546,7 @@
 <!-- Expat Registration Confirmation Popup -->
 <div id="expat-confirm-popup" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center min-h-screen px-2 sm:px-4 hidden" style="display:none;">
   <div class="bg-white rounded-xl p-4 sm:p-6 shadow-2xl max-w-lg w-full text-center" style="background: repeating-linear-gradient(0deg, #fff, #fff 28px, #f8dada 28px, #f8dada 29px);">
-    <h2 class="text-2xl font-bold text-red-700 mb-2">Thank you for registering with Ulixai SOS <span class="align-middle">🙏</span></h2>
+    <h2 class="text-2xl font-bold text-red-700 mb-2">Thank you for registering with  @site SOS <span class="align-middle">🙏</span></h2>
     <div class="text-gray-700 text-base mb-2">You should have received a confirmation email with your login credentials.</div>
     <div class="text-gray-700 text-base mb-2">You can now access your personal dashboard to manage your account and respond to requests.</div>
     <div class="text-gray-700 text-base mb-4">We're glad to have you on board to help expatriates around the world.</div>

@@ -213,7 +213,7 @@
     </h1>
     
     <p class="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-      Thank you for being part of the <strong class="text-blue-600">Ulixai adventure!</strong><br>
+      Thank you for being part of the <strong class="text-blue-600">@site adventure!</strong><br>
       Talk about us around you — <span class="bg-yellow-100 px-2 py-1 rounded-lg font-semibold">you earn revenue</span>, you help us grow ✨
     </p>
     
@@ -251,7 +251,7 @@
   <div class="max-w-7xl mx-auto">
     <div class="text-center mb-16">
       <h2 class="text-4xl md:text-5xl font-bold mb-6">
-        <span class="gradient-text">Why recommend</span> <span class="text-blue-900">Ulixai?</span>
+        <span class="gradient-text">Why recommend</span> <span class="text-blue-900">@site?</span>
       </h2>
       <div class="flex items-center justify-center gap-4 text-2xl text-blue-800 font-semibold">
         <span class="text-5xl floating-animation">🌍</span>
@@ -268,7 +268,7 @@
               <div class="feature-icon">
                 <span>🤝</span>
               </div>
-              <h3 class="text-2xl font-bold text-blue-900">Why Ulixai?</h3>
+              <h3 class="text-2xl font-bold text-blue-900">Why @site?</h3>
             </div>
             
             <div class="flex-1 space-y-4">
@@ -371,7 +371,7 @@
         </div>
 
         <h2 class="text-3xl font-bold text-blue-900 mb-3">Your Affiliate Link</h2>
-        <p class="text-gray-600 mb-8 text-lg">Share this link and earn rewards by inviting others to Ulixai!</p>
+        <p class="text-gray-600 mb-8 text-lg">Share this link and earn rewards by inviting others to @site!</p>
 
         <!-- Enhanced Link Display -->
         <div class="mb-8">

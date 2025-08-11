@@ -88,7 +88,7 @@
     </div>
     <h1 class="text-5xl md:text-6xl font-bold text-white mb-4 leading-tight">
       Invite Friends to 
-      <span class="bg-gradient-to-r from-blue-200 to-white bg-clip-text text-transparent">Ulixai</span>
+      <span class="bg-gradient-to-r from-blue-200 to-white bg-clip-text text-transparent">@site</span>
     </h1>
     <p class="text-blue-100 text-xl max-w-2xl mx-auto leading-relaxed">
       Share your dashboard or invite team members via email to collaborate and grow together.
@@ -118,7 +118,7 @@
             <div class="flex items-center gap-3">
               <div class="flex-1 flex items-center bg-white rounded-lg border border-gray-200 px-4 py-3">
                 <span class="text-gray-400 mr-2">🔗</span>
-                <input type="text" readonly value="sales.ulixai.com" class="flex-1 text-gray-800 bg-transparent outline-none font-mono text-sm" id="dashboardUrl" />
+                <input type="text" readonly value="sales.@site.com" class="flex-1 text-gray-800 bg-transparent outline-none font-mono text-sm" id="dashboardUrl" />
               </div>
               <button onclick="copyDashboard()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center gap-2">
                 <span>📋</span>
@@ -179,7 +179,7 @@
                   <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                     J
                   </div>
-                  <span class="text-gray-800 font-medium">jack@ulixai.com</span>
+                  <span class="text-gray-800 font-medium">jack@site.com</span>
                 </div>
                 <span class="status-badge status-sent">Invite sent</span>
               </div>
@@ -189,7 +189,7 @@
                   <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                     S
                   </div>
-                  <span class="text-gray-800 font-medium">sienna@ulixai.com</span>
+                  <span class="text-gray-800 font-medium">sienna@site.com</span>
                 </div>
                 <span class="status-badge status-sent">Invite sent</span>
               </div>
@@ -199,7 +199,7 @@
                   <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                     F
                   </div>
-                  <span class="text-gray-800 font-medium">frankie@ulixai.com</span>
+                  <span class="text-gray-800 font-medium">frankie@site.com</span>
                 </div>
                 <span class="status-badge status-sent">Invite sent</span>
               </div>
@@ -209,7 +209,7 @@
                   <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                     M
                   </div>
-                  <span class="text-gray-800 font-medium">matt@ulixai.com</span>
+                  <span class="text-gray-800 font-medium">matt@site.com</span>
                 </div>
                 <span class="status-badge status-sent">Invite sent</span>
               </div>
@@ -217,7 +217,7 @@
               <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
                 <div class="flex items-center gap-3">
                   <img src="https://i.pravatar.cc/40?u=amelie" alt="Amélie" class="w-10 h-10 rounded-full border-2 border-green-300" />
-                  <span class="text-gray-800 font-medium">amelie@ulixai.com</span>
+                  <span class="text-gray-800 font-medium">amelie@site.com</span>
                 </div>
                 <span class="status-badge status-accepted">✓ Active</span>
               </div>

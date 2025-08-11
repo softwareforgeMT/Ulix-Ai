@@ -48,12 +48,12 @@
     <!-- Text Content -->
     <div class="text-center md:text-left">
       <div class="text-5xl mb-4">🌍 ✈️ 📦</div>
-      <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 mb-4">Ulixai – Press Area</h1>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 mb-4">@site – Press Area</h1>
       <h1 class="text-lg text-gray-700 mb-4">
         For everyone who travels, invests, studies or lives abroad.
       </h1>
       <h1 class="text-base md:text-lg font-medium text-gray-600">
-        Ulixai is the only platform that centralizes essential services for vacationers, expats, students, digital nomads, investors, and families living abroad. We are an international, agile, independent startup — and completely human-centered.
+        @site is the only platform that centralizes essential services for vacationers, expats, students, digital nomads, investors, and families living abroad. We are an international, agile, independent startup — and completely human-centered.
       </h1>
     </div>
 
@@ -67,7 +67,7 @@
 <!-- Press Kit Section -->
 <section class="py-20 bg-white">
   <div class="max-w-6xl mx-auto px-4 text-center">
-    <h2 class="text-2xl font-bold text-blue-800 mb-8">📛 Download the Ulixai Press Kit</h2>
+    <h2 class="text-2xl font-bold text-blue-800 mb-8">📛 Download the @site Press Kit</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- Card 1 - Official Logo -->
       <div class="bg-blue-50 rounded-xl p-6 border border-blue-300 shadow hover:shadow-lg transition">
@@ -162,7 +162,7 @@
     <img src="https://img.icons8.com/color/96/internet--v1.png" class="absolute -top-12 left-1/2 transform -translate-x-1/2 w-16 h-16" />
     <h2 class="text-xl font-bold text-blue-700 mt-6">Thank you for your request!</h2>
     <p class="mt-2 text-gray-700">We have received it and will get back to you <strong>within 24 hours</strong>.</p>
-    <p class="mt-2 text-gray-600">See you soon on this exciting <strong>Ulixai</strong> journey 🌍</p>
+    <p class="mt-2 text-gray-600">See you soon on this exciting <strong>@site</strong> journey 🌍</p>
   </div>
 </div>
 
@@ -200,7 +200,7 @@
     <div class="grid md:grid-cols-3 gap-6">
       <div class="bg-blue-50 p-6 rounded-xl shadow hover:shadow-md transition">
         <div class="flex justify-between items-start mb-4">
-          <h4 class="font-semibold text-green-700 mb-2">Ulixai Launch – May 2025</h4>
+          <h4 class="font-semibold text-green-700 mb-2">@site Launch – May 2025</h4>
           <button onclick="triggerUpload('card1')" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
@@ -270,15 +270,15 @@
   <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
     <div class="bg-white p-6 rounded-xl shadow">
       <h3 class="text-xl font-bold text-blue-700 mb-4">💬 Official Quotes</h3>
-      <p class="italic text-gray-700 mb-4">“Whether you’re leaving for 6 days or 6 years, the unexpected happens fast. Ulixai is your human Plan B abroad.”</p>
-      <p class="italic text-gray-700">“We created Ulixai to solve real struggles people face when far from home — with real human support.”</p>
+      <p class="italic text-gray-700 mb-4">“Whether you’re leaving for 6 days or 6 years, the unexpected happens fast. @site is your human Plan B abroad.”</p>
+      <p class="italic text-gray-700">“We created @site to solve real struggles people face when far from home — with real human support.”</p>
     </div>
     <div class="bg-white p-6 rounded-xl shadow">
       <h3 class="text-xl font-bold text-blue-700 mb-4">⚡ Suggested Headlines</h3>
       <ul class="list-disc pl-5 text-gray-800 space-y-2">
-        <li>Ulixai, the go-to platform for those on the move</li>
+        <li>@site, the go-to platform for those on the move</li>
         <li>Travelers, expats, students: finally a simple solution abroad</li>
-        <li>No more searching — Ulixai centralizes everything you need abroad</li>
+        <li>No more searching — @site centralizes everything you need abroad</li>
       </ul>
     </div>
   </div>

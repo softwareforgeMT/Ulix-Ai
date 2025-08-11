@@ -15,7 +15,7 @@
 <section class="py-16 px-4 text-center">
   <h2 class="text-3xl font-bold text-blue-900 mb-4">💬 What Customers are Saying</h2>
   <p class="text-gray-600 max-w-xl mx-auto mb-10">
-    Thousands trust Ulixai abroad. Here’s what they’re saying.
+    Thousands trust @site abroad. Here’s what they’re saying.
   </p>
 
   <!-- ROW 1 -->

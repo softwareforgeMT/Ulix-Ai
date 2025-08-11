@@ -16,7 +16,7 @@
       🔒 Trust & Security
     </h2>
     <p class="text-gray-600 max-w-3xl mx-auto mb-10">
-      At Ulixai, every request is handled securely, every provider is verified, and every exchange is protected.
+      At @site, every request is handled securely, every provider is verified, and every exchange is protected.
     </p>
 
     <!-- Features Grid -->
@@ -41,7 +41,7 @@
       <div class="bg-blue-50 p-6 rounded-xl shadow-sm border">
         <h3 class="text-lg font-bold text-blue-700 mb-2 flex items-center gap-2">🔐 Secure Payments</h3>
         <p class="text-gray-700 text-sm">
-          All transactions go through certified platforms. Ulixai never stores your banking data.
+          All transactions go through certified platforms. @site never stores your banking data.
         </p>
       </div>
 
