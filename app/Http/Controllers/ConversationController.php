@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Conversation;
+use App\Models\ConversationReport;
 use App\Models\Message;
 use App\Models\Mission;
 use App\Models\MessageAttachment;
@@ -206,6 +207,32 @@ class ConversationController extends Controller
         return response()->download($filePath, $attachment->filename);
     }
 
+
+  public function report(Request $request, Conversation $conversation)
+{
+    $request->validate([
+        'reason' => 'nullable|string|max:255',
+    ]);
+
+    $user = Auth::user();
+
+    // Allow up to 3 reports per user per conversation
+    $userReportCount = \App\Models\ConversationReport::where('conversation_id', $conversation->id)
+        ->where('reported_by', $user->id)
+        ->count();
+
+    if ($userReportCount >= 3) {
+        return response()->json(['message' => 'You have reached the maximum number of reports for this conversation.'], 409);
+    }
+
+    \App\Models\ConversationReport::create([
+        'conversation_id' => $conversation->id,
+        'reported_by' => $user->id,
+        'reason' => $request->reason,
+    ]);
+
+    return response()->json(['message' => 'Conversation reported successfully.']);
+}
     
 
 }

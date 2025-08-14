@@ -247,3 +247,4 @@ Route::get('/provider/{slug}', [ServiceProviderController::class, 'providerProfi
 
 
 Route::get('/{slug?}', [PageController::class, 'show'])->where('slug', '.*');
+Route::post('/conversations/{conversation}/report', [ConversationController::class, 'report'])->middleware('auth');

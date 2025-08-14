@@ -180,18 +180,22 @@
                                     <h3 class="font-semibold text-gray-900 text-sm truncate group-hover:text-blue-600 transition-colors">
                                         {{ $mission->title }}
                                     </h3>
-                                    <p class="text-xs text-gray-600 mb-1">
+                                    <!-- <p class="text-xs text-gray-600 mb-1">
                                         {{ $otherParty ? ($otherParty->name ?? ($otherParty->first_name . ' ' . $otherParty->last_name)) : 'Unknown' }}
-                                    </p>
+                                    </p> -->
+
+
+
+        
                                     <div class="flex items-center gap-2 mb-2">
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium mt-2
                                             {{ $mission->status === 'in_progress' ? 'bg-green-100 text-green-800' : 
                                                ($mission->status === 'completed' ? 'bg-blue-100 text-blue-800' : 
-                                               ($mission->status === 'disputed' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800')) }}">
+                                               ($mission->status === 'disputed' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800 ')) }}">
                                             {{ ucfirst(str_replace('_', ' ', $mission->status)) }}
                                         </span>
                                     </div>
-                                    <p class="text-xs text-gray-500">{{ $mission->location_city ?? 'Remote' }}</p>
+                                    <p class="text-xs text-gray-500 ml-2">{{ $mission->location_city ?? 'Remote' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -225,6 +229,16 @@
                                     </div> -->
                                 </div>
                             </div>
+                                                        <p class="text-xs text-gray-600 mb-1 flex items-center justify-between">
+    
+    @if($conv)
+    <button class="report-conversation-btn ml-2 text-red-500 hover:text-red-700" 
+            data-conversation-id="{{ $conv->id }}" 
+            title="Report Conversation">
+        <i class="fas fa-flag"></i>
+    </button>
+    @endif
+</p>
                         </div>
                         <button id="closeChatBtn" class="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500 hover:text-gray-700">
                             <i class="fas fa-times text-xl"></i>
@@ -299,6 +313,21 @@
                     </form>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Report Conversation Modal -->
+<div id="reportModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
+        <h2 class="text-lg font-bold mb-2 text-gray-800">Report Conversation</h2>
+        <p class="text-sm text-gray-600 mb-4">Please provide a reason for reporting this conversation:</p>
+        <textarea id="reportReasonInput" class="w-full border border-gray-300 rounded p-2 mb-4" rows="3" placeholder="Reason..."></textarea>
+        <div class="flex justify-end gap-2">
+            <button id="cancelReportBtn" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-700">Cancel</button>
+            <button id="submitReportBtn" class="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white">Submit</button>
         </div>
     </div>
 </div>
@@ -849,12 +878,60 @@
     document.addEventListener('DOMContentLoaded', function() {
         initializeEventListeners();
         initializeEchoMonitoring();
+         initializeReportButtons(); // <-- Add this line!
     });
 
     // Cleanup on page unload
     window.addEventListener('beforeunload', () => {
         broadcastManager.unsubscribeFromConversation();
     });
+</script>
+<script>
+let reportConversationId = null;
+
+function initializeReportButtons() {
+    document.querySelectorAll('.report-conversation-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            reportConversationId = this.dataset.conversationId;
+            document.getElementById('reportReasonInput').value = '';
+            document.getElementById('reportModal').classList.remove('hidden');
+        });
+    });
+
+    document.getElementById('cancelReportBtn').onclick = function() {
+        document.getElementById('reportModal').classList.add('hidden');
+        reportConversationId = null;
+    };
+
+    document.getElementById('submitReportBtn').onclick = async function() {
+        const reason = document.getElementById('reportReasonInput').value;
+        if (!reportConversationId) return;
+        const res = await fetch(`/conversations/${reportConversationId}/report`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ reason })
+        });
+        const data = await res.json();
+        document.getElementById('reportModal').classList.add('hidden');
+        reportConversationId = null;
+        // Optionally show a toast or notification here
+        showToast(data.message, res.ok ? 'success' : 'error');
+    };
+}
+
+// Simple toast notification (add this function)
+function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `fixed bottom-6 right-6 px-4 py-2 rounded shadow-lg z-50 text-white ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
 </script>
 
 @endsection
