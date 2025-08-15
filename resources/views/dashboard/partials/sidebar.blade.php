@@ -58,8 +58,10 @@
                 <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-3 h-1 bg-green-700 rounded-full"></div>
             </div>
             <div>
-                <h2 class="text-xl font-bold text-gray-800">Hello shrek!</h2>
-            </div>
+    <h2 class="text-xl font-bold text-gray-800">
+         {{ Auth::user()->name }}!
+    </h2>
+</div>
         </div>
         @php 
             $user = Auth::user();
