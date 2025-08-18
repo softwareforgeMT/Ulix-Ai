@@ -20,7 +20,6 @@ class ConversationController extends Controller
     {
         $user = Auth::user();
         $providerId = optional($user->serviceProvider)->id;
-
         $missions = Mission::where('status', '!=', 'published')
             ->where('payment_status', '!=', 'released')
             ->whereNotNull('selected_provider_id')
@@ -41,7 +40,6 @@ class ConversationController extends Controller
             })
             ->latest('last_message_at')
             ->get();
-
         return view('dashboard.private-msg', compact('conversations', 'user', 'missions'));
     }
 
@@ -209,30 +207,30 @@ class ConversationController extends Controller
 
 
   public function report(Request $request, Conversation $conversation)
-{
-    $request->validate([
-        'reason' => 'nullable|string|max:255',
-    ]);
+    {
+        $request->validate([
+            'reason' => 'nullable|string|max:255',
+        ]);
 
-    $user = Auth::user();
+        $user = Auth::user();
 
-    // Allow up to 3 reports per user per conversation
-    $userReportCount = \App\Models\ConversationReport::where('conversation_id', $conversation->id)
-        ->where('reported_by', $user->id)
-        ->count();
+        // Allow up to 3 reports per user per conversation
+        $userReportCount = \App\Models\ConversationReport::where('conversation_id', $conversation->id)
+            ->where('reported_by', $user->id)
+            ->count();
 
-    if ($userReportCount >= 3) {
-        return response()->json(['message' => 'You have reached the maximum number of reports for this conversation.'], 409);
+        if ($userReportCount >= 3) {
+            return response()->json(['message' => 'You have reached the maximum number of reports for this conversation.'], 409);
+        }
+
+        \App\Models\ConversationReport::create([
+            'conversation_id' => $conversation->id,
+            'reported_by' => $user->id,
+            'reason' => $request->reason,
+        ]);
+
+        return response()->json(['message' => 'Conversation reported successfully.']);
     }
-
-    \App\Models\ConversationReport::create([
-        'conversation_id' => $conversation->id,
-        'reported_by' => $user->id,
-        'reason' => $request->reason,
-    ]);
-
-    return response()->json(['message' => 'Conversation reported successfully.']);
-}
     
 
 }
