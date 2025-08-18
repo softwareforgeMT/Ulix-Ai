@@ -45,16 +45,16 @@ class LoginController extends Controller
                 ->with('error', 'Your account is suspended temporairly. Please contact support.');
         }
 
-        \Auth::login($user, $request->filled('remember'));
+        Auth::login($user, $request->filled('remember'));
         $request->session()->regenerate();
-        \Auth::user()->update(['last_login_at' => now()]);
+        Auth::user()->update(['last_login_at' => now()]);
         
         return redirect('dashboard')->with('toast_success', 'Login successful! Welcome back.');
     }
 
     public function logout(Request $request)
     {
-        \Auth::logout();
+        Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/login')->with('toast_success', 'You have been logged out.');

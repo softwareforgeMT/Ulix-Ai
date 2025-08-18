@@ -50,6 +50,19 @@
 
         @include('includes.header')
         @include('pages.popup')
+        @if(session('is_impersonating'))
+            <div class="bg-yellow-100 text-gray-800 p-4 flex justify-between items-center">
+                <div>
+                    <span>You are logged in as <strong>{{ auth()->user()->email }}</strong></span>
+                </div>
+                <form method="POST" action="{{ route('restore-admin') }}" class="inline">
+                    @csrf
+                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-400">
+                        Go back to Admin Panel
+                    </button>
+                </form>
+            </div>
+        @endif
 
         <div class="flex flex-col lg:flex-row">
             <!-- Sidebar (mobile is absolutely positioned and hidden by default) -->

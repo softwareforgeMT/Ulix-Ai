@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Navigation - ULIX AI</title>
+  <title>Navigation - @site</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -15,7 +15,7 @@
     <div class="flex justify-between h-16 items-center">
       <!-- Logo -->
       <div class="text-2xl font-extrabold text-blue-700 tracking-wide">
-        ULIX<span class="text-pink-500">AI</span>
+        @site
       </div>
       <!-- Desktop Menu Button -->
       <div class="hidden md:flex items-center space-x-4">

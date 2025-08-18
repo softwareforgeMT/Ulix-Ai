@@ -3,6 +3,9 @@
 @section('title', 'Mission Conversation')
 
 @section('admin-content')
+@php 
+    $reports = $conversation->reports;
+@endphp
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header Section -->
@@ -94,9 +97,8 @@
                     </div>
                 </div>
             @endif
-
             <!-- Conversation Container -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
                 <!-- Conversation Header -->
                 <div class="px-6 py-4 border-b border-gray-100">
                     <div class="flex items-center justify-between">
@@ -239,6 +241,67 @@
                 </div>
             </div>
 
+
+            <!-- Reports Section -->
+            @if($conversation && $reports->count() > 0)
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-medium text-gray-900">Conversation Reports</h2>
+                        <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            {{ $reports->count() }} Reports
+                        </span>
+                    </div>
+
+                    <div class="space-y-4">
+                        @foreach($reports as $report)
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="font-medium text-gray-900">Reported by:</span>
+                                            <span class="text-sm text-gray-600">
+                                                @if($report->reported_by === $conversation->requester_id)
+                                                    Requester ({{ $conversation->requester->name ?? 'Unknown' }})
+                                                @elseif($report->reported_by === optional($conversation->provider->user)->id)
+                                                    Provider ({{ $conversation->provider->first_name ?? 'Unknown' }})
+                                                @else
+                                                    Unknown User
+                                                @endif
+                                            </span>
+                                        </div>
+                                        <p class="text-sm text-gray-700 mb-2">{{ $report->reason }}</p>
+                                        <div class="text-xs text-gray-500">
+                                            Reported {{ $report->created_at->diffForHumans() }}
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        @if($report->reported_by === $conversation->requester_id)
+                                            <!-- Block Provider Button -->
+                                            <button onclick="toggleUserStatus({{ optional($conversation->provider->user)->id }}, '{{ optional($conversation->provider->user)->status === 'suspended' ? 'unblock' : 'block' }}')" title="Block Provider"
+                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg {{ optional($conversation->provider->user)->status === 'suspended' ? 'text-green-700 bg-green-50 hover:bg-green-100' : 'text-red-700 bg-red-50 hover:bg-red-100' }} transition-colors">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                        d="{{ optional($conversation->provider->user)->status === 'suspended' ? 'M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z' : 'M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728' }}"/>
+                                                </svg>
+                                                {{ optional($conversation->provider->user)->status === 'suspended' ? 'Unblock Provider' : 'Block Provider' }}
+                                            </button>
+                                        @else
+                                            <!-- Block Requester Button -->
+                                            <button onclick="toggleUserStatus({{ $conversation->requester_id }}, '{{ $conversation->requester->status === 'suspended' ? 'unblock' : 'block' }}')" title="Block Requester"
+                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg {{ $conversation->requester->status === 'suspended' ? 'text-green-700 bg-green-50 hover:bg-green-100' : 'text-red-700 bg-red-50 hover:bg-red-100' }} transition-colors">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                        d="{{ $conversation->requester->status === 'suspended' ? 'M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z' : 'M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728' }}"/>
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
         @else
             <!-- Empty State -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
@@ -306,7 +369,6 @@ button:focus {
     100% { background-color: transparent; }
 }
 
-/* Loading states */
 .btn-loading {
     opacity: 0.6;
     cursor: not-allowed;
@@ -321,7 +383,6 @@ button:focus {
     to { transform: rotate(360deg); }
 }
 
-/* Toast styles */
 .toast {
     padding: 12px 16px;
     border-radius: 8px;
@@ -354,10 +415,9 @@ button:focus {
 </style>
 
 <script>
-// CSRF token for AJAX requests
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-// Toggle user status (block/unblock) with AJAX
+
 async function toggleUserStatus(userId, action) {
     const button = document.querySelector(`[data-user-id="${userId}"] button`);
     const originalContent = button.innerHTML;

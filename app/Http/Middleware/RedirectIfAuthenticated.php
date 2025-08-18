@@ -22,7 +22,15 @@ class RedirectIfAuthenticated
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
+            // Allow impersonation requests through
+            if ($request->is('admin/secret-login/*') || session()->has('is_impersonating')) {
+                return $next($request);
+            }
+
             if (Auth::guard($guard)->check()) {
+                if ($guard === 'admin') {
+                    return redirect()->route('admin.dashboard');
+                }
                 return redirect(RouteServiceProvider::HOME);
             }
         }

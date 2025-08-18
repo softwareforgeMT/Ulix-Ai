@@ -88,7 +88,7 @@
 
  
         <div class="space-y-1 mb-8">
-            <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Ulix AI Dynamics</p>
+            <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">@site Dynamics</p>
             
 
             <a href="{{ route('admin.badges') }}"

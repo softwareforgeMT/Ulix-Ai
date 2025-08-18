@@ -51,6 +51,8 @@
 @elseif($user->user_role === 'service_provider')
   @php
     $provider = $provider ?? null;
+    $in_progress = $provider->missions()->where('status', 'in_progress')->count();
+
   @endphp
   <div class="main-content">
     <div class="p-4 sm:p-6 md:p-8">
@@ -102,47 +104,47 @@
         $currentBadge = $user->badges()->where('type', 'reputation')->where('is_auto', true)->orderByDesc('threshold')->first();
       @endphp
 
-<div class="relative bg-blue-100 rounded-2xl px-2 py-6 mb-6 overflow-visible">
-  <div class="relative h-10 flex items-center">
-    <!-- Full background bar -->
-    <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-6 bg-blue-200 rounded-full w-full"></div>
-    <!-- Filled progress -->
-    <div class="absolute left-0 top-1/2 -translate-y-1/2 h-6 bg-blue-500 rounded-full transition-all duration-500" style="width: {{ $progress }}%"></div>
-    <!-- Dots -->
-    <div class="relative flex justify-between items-center w-full z-10 px-2">
-      @foreach ($badges as $badge)
-        <div class="flex flex-col items-center w-1/{{ count($badges) }}">
-          <div class="w-5 h-5 rounded-full z-10 border-2
-            {{ ($points >= $badge->threshold) ? 'bg-blue-600 border-blue-600' : 'bg-white border-blue-500' }}">
+      <div class="relative bg-blue-100 rounded-2xl px-2 py-6 mb-6 overflow-visible">
+        <div class="relative h-10 flex items-center">
+          <!-- Full background bar -->
+          <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-6 bg-blue-200 rounded-full w-full"></div>
+          <!-- Filled progress -->
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 h-6 bg-blue-500 rounded-full transition-all duration-500" style="width: {{ $progress }}%"></div>
+          <!-- Dots -->
+          <div class="relative flex justify-between items-center w-full z-10 px-2">
+            @foreach ($badges as $badge)
+              <div class="flex flex-col items-center w-1/{{ count($badges) }}">
+                <div class="w-5 h-5 rounded-full z-10 border-2
+                  {{ ($points >= $badge->threshold) ? 'bg-blue-600 border-blue-600' : 'bg-white border-blue-500' }}">
+                </div>
+              </div>
+            @endforeach
           </div>
         </div>
-      @endforeach
-    </div>
-  </div>
-  <!-- Labels above -->
-  <div class="grid grid-cols-{{ count($badges) }} text-center mt-2 mb-1 text-sm font-semibold text-blue-900">
-    @foreach ($badges as $badge)
-      <span>{{ $badge->title }}</span>
-    @endforeach
-  </div>
-  <!-- Points below -->
-  <div class="grid grid-cols-{{ count($badges) }} text-center text-xs text-gray-700">
-    @foreach ($badges as $badge)
-      <span>{{ $badge->threshold }} pts</span>
-    @endforeach
-  </div>
-  <!-- Current score and badge below bar -->
-  <p class="text-center text-sm mt-4 font-medium text-blue-700">
-    Your Points: <strong>{{ $points }}</strong>
-    @if($currentBadge)
-      <span class="inline-flex items-center ml-2 px-2 py-1 bg-blue-200 text-blue-800 rounded-full text-xs font-semibold">
-        <!-- <img src="/images/badges/{{ $currentBadge->icon }}" alt="{{ $currentBadge->title }}" class="w-5 h-5 mr-1 inline-block" /> -->
-        {{ $currentBadge->title }}
-      </span>
-    @endif
-    / {{ $badges->max('threshold') }}
-  </p>
-</div>
+        <!-- Labels above -->
+        <div class="grid grid-cols-{{ count($badges) }} text-center mt-2 mb-1 text-sm font-semibold text-blue-900">
+          @foreach ($badges as $badge)
+            <span>{{ $badge->title }}</span>
+          @endforeach
+        </div>
+        <!-- Points below -->
+        <div class="grid grid-cols-{{ count($badges) }} text-center text-xs text-gray-700">
+          @foreach ($badges as $badge)
+            <span>{{ $badge->threshold }} pts</span>
+          @endforeach
+        </div>
+        <!-- Current score and badge below bar -->
+        <p class="text-center text-sm mt-4 font-medium text-blue-700">
+          Your Points: <strong>{{ $points }}</strong>
+          @if($currentBadge)
+            <span class="inline-flex items-center ml-2 px-2 py-1 bg-blue-200 text-blue-800 rounded-full text-xs font-semibold">
+              <!-- <img src="/images/badges/{{ $currentBadge->icon }}" alt="{{ $currentBadge->title }}" class="w-5 h-5 mr-1 inline-block" /> -->
+              {{ $currentBadge->title }}
+            </span>
+          @endif
+          / {{ $badges->max('threshold') }}
+        </p>
+      </div>
 
       <!-- End Progress Bar (Zelper style) -->
 
@@ -263,10 +265,10 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-8">
         <div class="bg-blue-400 text-white p-6 rounded-2xl text-center">
           <div class="text-3xl font-bold mb-2">1</div>
-          <div class="text-sm">Upcoming service requests</div>
+          <div class="text-sm">Service requests</div>
         </div>
         <div class="bg-blue-400 text-white p-6 rounded-2xl text-center">
-          <div class="text-3xl font-bold mb-2">2</div>
+          <div class="text-3xl font-bold mb-2">{{ $in_progress ?? 0 }}</div>
           <div class="text-sm">Job to done</div>
         </div>
         <div class="bg-blue-400 text-white p-6 rounded-2xl text-center">

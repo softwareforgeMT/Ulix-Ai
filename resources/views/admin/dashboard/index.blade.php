@@ -31,7 +31,7 @@
     <nav class="bg-white shadow px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-3">
             <img src="/images/headerlogo.png" alt="Logo" class="w-10 h-10 object-contain" />
-            <span class="font-bold text-blue-700 text-xl">ULIXAI Admin</span>
+            <span class="font-bold text-blue-700 text-xl">@site Admin</span>
         </div>
         <form method="POST" action="{{ route('admin.logout') }}">
             @csrf

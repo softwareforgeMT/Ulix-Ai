@@ -83,48 +83,55 @@ class AdminDashboardController extends Controller
     public function secretLogin(Request $request, $id)
     {
         try {
-            // Ensure admin is authenticated
             if (!auth()->guard('admin')->check()) {
-                return redirect()->route('admin.login')->with('toast_error', 'Admin authentication required');
+                return redirect()->route('admin.login')->with('error', 'Admin authentication required');
             }
-
+            $adminId = auth()->guard('admin')->id();
+            
+            // Find user to impersonate
             $user = User::findOrFail($id);
-            $admin = auth()->guard('admin')->user();
 
-            // Security check - only allow super admins or specific permissions
-            if (method_exists($this, 'canImpersonate') && !$this->canImpersonate($admin, $user)) {
-                return redirect()->back()->with('toast_error', 'Insufficient permissions to impersonate this user');
-            }
-
-            session(['admin_id' => $admin->id]);
             auth()->guard('admin')->logout();
-            auth()->logout(); 
-            auth()->login($user);
-
+            auth()->guard('web')->logout();
+            
+            session()->forget('password_hash');
+            session(['admin_id' => $adminId]);
             session(['is_impersonating' => true]);
 
-            return redirect('/dashboard')->with('toast_success', 'You are now impersonating ' . $user->name . ' (' . $user->email . ')');
+            auth()->guard('web')->login($user, true);
+            
+            session()->regenerate();
+
+            return redirect()->route('dashboard')->with('success', 'Now impersonating ' . $user->name);
+
         } catch (\Exception $e) {
-            \Log::error('Admin impersonation failed', [
-                'admin_id' => auth()->guard('admin')->id(),
+            Log::error('Secret login failed:', [
+                'admin_id' => auth()->guard('admin')->id() ?? null,
                 'target_user_id' => $id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'error' => $e->getMessage()
             ]);
-            return redirect()->back()->with('toast_error', 'Failed to impersonate user: ' . $e->getMessage());
+            
+            return redirect()->back()->with('error', 'Failed to impersonate user: ' . $e->getMessage());
         }
     }
 
     public function restoreAdmin()
     {
-        $adminId = session()->pull('admin_id');
-        if ($adminId) {
-            auth()->logout();
-            auth()->guard('admin')->loginUsingId($adminId);
-            session()->forget('is_impersonating');
-            return redirect()->route('admin.dashboard')->with('toast_success', 'Returned to admin account.');
+        try {
+            if (!session()->has('admin_id')) {
+                return redirect()->route('admin.login');
+            }
+
+            $adminId = session()->get('admin_id');
+            auth()->guard('web')->logout();
+            session()->forget(['admin_id', 'is_impersonating']);
+            auth()->guard('admin')->loginUsingId($adminId, true);
+            session()->regenerate();
+            return redirect()->route('admin.dashboard')->with('success', 'Returned to admin account');
+        } catch (\Exception $e) {
+            Log::error('Restore admin failed:', ['error' => $e->getMessage()]);
+            return redirect()->route('admin.login')->with('error', 'Could not restore admin session');
         }
-        return redirect()->route('login')->with('toast_error', 'Could not restore admin session.');
     }
 
     public function updateCommission(Request $request)
@@ -166,20 +173,7 @@ class AdminDashboardController extends Controller
         return view('admin.dashboard.transactions', compact('transactions', 'providers'));
     }
 
-     private function canImpersonate($admin, $user)
-    {
-        if ($admin->role === 'super_admin') {
-            return true;
-        }
-        if ($admin->role === 'admin' && !$user->hasRole('admin')) {
-            return true;
-        }
-        if ($user->email === 'system@example.com' || $user->hasRole('admin')) {
-            return false;
-        }
-
-        return false; 
-    }
+    
 
     public function badges(Request $request)
     {

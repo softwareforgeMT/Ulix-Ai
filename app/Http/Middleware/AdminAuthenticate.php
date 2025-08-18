@@ -11,11 +11,11 @@ class AdminAuthenticate
     {
         // Prevent access to admin if impersonating as user
         if (session('is_impersonating')) {
-            return redirect('/dashboard')->with('toast_error', 'You cannot access admin while impersonating a user.');
+            return redirect('/dashboard')->with('error', 'You cannot access admin while impersonating a user.');
         }
 
         if (Auth::guard('admin')->guest()) {
-            return redirect()->route('admin.login')->with('toast_error', 'Admin authentication required');
+            return redirect()->route('admin.login')->with('error', 'Admin authentication required');
         }
 
         return $next($request);

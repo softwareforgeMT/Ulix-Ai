@@ -79,6 +79,7 @@ Route::get('/legal-notice', function() {
 
 
 Route::middleware(['auth'])->group(function () {
+    Route::post('/restore-admin', [AdminDashboardController::class, 'restoreAdmin'])->name('restore-admin');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/service-request', [ServiceRequestController::class, 'index'])->name('user.service.requests');
     Route::get('/view-service-request', [ServiceRequestController::class, 'viewServiceRequest'])->name('view.request');
@@ -181,7 +182,7 @@ Route::post('/save-request', [ServiceRequestController::class, 'saveRequestForm'
 
 
 // Admin routes
-Route::prefix('admin')->name('admin.')->middleware(['web'])->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login.form');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
@@ -201,7 +202,6 @@ Route::prefix('admin')->name('admin.')->middleware(['web'])->group(function () {
         Route::match(['get', 'patch'], '/users/{user}/manage', [UserManagementController::class, 'manage'])->name('users.manage');
         Route::patch('/missions/{mission}/manage', [UserManagementController::class, 'manageMission'])->name('missions.manage');
         Route::post('/secret-login/{id}', [AdminDashboardController::class, 'secretLogin'])->name('secret-login');
-        Route::post('/restore-admin', [AdminDashboardController::class, 'restoreAdmin'])->name('restore-admin');
         Route::post('/commission/update', [AdminDashboardController::class, 'updateCommission'])->name('commission.update');
         Route::post('/stripe/kyc/remind/{provider}', [AdminDashboardController::class, 'remindKyc'])->name('stripe.kyc.remind');
 

@@ -69,7 +69,7 @@
                     </div>
                 </a>
 
-                <!-- <a href="{{ route('admin.fake-content.create-mission-form') }}" 
+                <a href="{{ route('admin.fake-content.create-mission-form') }}" 
                    class="group relative bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 hover:border-blue-300">
                     <div class="flex items-center justify-between">
                         <div>
@@ -84,7 +84,7 @@
                             </div>
                         </div>
                     </div>
-                </a> -->
+                </a>
             </div>
         </div>
 
@@ -228,7 +228,7 @@
         </div>
 
         <!-- Fake Missions Section -->
-        <!-- <div class="mb-10">
+        <div class="mb-10">
             <div class="sm:flex sm:items-center mb-6">
                 <div class="sm:flex-auto">
                     <h2 class="text-xl font-semibold text-gray-900">Fake Missions</h2>
@@ -293,7 +293,7 @@
                     </table>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
 </div>
 @endsection

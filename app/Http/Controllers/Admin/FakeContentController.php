@@ -37,7 +37,7 @@ class FakeContentController extends Controller
             ->with('user')
             ->get();
 
-        $missions = Mission::where('is_fake', true)->with(['requester', 'provider'])->get();
+        $missions = Mission::where('is_fake', true)->with(['requester', 'selectedProvider'])->get();
 
         return view('admin.dashboard.admin-fcg.fake-dashboard', compact('users', 'providers', 'missions'));
     }
@@ -64,7 +64,20 @@ class FakeContentController extends Controller
 
     public function createMissionForm()
     {
-        return view('admin.dashboard.admin-fcg.create-fake-mission');
+        $categories = Category::where('level', 1)->with('subcategories.subSubCategories')->get();
+        $countries = Country::where('status', true)->get();
+        $languages = [
+            'English', 'French', 'Spanish', 'Portuguese', 'German', 'Italian',
+            'Arabic', 'Japanese', 'Korean', 'Hindi', 'Turkish'
+        ];
+        $fakeRequesters = User::where('is_fake', true)->get();
+
+        return view('admin.dashboard.admin-fcg.create-fake-mission', compact(
+            'categories', 
+            'countries', 
+            'languages',
+            'fakeRequesters'
+        ));
     }
 
     public function createFake(Request $request)
@@ -190,7 +203,7 @@ class FakeContentController extends Controller
                 'budget_min' => $request->input('budget_min', 10),
                 'budget_max' => $request->input('budget_max', 100),
                 'budget_currency' => $request->input('budget_currency', 'EUR'),
-                'service_durition' => $request->input('service_durition', '1h'),
+                'service_durition' => $request->input('service_durition', '1 week'),
                 'location_country' => $request->input('location_country', 'France'),
                 'location_city' => $request->input('location_city', 'Paris'),
                 'is_remote' => $request->input('is_remote', false),

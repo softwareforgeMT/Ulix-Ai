@@ -26,21 +26,16 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
-    /**
-     * Bootstrap any application services.
-     */
+    
     public function boot(): void
     {
-        // Read once from DB (cached) and override app.name globally
-        $siteName = Cache::remember('site_name', 3600, function () {
-            return DB::table('site_settings')->value('site_name'); // first row's site_name
-        });
+        $siteName = DB::table('site_settings')->value('site_name'); 
 
         if (!empty($siteName)) {
             Config::set('app.name', $siteName);
         }
 
-        // Optional: short Blade directive -> @site
         Blade::directive('site', fn () => "<?php echo e(config('app.name')); ?>");
     }
+
 }

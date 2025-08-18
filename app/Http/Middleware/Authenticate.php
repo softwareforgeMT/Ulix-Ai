@@ -14,6 +14,10 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
+        if (session()->has('is_impersonating')) {
+            return null; 
+        }
+
         if (! $request->expectsJson()) {
             return route('login');
         }
