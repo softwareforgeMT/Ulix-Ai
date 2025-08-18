@@ -933,5 +933,5 @@ function showToast(message, type = 'info') {
 }
 
 </script>
-
+<div class = "mb-96"></div>
 @endsection

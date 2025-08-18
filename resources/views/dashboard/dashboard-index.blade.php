@@ -419,5 +419,6 @@
     min-width: 0 !important;
   }
 </style>
+<div class = "mb-12"></div>
 
 @endsection

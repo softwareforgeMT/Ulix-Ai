@@ -61,6 +61,7 @@
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            color:white;
         }
         
         .search-input:focus {
@@ -96,7 +97,7 @@
                         <div>
                             <label class="block text-sm font-medium text-white mb-2">Country</label>
                             <select id="countryFilter" class="search-input w-full px-4 py-2 rounded-lg placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                <option value="">All Countries</option>
+                                <option value="" >All Countries</option>
                                 <option value="US">United States</option>
                                 <option value="UK">United Kingdom</option>
                                 <option value="CA">Canada</option>

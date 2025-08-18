@@ -11,17 +11,17 @@
         .blur-orb {
             animation: float 6s ease-in-out infinite;
         }
-        
+
         .blur-orb:nth-child(2) {
             animation-delay: -3s;
         }
-        
+
         @keyframes float {
             0%, 100% { transform: translateY(0px) translateX(0px); }
             33% { transform: translateY(-20px) translateX(10px); }
             66% { transform: translateY(10px) translateX(-10px); }
         }
-        
+
         /* Custom gradient for payment cards */
         .payment-card {
             background: rgba(255, 255, 255, 0.1);
@@ -46,11 +46,10 @@
             <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
                 
                 <!-- Main Grid Layout -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-12">
                     
-                    <!-- About Section - Spans more columns on large screens -->
-                    <div class="lg:col-span-4 space-y-6">
-                        <!-- Logo -->
+                    <!-- About Section -->
+                    <div class="space-y-6">
                         <div class="flex items-center space-x-3">
                             <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
                                 <span class="text-white font-bold text-xl">U</span>
@@ -59,8 +58,6 @@
                                  @site
                             </h3>
                         </div>
-
-                        <!-- About Text -->
                         <div class="space-y-4 text-gray-600 leading-relaxed">
                             <p class="text-sm lg:text-base">
                                 <span class="font-semibold text-blue-800"> @site.com</span> is the solution for anyone who needs a helping hand — wherever they are in the world.
@@ -69,32 +66,25 @@
                                 Need trusted, hassle-free assistance? Our platform connects you with verified providers who are available and ready to help.
                             </p>
                             <p class="text-sm lg:text-base font-medium text-blue-700">
-                                At  @site, we never leave you alone.
+                                At @site, we never leave you alone.
                             </p>
                         </div>
-
-                        <!-- Social Media Icons -->
                         <div class="space-y-3">
                             <h5 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Follow Us</h5>
                             <div class="flex flex-wrap gap-3">
-                                <a href="https://www.facebook.com/profile.php?id=61575873886727" 
-                                   class="group w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
+                                <a href="https://www.facebook.com/profile.php?id=61575873886727" class="group w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
                                     <i class="fab fa-facebook-f text-sm group-hover:scale-110 transition-transform"></i>
                                 </a>
-                                <a href="https://fr.pinterest.com/ulixai/" 
-                                   class="group w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
+                                <a href="https://fr.pinterest.com/ulixai/" class="group w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
                                     <i class="fab fa-pinterest-p text-sm group-hover:scale-110 transition-transform"></i>
                                 </a>
-                                <a href="https://www.instagram.com/ulixai_officiel/" 
-                                   class="group w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
+                                <a href="https://www.instagram.com/ulixai_officiel/" class="group w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
                                     <i class="fab fa-instagram text-sm group-hover:scale-110 transition-transform"></i>
                                 </a>
-                                <a href="#" 
-                                   class="group w-10 h-10 bg-black hover:bg-gray-800 text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
+                                <a href="#" class="group w-10 h-10 bg-black hover:bg-gray-800 text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
                                     <i class="fab fa-tiktok text-sm group-hover:scale-110 transition-transform"></i>
                                 </a>
-                                <a href="https://x.com/Ulixai_officiel" 
-                                   class="group w-10 h-10 bg-blue-400 hover:bg-blue-500 text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
+                                <a href="https://x.com/Ulixai_officiel" class="group w-10 h-10 bg-blue-400 hover:bg-blue-500 text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg">
                                     <i class="fab fa-twitter text-sm group-hover:scale-110 transition-transform"></i>
                                 </a>
                             </div>
@@ -102,7 +92,7 @@
                     </div>
 
                     <!-- Quick Links -->
-                    <div class="lg:col-span-3">
+                    <div>
                         <h4 class="text-lg font-bold mb-6 text-gray-900 flex items-center">
                             <span class="text-orange-500 mr-2">⚡</span>
                             Quick Links
@@ -120,7 +110,7 @@
                     </div>
 
                     <!-- Legal Info -->
-                    <div class="lg:col-span-3">
+                    <div>
                         <h4 class="text-lg font-bold mb-6 text-gray-900 flex items-center">
                             <span class="text-blue-500 mr-2">📚</span>
                             Legal & Info
@@ -136,36 +126,34 @@
                     </div>
 
                     <!-- Payment & Actions -->
-                    <div class="lg:col-span-2">
-                        <!-- Payment Methods -->
-                        <div class="mb-8">
-                            <h4 class="text-lg font-bold mb-6 text-gray-900 flex items-center">
-                                <span class="text-green-500 mr-2">💳</span>
-                                Payment
-                            </h4>
-                            <div class="grid grid-cols-3 gap-2 mb-4">
-                                <div class="payment-card rounded-lg p-2 flex items-center justify-center h-12 hover:bg-white hover:shadow-md transition-all duration-300">
-                                    <div class="w-8 h-5 bg-blue-600 rounded text-white text-xs flex items-center justify-center font-bold">VISA</div>
-                                </div>
-                                <div class="payment-card rounded-lg p-2 flex items-center justify-center h-12 hover:bg-white hover:shadow-md transition-all duration-300">
-                                    <div class="w-8 h-5 bg-red-600 rounded text-white text-xs flex items-center justify-center font-bold">MC</div>
-                                </div>
-                                <div class="payment-card rounded-lg p-2 flex items-center justify-center h-12 hover:bg-white hover:shadow-md transition-all duration-300">
-                                    <div class="w-8 h-5 bg-blue-500 rounded text-white text-xs flex items-center justify-center font-bold">PP</div>
-                                </div>
-                            </div>
-                        </div>
+                    <div>
+                        <h4 class="text-lg font-bold mb-6 text-gray-900 flex items-center">
+                            <span class="text-green-500 mr-2">💳</span>
+                            Payment
+                        </h4>
+<div class="grid grid-cols-3 mb-4">
+    <div class="flex items-center justify-center">
+        <img src="{{ asset('images/visa.png') }}" alt="VISA" class="w-20 h-[50px] object-contain">
+    </div>
+    <div class="flex items-center justify-center">
+        <img src="{{ asset('images/mastercard.png') }}" alt="MasterCard" class="w-20 h-[50px] object-contain">
+    </div>
+    <div class="flex items-center justify-center">
+        <img src="{{ asset('images/paypal.png') }}" alt="PayPal" class="w-20 h-[50px] object-contain">
+    </div>
+</div>
+
+
+
 
                         <!-- Report Bug Button -->
                         <div class="space-y-4">
-                            <a href="/reportbug" 
-                               class="w-full bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 text-sm text-center block">
+                            <a href="/reportbug" class="w-full bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 text-sm text-center block">
                                 <i class="fas fa-bug mr-2"></i>
                                 Report a Bug
                             </a>
                         </div>
                     </div>
-
                 </div>
 
                 <!-- Bottom Footer -->
