@@ -135,11 +135,13 @@
                     <i class="fas fa-tools"></i>
                     <span>Service Requests</span>
                 </a>
-                <a href="?tab=jobs" 
-                   class="tab-btn {{ $activeTab === 'jobs' ? 'active' : '' }} px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg">
-                    <i class="fas fa-briefcase"></i>
-                    <span>Job Listings</span>
-                </a>
+                @if($user->user_role === 'service_provider')
+                    <a href="?tab=jobs" 
+                    class="tab-btn {{ $activeTab === 'jobs' ? 'active' : '' }} px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Job Listings</span>
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -153,7 +155,6 @@
                         {{ count($missions) }}
                     </span>
                 </div>
-                
                 <div class="flex-1 space-y-3 overflow-y-auto scrollbar-hide">
                     @foreach($missions as $mission)
                         @php
@@ -221,6 +222,13 @@
                             </div>
                             <div>
                                 <h3 id="chatUserName" class="font-bold text-gray-900 text-md"></h3>
+                                <p class="text-xs text-gray-600 mb-1 flex items-center justify-between">
+                                    <button class="report-conversation-btn ml-2 text-red-500 hover:text-red-700" 
+                                            data-report-conversation-id="" 
+                                            title="Report Conversation">
+                                        <i class="fas fa-flag"></i>
+                                    </button>
+                                </p>
                                 <div class="flex items-center gap-2">
                                     <span id="chatPhone" class="text-sm text-gray-600"></span>
                                     <!-- <div class="flex items-center gap-1">
@@ -229,16 +237,6 @@
                                     </div> -->
                                 </div>
                             </div>
-                                                        <p class="text-xs text-gray-600 mb-1 flex items-center justify-between">
-    
-    @if($conv)
-    <button class="report-conversation-btn ml-2 text-red-500 hover:text-red-700" 
-            data-conversation-id="{{ $conv->id }}" 
-            title="Report Conversation">
-        <i class="fas fa-flag"></i>
-    </button>
-    @endif
-</p>
                         </div>
                         <button id="closeChatBtn" class="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500 hover:text-gray-700">
                             <i class="fas fa-times text-xl"></i>
@@ -338,6 +336,7 @@
     let userId = {{ $user->id }};
     let conversationChannel = null; // Store the current channel subscription
     let lastMessageTimestamp = null;
+    let reportConversationId = null;
 
     // DOM Elements
     const elements = {
@@ -571,7 +570,11 @@
                 card.classList.remove('active');
             });
             document.querySelector(`[data-conversation-id="${conversationId}"]`)?.classList.add('active');
+            const reportBtn = document.querySelector('.report-conversation-btn');
+            if (reportBtn) {
 
+                reportBtn.setAttribute('data-report-conversation-id', conversationId);
+            }
             // Load initial messages
             this.loadMessages(conversationId);
             
@@ -885,53 +888,56 @@
     window.addEventListener('beforeunload', () => {
         broadcastManager.unsubscribeFromConversation();
     });
-</script>
-<script>
-let reportConversationId = null;
 
-function initializeReportButtons() {
-    document.querySelectorAll('.report-conversation-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            reportConversationId = this.dataset.conversationId;
-            document.getElementById('reportReasonInput').value = '';
-            document.getElementById('reportModal').classList.remove('hidden');
+
+    function initializeReportButtons() {
+        document.querySelectorAll('.report-conversation-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                reportConversationId = this.dataset.conversationId;
+                document.getElementById('reportReasonInput').value = '';
+                document.getElementById('reportModal').classList.remove('hidden');
+            });
         });
-    });
 
-    document.getElementById('cancelReportBtn').onclick = function() {
-        document.getElementById('reportModal').classList.add('hidden');
-        reportConversationId = null;
-    };
+        document.getElementById('cancelReportBtn').onclick = function() {
+            document.getElementById('reportModal').classList.add('hidden');
+            reportConversationId = null;
+        };
 
-    document.getElementById('submitReportBtn').onclick = async function() {
-        const reason = document.getElementById('reportReasonInput').value;
-        if (!reportConversationId) return;
-        const res = await fetch(`/conversations/${reportConversationId}/report`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ reason })
-        });
-        const data = await res.json();
-        document.getElementById('reportModal').classList.add('hidden');
-        reportConversationId = null;
-        // Optionally show a toast or notification here
-        showToast(data.message, res.ok ? 'success' : 'error');
-    };
-}
+        document.getElementById('submitReportBtn').onclick = async function() {
+            const reason = document.getElementById('reportReasonInput').value;
+            const reportBtn = document.querySelector('.report-conversation-btn');
+            let convId = null;
+            if (reportBtn) {
+                convId = reportBtn.getAttribute('data-report-conversation-id');
+            }
+            
+            if (!convId) return;
+            const res = await fetch(`/conversations/${convId}/report`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ reason })
+            });
+            const data = await res.json();
+            document.getElementById('reportModal').classList.add('hidden');
+            reportConversationId = null;
+            // Optionally show a toast or notification here
+            showToast(data.message, res.ok ? 'success' : 'error');
+        };
+    }
 
-// Simple toast notification (add this function)
-function showToast(message, type = 'info') {
-    const toast = document.createElement('div');
-    toast.className = `fixed bottom-6 right-6 px-4 py-2 rounded shadow-lg z-50 text-white ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
-
+    // Simple toast notification (add this function)
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `fixed bottom-6 right-6 px-4 py-2 rounded shadow-lg z-50 text-white ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
 </script>
 <div class = "mb-96"></div>
 @endsection
