@@ -934,5 +934,5 @@
         };
     }
 </script>
-
+<div class = "mb-96"></div>
 @endsection

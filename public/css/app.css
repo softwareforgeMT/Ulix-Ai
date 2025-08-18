@@ -252,6 +252,7 @@
     max-width: 100%;
     height: auto;
   }
+
   button, input, select, optgroup, textarea, ::file-selector-button {
     font: inherit;
     font-feature-settings: inherit;
@@ -261,7 +262,7 @@
     border-radius: 0;
     background-color: transparent;
     opacity: 1;
-  }
+}
   :where(select:is([multiple], [size])) optgroup {
     font-weight: bolder;
   }

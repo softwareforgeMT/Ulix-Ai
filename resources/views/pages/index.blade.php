@@ -26,6 +26,10 @@
   font-weight: 400;
   font-style: normal;
 }
+/* #languageSelect,
+#countrySelect {
+    color: white !important;
+} */
 
 
 body {
@@ -531,18 +535,18 @@ html, body {
   
     <!-- Filters -->
     <div class="flex flex-wrap justify-center items-center gap-4 mb-8 bg-white p-4 rounded-lg shadow-sm">       
-        <!-- Country Dropdowns -->
-        <select id="languageSelect" class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
-            @foreach($country as $lang)
-              <option value="{{ $lang }}">{{ $lang }}</option>
-            @endforeach
-        </select>
-        <select id="countrySelect" class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
-            @foreach($country as $lang)
-              <option value="{{ $lang }}">{{ $lang }}</option>
-            @endforeach
-        </select>
-        
+      <!-- Country Dropdowns -->
+<select id="languageSelect" class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
+    @foreach($country as $lang)
+      <option value="{{ $lang }}" class="text-black">{{ $lang }}</option> <!-- Add class text-white here -->
+    @endforeach
+</select>
+
+<select id="countrySelect" class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white  ">
+    @foreach($country as $lang)
+      <option value="{{ $lang }}"  style="color: black !important;">{{ $lang }}</option> <!-- Add class text-white here -->
+    @endforeach
+</select>
         <!-- Category Dropdown -->
         <select id="categorySelect" class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
             <option value="">Select Category</option>
@@ -1881,6 +1885,7 @@ document.getElementById('filterButton').addEventListener('click', function() {
             countries.forEach(country => {
                 const option = document.createElement('option');
                 option.value = country;
+                 option.style.color = 'black'; 
                 option.textContent = `${countryFlags[country] || '🌍'} ${country}`;
                 countrySelect.appendChild(option);
             });
@@ -1891,6 +1896,7 @@ document.getElementById('filterButton').addEventListener('click', function() {
             categories.forEach(category => {
                 const option = document.createElement('option');
                 option.value = category;
+                option.style.color = 'black'; 
                 option.textContent = categoryMapping[category] || category;
                 categorySelect.appendChild(option);
             });
@@ -1901,6 +1907,7 @@ document.getElementById('filterButton').addEventListener('click', function() {
             languages.forEach(lang => {
                 const option = document.createElement('option');
                 option.value = lang;
+                option.style.color = 'black'; 
                 option.textContent = languageNames[lang] || lang.toUpperCase();
                 languageSelect.appendChild(option);
             });
