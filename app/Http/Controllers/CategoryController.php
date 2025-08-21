@@ -10,7 +10,7 @@ class CategoryController extends Controller
     
     public function fetchMainCategories()
     {
-        $categories = Category::mainCategories()->active()->orderBy('sort_order')->get(['id', 'name', 'slug']);
+        $categories = Category::mainCategories()->active()->orderBy('sort_order')->get(['id', 'name', 'slug', 'icon_image']);
         return response()->json(['success' => true, 'categories' => $categories]);
     }
 
@@ -19,7 +19,7 @@ class CategoryController extends Controller
         $subcategories = Category::where('parent_id', $parentId)
             ->where('is_active', true)
             ->orderBy('sort_order')
-            ->get(['id', 'name', 'slug']);
+            ->get(['id', 'name', 'slug', 'icon_image']);
 
         return response()->json(['success' => true, 'subcategories' => $subcategories]);
     }
@@ -29,7 +29,7 @@ class CategoryController extends Controller
         $subcategories = Category::where('parent_id', $parentId)
                                 ->where('is_active', true)
                                 ->orderBy('sort_order')
-                                ->get(['id', 'name', 'level', 'slug']); // fetch only relevant fields
+                                ->get(['id', 'name', 'level', 'slug', 'icon_image']); // fetch only relevant fields
 
         return response()->json([
             'success' => true,

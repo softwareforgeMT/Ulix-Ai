@@ -88,7 +88,7 @@
     </div>
 
     <!-- Search Input in Popup -->
-    <div class="px-6 py-4">
+    <!-- <div class="px-6 py-4">
       <div class="flex items-center rounded-full border-2 border-gray-200 bg-gray-50 px-4 py-3">
         <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="7" />
@@ -100,7 +100,7 @@
           class="flex-grow bg-transparent text-gray-700 focus:outline-none placeholder-gray-500"
         />
       </div>
-    </div>
+    </div> -->
 
     <!-- Subcategories Grid -->
     <div class="p-6 pt-2">

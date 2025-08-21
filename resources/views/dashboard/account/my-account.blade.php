@@ -121,9 +121,9 @@ function renderCategoryStep(response) {
                         <label class="category-card group cursor-pointer">
                             <div class="flex items-center p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all duration-200">
                                 <input type="checkbox" class="main-category-checkbox w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" value="${cat.id}">
-                                ${cat.category_icon ? `
+                                ${cat.icon_image ? `
                                     <div class="ml-3 w-10 h-10 rounded-lg flex items-center justify-center bg-gray-100 group-hover:bg-blue-200 transition-colors overflow-hidden flex-shrink-0">
-                                        <img src="${cat.category_icon}" alt="${cat.name}" class="w-full h-full object-cover rounded-lg">
+                                        <img src="${cat.icon_image}" alt="${cat.name}" class="w-full h-full object-cover rounded-lg">
                                     </div>
                                 ` : `
                                     <div class="ml-3 w-10 h-10 rounded-lg flex items-center justify-center bg-gray-100 group-hover:bg-blue-200 transition-colors flex-shrink-0">
@@ -233,7 +233,14 @@ function renderSubcategoryStepMulti(mainCatIds, subcategoriesArr) {
                                     ${subs.map(sub => `
                                         <label class="flex items-center p-3 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group">
                                             <input type="checkbox" class="sub-category-checkbox w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" data-main="${catId}" value="${sub.id}">
-                                            <span class="ml-3 text-sm text-gray-700 group-hover:text-blue-700 transition-colors">${sub.name}</span>
+                                            ${sub.icon_image ? `
+                                                <div class="ml-3 w-6 h-6 flex-shrink-0">
+                                                    <img src="${sub.icon_image}" alt="${sub.name}" class="w-full h-full object-contain">
+                                                </div>
+                                                <span class="ml-3 text-sm text-gray-700 group-hover:text-blue-700 transition-colors">${sub.name}</span>
+                                            ` : `
+                                                <span class="ml-3 text-sm text-gray-700 group-hover:text-blue-700 transition-colors">${sub.name}</span>
+                                            `}
                                         </label>
                                     `).join('')}
                                 </div>
@@ -359,7 +366,14 @@ function renderSubSubcategoryStepMulti(subCatIds, subsubcategoriesArr) {
                                     ${subs.map(subsub => `
                                         <label class="flex items-center p-3 bg-white rounded-md hover:bg-blue-50 cursor-pointer transition-colors group">
                                             <input type="checkbox" class="subsub-category-checkbox w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" data-sub="${subId}" value="${subsub.id}">
-                                            <span class="ml-3 text-sm text-gray-700 group-hover:text-blue-700 transition-colors">${subsub.name}</span>
+                                            ${subsub.icon_image ? `
+                                                <div class="ml-3 w-6 h-6 flex-shrink-0">
+                                                    <img src="${subsub.icon_image}" alt="${subsub.name}" class="w-full h-full object-contain">
+                                                </div>
+                                                <span class="ml-3 text-sm text-gray-700 group-hover:text-blue-700 transition-colors">${subsub.name}</span>
+                                            ` : `
+                                                <span class="ml-3 text-sm text-gray-700 group-hover:text-blue-700 transition-colors">${subsub.name}</span>
+                                            `}
                                         </label>
                                     `).join('')}
                                 </div>

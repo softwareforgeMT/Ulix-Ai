@@ -25,6 +25,8 @@ use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\ExpatsLeaderboardController;
 use App\Http\Controllers\Admin\RolesAndPermissionsController;
 use App\Http\Controllers\Admin\FakeContentController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ManageCountries;
 use App\Http\Controllers\ProviderReviewController;
 use App\Http\Controllers\MissionMessageController;
 use App\Http\Controllers\StripePaymentController;
@@ -239,6 +241,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/fake-content-generation/create', [FakeContentController::class, 'createFake'])->name('fake-content.create');
         Route::post('/fake-content-generation/{type}/{id}/update', [FakeContentController::class, 'updateFake'])->name('fake-content.update');
         Route::post('/fake-content-generation/{type}/{id}/delete', [FakeContentController::class, 'deleteFake'])->name('fake-content.delete');
+
+        // Category Management Routes
+        Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+        Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+        Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+        // Country Management Routes
+        Route::get('/countries', [ManageCountries::class, 'index'])->name('countries.index');
+        Route::post('/countries/{country}/toggle-status', [ManageCountries::class, 'toggleStatus'])->name('countries.toggle-status');
     });
 });
 

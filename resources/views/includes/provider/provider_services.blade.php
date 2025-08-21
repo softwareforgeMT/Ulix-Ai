@@ -59,7 +59,19 @@ document.addEventListener('DOMContentLoaded', function () {
         focus:outline-none
         focus:ring-2 focus:ring-blue-400
       `.replace(/\s+/g, ' ');
-      btn.textContent = cat.name;
+      
+      // Check if category has icon_image, otherwise show text only
+      if (cat.icon_image) {
+        btn.innerHTML = `
+          <div class="w-8 h-8 mb-1 flex items-center justify-center">
+            <img src="${cat.icon_image}" alt="${cat.name}" class="w-full h-full object-contain">
+          </div>
+          <span class="text-center leading-tight">${cat.name}</span>
+        `;
+      } else {
+        btn.textContent = cat.name;
+      }
+      
       btn.dataset.id = cat.id;
       btn.style.letterSpacing = "0.5px";
       btn.style.boxShadow = "0 2px 8px 0 rgba(59,130,246,0.07)";
@@ -79,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       row.appendChild(btn);
     });
-  }
+}
 
   function fetchCategoriesAndRender() {
     fetch('/api/categories')

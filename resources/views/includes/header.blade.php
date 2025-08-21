@@ -57,6 +57,11 @@
     $settings = \App\Models\SiteSetting::first();
     $legal = $settings->legal_info ?? [];
 @endphp
+
+@php 
+  use App\Models\Country;
+  $countries = Country::where('status', 1)->get();
+@endphp
 <body class="min-h-screen bg-white">
 <!-- //For showuing toast meassages across plateform -->
 @if (session('success'))
@@ -395,8 +400,8 @@
 
     <select id="location-input" name="location" class="w-full border border-blue-400 rounded-full px-5 py-3 text-blue-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 mb-6">
       <option value="" disabled selected>Select your country</option>
-      @foreach(['Afghanistan','Albania','Algeria','Andorra','Angola','Argentina','Armenia','Australia','Austria','Azerbaijan','Bahamas','Bahrain','Bangladesh','Barbados','Belarus','Belgium','Belize','Benin','Bhutan','Bolivia','Bosnia and Herzegovina','Botswana','Brazil','Brunei','Bulgaria','Burkina Faso','Burundi','Cabo Verde','Cambodia','Cameroon','Canada','Central African Republic','Chad','Chile','China','Colombia','Comoros','Congo','Costa Rica','Croatia','Cuba','Cyprus','Czech Republic','Denmark','Djibouti','Dominica','Dominican Republic','Ecuador','Egypt','El Salvador','Equatorial Guinea','Eritrea','Estonia','Eswatini','Ethiopia','Fiji','Finland','France','Gabon','Gambia','Georgia','Germany','Ghana','Greece','Grenada','Guatemala','Guinea','Guinea-Bissau','Guyana','Haiti','Honduras','Hungary','Iceland','India','Indonesia','Iran','Iraq','Ireland','Israel','Italy','Jamaica','Japan','Jordan','Kazakhstan','Kenya','Kiribati','Kuwait','Kyrgyzstan','Laos','Latvia','Lebanon','Lesotho','Liberia','Libya','Liechtenstein','Lithuania','Luxembourg','Madagascar','Malawi','Malaysia','Maldives','Mali','Malta','Marshall Islands','Mauritania','Mauritius','Mexico','Micronesia','Moldova','Monaco','Mongolia','Montenegro','Morocco','Mozambique','Myanmar','Namibia','Nauru','Nepal','Netherlands','New Zealand','Nicaragua','Niger','Nigeria','North Korea','North Macedonia','Norway','Oman','Pakistan','Palau','Palestine','Panama','Papua New Guinea','Paraguay','Peru','Philippines','Poland','Portugal','Qatar','Romania','Russia','Rwanda','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines','Samoa','San Marino','Sao Tome and Principe','Saudi Arabia','Senegal','Serbia','Seychelles','Sierra Leone','Singapore','Slovakia','Slovenia','Solomon Islands','Somalia','South Africa','South Korea','South Sudan','Spain','Sri Lanka','Sudan','Suriname','Sweden','Switzerland','Syria','Taiwan','Tajikistan','Tanzania','Thailand','Timor-Leste','Togo','Tonga','Trinidad and Tobago','Tunisia','Turkey','Turkmenistan','Tuvalu','Uganda','Ukraine','United Arab Emirates','United Kingdom','United States','Uruguay','Uzbekistan','Vanuatu','Vatican City','Venezuela','Vietnam','Yemen','Zambia','Zimbabwe'] as $country)
-        <option value="{{ $country }}">{{ $country }}</option>
+      @foreach($countries as $country)
+        <option value="{{ $country->country }}">{{ $country->country }}</option>
       @endforeach
     </select>
 
@@ -410,7 +415,7 @@
 
 
  		<!-- Step 6 -->
-		@include('includes.provider.operational_countries')
+		@include('includes.provider.operational_countries', ['countries' => $countries])
  
     <!-- Step 7: Special Status -->
     @include('includes.provider.special_status')
@@ -1214,12 +1219,18 @@ document.querySelectorAll('#step3 .lang-btn').forEach(btn => {
           data.categories.forEach(cat => {
             const div = document.createElement('div');
             div.className = "category-card bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex flex-col items-center text-center group";
+
+            // Check if category has icon_image, otherwise use default SVG
+            const iconHtml = cat.icon_image
+              ? `<img src="${cat.icon_image}" alt="${cat.name}" class="w-12 h-12 rounded-full object-cover mb-2 group-hover:scale-110 transition-transform">`
+              : `<div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                   <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                     <path d="M14,6V4H10V6H9A2,2 0 0,0 7,8V19A2,2 0 0,0 9,21H15A2,2 0 0,0 17,19V8A2,2 0 0,0 15,6H14M12,7A2,2 0 0,1 14,9A2,2 0 0,1 12,11A2,2 0 0,1 10,9A2,2 0 0,1 12,7Z"/>
+                   </svg>
+                 </div>`;
+            
             div.innerHTML = `
-              <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14,6V4H10V6H9A2,2 0 0,0 7,8V19A2,2 0 0,0 9,21H15A2,2 0 0,0 17,19V8A2,2 0 0,0 15,6H14M12,7A2,2 0 0,1 14,9A2,2 0 0,1 12,11A2,2 0 0,1 10,9A2,2 0 0,1 12,7Z"/>
-                </svg>
-              </div>
+              ${iconHtml}
               <h3 class="text-sm font-semibold text-gray-800">${cat.name}</h3>
             `;
             div.addEventListener('click', () => handleCategoryClick(cat.id, cat.name));
@@ -1228,7 +1239,7 @@ document.querySelectorAll('#step3 .lang-btn').forEach(btn => {
         }
       })
       .catch(err => console.error('Failed to load categories:', err));
-  }
+}
 
   function handleCategoryClick(categoryId, categoryName) {
     document.getElementById('searchPopup')?.classList.add('hidden');
@@ -1253,8 +1264,16 @@ document.querySelectorAll('#step3 .lang-btn').forEach(btn => {
           data.subcategories.forEach(sub => {
             const div = document.createElement('div');
             div.className = "category-card bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex items-center group";
+
+            // Check if subcategory has icon_image, otherwise use default background
+            const iconHtml = sub.icon_image
+              ? `<div class="w-14 h-14 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform overflow-hidden">
+                   <img src="${sub.icon_image}" alt="${sub.name}" class="w-full h-full object-cover rounded-full">
+                 </div>`
+              : `<div class="w-14 h-14 bg-cyan-400 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>`;
+            
             div.innerHTML = `
-              <div class="w-14 h-14 bg-cyan-400 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>
+              ${iconHtml}
               <div class="flex-grow font-semibold text-gray-800">${sub.name}</div>
               <div class="text-gray-400 group-hover:text-gray-600 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -1282,8 +1301,8 @@ document.querySelectorAll('#step3 .lang-btn').forEach(btn => {
       name: categoryName
     });
 
-
     localStorage.setItem('create-request', JSON.stringify(createRequest));
+    
     fetch(`/api/categories/${parentId}/children`)
       .then(res => res.json())
       .then(data => {
@@ -1294,8 +1313,16 @@ document.querySelectorAll('#step3 .lang-btn').forEach(btn => {
           data.subcategories.forEach(child => {
             const div = document.createElement('div');
             div.className = "category-card bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md cursor-pointer flex items-center group";
+            
+            // Check if child category has icon_image, otherwise use default background
+            const iconHtml = child.icon_image 
+              ? `<div class="w-14 h-14 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform overflow-hidden">
+                   <img src="${child.icon_image}" alt="${child.name}" class="w-full h-full object-cover rounded-full">
+                 </div>`
+              : `<div class="w-14 h-14 bg-cyan-300 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>`;
+            
             div.innerHTML = `
-              <div class="w-14 h-14 bg-cyan-300 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>
+              ${iconHtml}
               <div class="flex-grow font-semibold text-gray-800">${child.name}</div>
               <div class="text-gray-400 group-hover:text-gray-600 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -1315,7 +1342,7 @@ document.querySelectorAll('#step3 .lang-btn').forEach(btn => {
       .catch(err => {
         console.error('Error loading child categories:', err);
       });
-  }
+}
 
   function requestForHelp(childId, childName) {
     const createRequest = JSON.parse(localStorage.getItem('create-request')) || {};

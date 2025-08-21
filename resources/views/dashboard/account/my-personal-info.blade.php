@@ -52,7 +52,7 @@
               <select name="country" class="w-full border border-blue-300 rounded-full px-4 py-2">
                 <option value="">Select Country</option>
                 @foreach($countries as $country)
-                  <option value="{{ $country }}" {{ ($user->country ?? '') == $country ? 'selected' : '' }}>{{ $country }}</option>
+                  <option value="{{ $country->country }}" {{ ($user->country ?? '') == $country->country ? 'selected' : '' }}>{{ $country->country }}</option>
                 @endforeach
               </select>
             </div>

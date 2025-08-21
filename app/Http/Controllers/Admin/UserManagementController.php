@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 
 use App\Models\User;
+use App\Models\Country;
 use App\Models\Transaction;
 use App\Models\ServiceProvider;
 use App\Models\Mission;
@@ -444,7 +445,8 @@ class UserManagementController extends Controller
     {
         $user = User::findOrFail($id);
         $provider = ServiceProvider::where('user_id', $user->id)->first();
-        return view('admin.dashboard.edit-profile', compact('user', 'provider'));
+        $country = Country::where('status', 1)->get();
+        return view('admin.dashboard.edit-profile', compact('user', 'provider', 'country'));
     }
 
 

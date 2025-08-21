@@ -18,7 +18,8 @@ class Category extends Model
         'slug',
         'description',
         'is_active',
-        'sort_order'
+        'sort_order',
+        'icon_image'  // Change from 'icon' to 'icon_image'
     ];
 
     protected $casts = [
