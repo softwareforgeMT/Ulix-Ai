@@ -25,6 +25,8 @@ class CategoryController extends Controller
             ->orderBy('sort_order')
             ->get();
         
+        return view('admin.dashboard.category.index', compact('mainCategories'));
+    }
 
     public function store(Request $request)
     {
