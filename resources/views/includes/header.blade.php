@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
   <!-- Toastr JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+     <!-- Google Translate widget script -->
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -51,6 +53,91 @@
       }
     }
   </script>
+  <style>
+      <style>
+  /* hide the top banner frame Google injects */
+  iframe.goog-te-banner-frame {
+    display: none !important;
+  }
+  body > .skiptranslate {
+    display: none !important;
+  }
+  html {
+    margin-top: 0 !important;
+  }
+
+  /* hide the inline toolbar / popup */
+  .goog-te-gadget {
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+  .VIpgJd-ZVi9od-ORHb, 
+  .VIpgJd-ZVi9od-aZ2wEe-wOHMyf, /* common toolbar wrapper */
+  .VIpgJd-ZVi9od-ORHb-OEVmcd,
+  .VIpgJd-ZVi9od-ORHb-hFsbo,
+  .VIpgJd-ZVi9od-l4eHX-hSRGPd {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+</style>
+<style>
+  /* Kill the top banner and any wrapper space */
+  iframe.goog-te-banner-frame,
+  .goog-te-banner-frame { display: none !important; }
+
+  /* Google wraps the page with a div.skiptranslate that still takes space */
+  body > .skiptranslate {
+    display: none !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Google sometimes adds a top margin to html */
+  html { margin-top: 0 !important; }
+
+  /* Google sometimes sets body { top: 40px } */
+  body { top: 0 !important; position: static !important; }
+
+  /* Optional: hide floating tooltip/mini-toolbar */
+  #goog-gt-tt, .goog-te-balloon-frame, .goog-te-gadget { display: none !important; }
+</style>
+
+<script>
+  // Re-apply fixes because Google can re-inject on language change
+  (function fixGoogleTranslateGap() {
+    function zap() {
+      // remove banner iframe if present
+      const banner = document.querySelector('iframe.goog-te-banner-frame');
+      if (banner && banner.parentNode) banner.parentNode.removeChild(banner);
+
+      // hide wrapper + reset spacing
+      const wrapper = document.querySelector('body > .skiptranslate');
+      if (wrapper) {
+        wrapper.style.display = 'none';
+        wrapper.style.height = '0px';
+        wrapper.style.overflow = 'hidden';
+      }
+      document.documentElement.style.marginTop = '0px';
+      document.body.style.top = '0px';
+      document.body.style.position = 'static';
+    }
+
+    // run now and a few times after (GT re-applies on change)
+    zap();
+    let n = 0;
+    const id = setInterval(() => {
+      zap();
+      if (++n > 20) clearInterval(id); // ~4s total
+    }, 200);
+
+    // also on resize/orientation changes
+    window.addEventListener('resize', zap);
+  })();
+</script>
+
+
+  </style>
 
 </head>
 @php
@@ -335,31 +422,84 @@
 
       <!-- Desktop Right Side -->
       <div class="hidden lg:flex items-center space-x-6">
-        <!-- Language Dropdown -->
-        <div class="relative group">
-          <button id="desktopLangBtn" type="button" class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/50 transition-all duration-300 focus:outline-none">
-            <div class="w-6 h-6 rounded-full overflow-hidden border-2 border-white shadow-sm">
-              <img src="https://flagcdn.com/24x18/fr.png" alt="FR" class="w-full h-full object-cover" />
-            </div>
-            <svg class="w-4 h-4 text-gray-600 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          <ul id="desktopLangMenu" class="absolute right-0 hidden bg-white/95 backdrop-blur-lg shadow-2xl border border-white/20 rounded-xl mt-2 w-40 z-20 animate-slide-down overflow-hidden">
-            <li class="hover:bg-blue-50/80 px-4 py-3 cursor-pointer flex items-center space-x-3 transition-colors border-b border-gray-100/50">
-              <img src="https://flagcdn.com/20x15/fr.png" alt="FR" class="w-5 h-4 rounded-sm" />
-              <span class="text-sm font-medium text-gray-700">Français</span>
-            </li>
-            <li class="hover:bg-blue-50/80 px-4 py-3 cursor-pointer flex items-center space-x-3 transition-colors border-b border-gray-100/50">
-              <img src="https://flagcdn.com/20x15/us.png" alt="EN" class="w-5 h-4 rounded-sm" />
-              <span class="text-sm font-medium text-gray-700">English</span>
-            </li>
-            <li class="hover:bg-blue-50/80 px-4 py-3 cursor-pointer flex items-center space-x-3 transition-colors">
-              <img src="https://flagcdn.com/20x15/de.png" alt="DE" class="w-5 h-4 rounded-sm" />
-              <span class="text-sm font-medium text-gray-700">Deutsch</span>
-            </li>
-          </ul>
-        </div>
+  <!-- Language Selector with Google Translate -->
+<div class="relative group inline-block">
+  <button id="langBtn" type="button"
+    class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white shadow hover:bg-gray-50 transition">
+    <div class="w-6 h-6 rounded-full overflow-hidden border border-gray-300">
+      <img id="langFlag" src="https://flagcdn.com/24x18/us.png" alt="EN" class="w-full h-full object-cover">
+    </div>
+    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" stroke-width="2"
+      viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <!-- Dropdown -->
+  <ul id="langMenu"
+      class="absolute right-0 hidden bg-white shadow-lg border border-gray-200 rounded-lg mt-2 w-40 z-20">
+    <li data-lang="en" data-flag="https://flagcdn.com/24x18/us.png"
+        class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
+      <img src="https://flagcdn.com/20x15/us.png" class="w-5 h-4 mr-2"> English
+    </li>
+    <li data-lang="fr" data-flag="https://flagcdn.com/24x18/fr.png"
+        class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
+      <img src="https://flagcdn.com/20x15/fr.png" class="w-5 h-4 mr-2"> Français
+    </li>
+    <li data-lang="de" data-flag="https://flagcdn.com/24x18/de.png"
+        class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
+      <img src="https://flagcdn.com/20x15/de.png" class="w-5 h-4 mr-2"> Deutsch
+    </li>
+  </ul>
+</div>
+
+<!-- Hidden Google Translate widget -->
+<div id="google_translate_element" class="hidden"></div>
+
+<script>
+  // Toggle menu
+  document.getElementById('langBtn').addEventListener('click', function () {
+    document.getElementById('langMenu').classList.toggle('hidden');
+  });
+
+  // Handle clicks
+  document.querySelectorAll('#langMenu li').forEach(item => {
+    item.addEventListener('click', function () {
+      const code = this.getAttribute('data-lang');
+      const flag = this.getAttribute('data-flag');
+
+      // update button flag
+      document.getElementById('langFlag').src = flag;
+
+      // set Google Translate
+      const select = document.querySelector('#google_translate_element select.goog-te-combo');
+      if (select) {
+        select.value = code;
+        select.dispatchEvent(new Event('change'));
+      }
+
+      document.getElementById('langMenu').classList.add('hidden');
+    });
+  });
+
+  // Google Translate init
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      { pageLanguage: 'en', includedLanguages: 'en,fr,de', autoDisplay: false },
+      'google_translate_element'
+    );
+  }
+
+  // inject script once
+  (function () {
+    if (!document.getElementById('gt-script')) {
+      const s = document.createElement('script');
+      s.id = 'gt-script';
+      s.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      document.body.appendChild(s);
+    }
+  })();
+</script>
 
  <!-- Auth Buttons -->
 <div class="flex items-center space-x-3">
@@ -527,27 +667,118 @@ YOUR PROVIDER ACCOUNT IS CREATED</h2>
   <a href="/affiliate" class="block text-gray-800 text-base font-semibold hover:text-blue-600">Affiliate Program</a> <!-- New link added here -->
 
 
-  <!-- Language Dropdown -->
-  <div class="relative">
-    <button id="languageToggle" class="w-full flex justify-between items-center border border-gray-300 rounded-lg px-4 py-2 text-gray-800">
-      <span>Language</span>
-      <img src="https://flagcdn.com/24x18/fr.png" class="ml-2 w-5 h-4 object-cover" alt="Lang" />
-    </button>
-    <ul id="languageMenu" class="absolute mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-md hidden">
-      <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2">
-        <img src="https://flagcdn.com/24x18/fr.png" class="w-5 h-4" />
-        Français
-      </li>
-      <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2">
-        <img src="https://flagcdn.com/24x18/us.png" class="w-5 h-4" />
-        English
-      </li>
-      <li class="px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2">
-        <img src="https://flagcdn.com/24x18/de.png" class="w-5 h-4" />
-        Deutsch
-      </li>
-    </ul>
-  </div>
+<!-- Hidden Google widget host -->
+<div id="google_translate_element" class="hidden"></div>
+
+<!-- Checkbox-driven mobile-friendly dropdown -->
+<div class="relative w-full sm:w-56">
+  <!-- Hidden checkbox controls open/close -->
+  <input id="langOpen" type="checkbox" class="peer sr-only" />
+
+  <!-- Toggle button -->
+  <label for="langOpen"
+         class="flex justify-between items-center w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 bg-white cursor-pointer select-none">
+    <span id="languageLabel">Language</span>
+    <img id="languageFlag" src="https://flagcdn.com/24x18/us.png" alt="Lang" class="ml-2 w-5 h-4 object-cover" />
+  </label>
+
+  <!-- Menu (shown when checkbox is checked) -->
+  <ul id="languageMenu"
+      class="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-md z-50 hidden peer-checked:block">
+    <li data-lang="fr" data-flag="https://flagcdn.com/24x18/fr.png"
+        class="px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2">
+      <img src="https://flagcdn.com/24x18/fr.png" class="w-5 h-4" /> Français
+    </li>
+    <li data-lang="en" data-flag="https://flagcdn.com/24x18/us.png"
+        class="px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2">
+      <img src="https://flagcdn.com/24x18/us.png" class="w-5 h-4" /> English
+    </li>
+    <li data-lang="de" data-flag="https://flagcdn.com/24x18/de.png"
+        class="px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2">
+      <img src="https://flagcdn.com/24x18/de.png" class="w-5 h-4" /> Deutsch
+    </li>
+  </ul>
+</div>
+
+<script>
+(function () {
+  const checkbox = document.getElementById('langOpen');
+  const menu     = document.getElementById('languageMenu');
+  const flag     = document.getElementById('languageFlag');
+  const label    = document.getElementById('languageLabel');
+
+  // Apply language (queue if Google select not ready yet)
+  let pendingLang = null;
+  function applyLanguage(code) {
+    const select = document.querySelector('#google_translate_element select.goog-te-combo');
+    if (select) {
+      select.value = code;
+      // iOS/Safari-safe change event
+      const ev = document.createEvent('HTMLEvents');
+      ev.initEvent('change', true, true);
+      select.dispatchEvent(ev);
+      pendingLang = null;
+    } else {
+      pendingLang = code;
+    }
+  }
+
+  // Handle item clicks using delegation
+  menu.addEventListener('click', function (e) {
+    const li = e.target.closest('li[data-lang]');
+    if (!li) return;
+
+    const code    = li.dataset.lang;
+    const flagUrl = li.dataset.flag;
+    const name    = li.textContent.trim();
+
+    // Update UI
+    flag.src = flagUrl;
+    label.textContent = name;
+
+    // Translate
+    applyLanguage(code);
+
+    // Close dropdown by unchecking checkbox
+    checkbox.checked = false;
+  });
+
+  // Initialize Google Translate
+  window.googleTranslateElementInit = function () {
+    new google.translate.TranslateElement(
+      { pageLanguage: 'en', includedLanguages: 'en,fr,de', autoDisplay: false },
+      'google_translate_element'
+    );
+  };
+
+  // Load Google script once
+  if (!document.getElementById('gt-script')) {
+    const s = document.createElement('script');
+    s.id = 'gt-script';
+    s.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    s.async = true;
+    document.body.appendChild(s);
+  }
+
+  // If user selects before widget is ready, apply later
+  const start = Date.now();
+  (function waitForSelect() {
+    const select = document.querySelector('#google_translate_element select.goog-te-combo');
+    if (select) {
+      if (pendingLang) applyLanguage(pendingLang);
+      return;
+    }
+    if (Date.now() - start < 12000) setTimeout(waitForSelect, 200);
+  })();
+})();
+</script>
+
+<style>
+  /* Hide Google banner & mini-toolbar chrome */
+  iframe.goog-te-banner-frame, body > .skiptranslate { display: none !important; }
+  html { margin-top: 0 !important; }
+  .goog-te-gadget, .VIpgJd-ZVi9od-ORHb { display: none !important; }
+</style>
 
   <!-- SOS Button -->
   <a href="/sos"  class="block w-full text-center bg-red-600 text-white font-semibold py-2 rounded-full shadow hover:bg-red-700 transition">
