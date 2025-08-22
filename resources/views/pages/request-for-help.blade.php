@@ -496,33 +496,40 @@
       });
     });
 
-    function showStep(index) {
-      steps.forEach((step, i) => step.classList.toggle('hidden', i !== index));
-      prevBtn.disabled = index === 0;
-      progressBar.value = ((index + 1) / steps.length) * 100;
-      if (stepLabel) stepLabel.textContent = stepLabels[index] || "";
+   function showStep(index) {
+  steps.forEach((step, i) => step.classList.toggle('hidden', i !== index));
+  prevBtn.disabled = index === 0;
+  progressBar.value = ((index + 1) / steps.length) * 100;
+  if (stepLabel) stepLabel.textContent = stepLabels[index] || "";
 
-      if (index === 13) {
-        nextBtn.disabled = true;
-        setTimeout(() => {
-          nextBtn.disabled = false;
-          currentStep++;
-          showStep(currentStep);
-        }, 2000); // 2 seconds loading
-      } else {
-        nextBtn.disabled = false;
-      }
+  if (index === 13) {
+    nextBtn.disabled = true;
+    setTimeout(() => {
+      nextBtn.disabled = false;
+      currentStep++;
+      showStep(currentStep);
+    }, 2000);
+  } else {
+    nextBtn.disabled = false;
+  }
 
-      if (index === 13 || index === steps.length - 1) {
-        nextBtn.classList.add('hidden');
-        prevBtn.classList.add('hidden');
-        progressBar.classList.add('hidden');
-      } else {
-        nextBtn.classList.remove('hidden');
-        prevBtn.classList.remove('hidden');
-        progressBar.classList.remove('hidden');
-      }
+  if (index === 13 || index === steps.length - 1) {
+    nextBtn.classList.add('hidden');
+    prevBtn.classList.add('hidden');
+    progressBar.classList.add('hidden');
+  } else {
+    nextBtn.classList.remove('hidden');
+    progressBar.classList.remove('hidden');
+    
+    // Use visibility instead of hidden class for prevBtn
+    if (index === 0) {
+      prevBtn.style.visibility = 'hidden';
+    } else {
+      prevBtn.style.visibility = 'visible';
+      prevBtn.classList.remove('hidden');
     }
+  }
+}
 
     function validateStep(stepIndex) {
       if ([13, 14].includes(stepIndex)) return true; // skip validation for step 6, 13, 14

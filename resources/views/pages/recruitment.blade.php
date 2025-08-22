@@ -132,40 +132,55 @@
   <div class="bg-white rounded-lg w-full max-w-md p-6 relative shadow-lg">
     <button onclick="closeModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
     <h2 id="modalTitle" class="text-xl font-bold text-blue-800 text-center mb-4">Apply for: [Title]</h2>
-    <form class="space-y-3">
-      <select class="w-full border border-gray-300 rounded px-3 py-2">
-        <option selected disabled>Select your country</option>
-        <option>France</option>
-        <option>Canada</option>
-        <option>Belgium</option>
-      </select>
-      <input type="text" placeholder="First name" class="w-full border border-gray-300 rounded px-3 py-2" />
-      <input type="text" placeholder="Last name" class="w-full border border-gray-300 rounded px-3 py-2" />
-      <input type="text" placeholder="Phone number (+33...)" class="w-full border border-gray-300 rounded px-3 py-2" />
-      <input type="email" placeholder="Email address" class="w-full border border-gray-300 rounded px-3 py-2" />
-      <textarea placeholder="Your message" class="w-full border border-gray-300 rounded px-3 py-2 h-24"></textarea>
-      <input type="file" class="w-full border border-gray-300 rounded px-3 py-2" />
-      <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 rounded">
-        Submit my application
-      </button>
-      <p class="text-center text-gray-500 text-xs">We will respond within 7 days.</p>
-    </form>
+    <div id="formContent">
+      <form class="space-y-3" id="applicationForm">
+        <select class="w-full border border-gray-300 rounded px-3 py-2">
+          <option selected disabled>Select your country</option>
+          <option>France</option>
+          <option>Canada</option>
+          <option>Belgium</option>
+        </select>
+        <input type="text" placeholder="First name" class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input type="text" placeholder="Last name" class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input type="text" placeholder="Phone number (+33...)" class="w-full border border-gray-300 rounded px-3 py-2" />
+        <input type="email" placeholder="Email address" class="w-full border border-gray-300 rounded px-3 py-2" />
+        <textarea placeholder="Your message" class="w-full border border-gray-300 rounded px-3 py-2 h-24"></textarea>
+        <input type="file" class="w-full border border-gray-300 rounded px-3 py-2" />
+        <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 rounded">
+          Submit my application
+        </button>
+        <p class="text-center text-gray-500 text-xs">We will respond within 7 days.</p>
+      </form>
+    </div>
+    <div id="successMessage" class="hidden text-center text-green-600 font-semibold">
+      <p>Your message has been sent successfully!</p>
+    </div>
   </div>
 </div>
 
+@include('includes.footer')
 
- @include('includes.footer')
+<script>
+  function openModal(title) {
+    document.getElementById('popupModal').classList.remove('hidden');
+    document.getElementById('modalTitle').innerText = 'Apply For : ' + title;
+  }
 
-  <script>
-    function openModal(title) {
-      document.getElementById('popupModal').classList.remove('hidden');
-      document.getElementById('modalTitle').innerText = 'Apply For : ' + title;
-    }
+  function closeModal() {
+    document.getElementById('popupModal').classList.add('hidden');
+  }
 
-    function closeModal() {
-      document.getElementById('popupModal').classList.add('hidden');
-    }
-  </script>
+  document.getElementById('applicationForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent actual form submission
+
+    // Hide form content
+    document.getElementById('formContent').classList.add('hidden');
+
+    // Show success message
+    document.getElementById('successMessage').classList.remove('hidden');
+  });
+</script>
+
 
 </body>
 </html>

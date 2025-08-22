@@ -201,68 +201,42 @@
       <div class="bg-blue-50 p-6 rounded-xl shadow hover:shadow-md transition">
         <div class="flex justify-between items-start mb-4">
           <h4 class="font-semibold text-green-700 mb-2">@site Launch – May 2025</h4>
-          <button onclick="triggerUpload('card1')" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors shadow-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-            </svg>
-          </button>
         </div>
         <p class="text-sm text-gray-600 mb-4">Full details of our platform launch and international coverage.</p>
         
-        <!-- Upload Area -->
-        <div id="upload-area-card1" class="upload-overlay rounded-lg p-4 text-center cursor-pointer" onclick="triggerUpload('card1')">
-          <svg class="w-8 h-8 mx-auto mb-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
-          <p class="text-sm text-gray-600">Click or drag photo here</p>
-        </div>
-        <input type="file" id="file-input-card1" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'card1')">
+        <!-- Download Button -->
+        <a href="path/to/your/file1.pdf" download class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full text-center block transition-colors shadow-sm">
+          Download
+        </a>
       </div>
 
       <div class="bg-blue-50 p-6 rounded-xl shadow hover:shadow-md transition">
         <div class="flex justify-between items-start mb-4">
           <h4 class="font-semibold text-green-700 mb-2">S.O.S Service – April 2025</h4>
-          <button onclick="triggerUpload('card2')" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors shadow-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-            </svg>
-          </button>
         </div>
         <p class="text-sm text-gray-600 mb-4">How we're solving emergency needs abroad for travelers and students.</p>
         
-        <!-- Upload Area -->
-        <div id="upload-area-card2" class="upload-overlay rounded-lg p-4 text-center cursor-pointer" onclick="triggerUpload('card2')">
-          <svg class="w-8 h-8 mx-auto mb-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
-          <p class="text-sm text-gray-600">Click or drag photo here</p>
-        </div>
-        <input type="file" id="file-input-card2" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'card2')">
+        <!-- Download Button -->
+        <a href="path/to/your/file2.pdf" download class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full text-center block transition-colors shadow-sm">
+          Download
+        </a>
       </div>
 
       <div class="bg-blue-50 p-6 rounded-xl shadow hover:shadow-md transition">
         <div class="flex justify-between items-start mb-4">
           <h4 class="font-semibold text-green-700 mb-2">100 Certified Providers – March 2025</h4>
-          <button onclick="triggerUpload('card3')" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors shadow-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-            </svg>
-          </button>
         </div>
         <p class="text-sm text-gray-600 mb-4">Milestone achieved with trusted professionals in 30+ countries.</p>
         
-        <!-- Upload Area -->
-        <div id="upload-area-card3" class="upload-overlay rounded-lg p-4 text-center cursor-pointer" onclick="triggerUpload('card3')">
-          <svg class="w-8 h-8 mx-auto mb-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
-          <p class="text-sm text-gray-600">Click or drag photo here</p>
-        </div>
-        <input type="file" id="file-input-card3" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'card3')">
+        <!-- Download Button -->
+        <a href="path/to/your/file3.pdf" download class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full text-center block transition-colors shadow-sm">
+          Download
+        </a>
       </div>
     </div>
   </div>
 </section>
+
 
 
 <!-- Quotes & Headlines -->

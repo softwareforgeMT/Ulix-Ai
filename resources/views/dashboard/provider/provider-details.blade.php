@@ -261,53 +261,272 @@
                     @endif
                     @endauth
 
-                    <div class="space-y-4">
-                        @forelse($reviews as $review)
-                        <div class="border rounded-lg p-4 bg-white flex items-center gap-4">
-                            <div>
-                                @if($review->user && $review->user->profile_photo)
-                                    <img src="{{ asset($review->user->profile_photo) }}" alt="User" class="w-12 h-12 rounded-full object-cover border border-blue-200">
-                                @else
-                                    <img src="https://i.pravatar.cc/150?u={{ $review->user->id ?? 0 }}" alt="User" class="w-12 h-12 rounded-full object-cover border border-blue-200">
-                                @endif
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="font-semibold text-blue-700">{{ $review->user->name ?? 'User' }}</span>
-                                    <span class="text-xs text-gray-500">{{ $review->created_at->diffForHumans() }}</span>
-                                    <div class="flex gap-1 ml-2">
-                                        @for($i=1; $i<=5; $i++)
-                                            <i class="fas fa-star {{ $i <= $review->rating ? 'star-yellow' : 'text-gray-300' }}"></i>
-                                        @endfor
-                                    </div>
-                                </div>
-                                <div class="text-gray-700 text-sm">{{ $review->comment }}</div>
-                            </div>
-                        </div>
-                        @empty
-                        <div class="text-gray-400 text-center py-6">No reviews yet.</div>
-                        @endforelse
+<!-- Filter Section -->
+<div class="mb-6">
+    <div class="flex flex-wrap gap-3 items-center justify-between">
+        <div class="flex items-center gap-3">
+            <span class="text-sm font-medium text-gray-700">Filter by:</span>
+            
+            <!-- Filter Dropdown -->
+            <div class="relative">
+                <button id="filter-dropdown-btn" 
+                        onclick="toggleDropdown()" 
+                        class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <span id="selected-filter">All Reviews</span>
+                    <i class="fas fa-chevron-down text-xs transition-transform duration-200" id="dropdown-arrow"></i>
+                </button>
+                
+                <div id="filter-dropdown" 
+                     class="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10 hidden">
+                    <div class="py-1">
+                        <button onclick="selectFilter('all', 'All Reviews')" 
+                                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2">
+                            <i class="fas fa-list text-xs w-4"></i>
+                            All Reviews
+                        </button>
+                        <button onclick="selectFilter('newest', 'Newest First')" 
+                                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2">
+                            <i class="fas fa-clock text-xs w-4"></i>
+                            Newest First
+                        </button>
+                        <button onclick="selectFilter('oldest', 'Oldest First')" 
+                                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2">
+                            <i class="fas fa-history text-xs w-4"></i>
+                            Oldest First
+                        </button>
+                        <button onclick="selectFilter('high_rating', 'High Rating (4-5 ⭐)')" 
+                                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2">
+                            <i class="fas fa-star text-xs w-4 text-yellow-500"></i>
+                            High Rating (4-5 ⭐)
+                        </button>
+                        <button onclick="selectFilter('low_rating', 'Low Rating (1-3 ⭐)')" 
+                                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2">
+                            <i class="fas fa-star-half-alt text-xs w-4 text-gray-400"></i>
+                            Low Rating (1-3 ⭐)
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="pb-12"></div>
-
-    <!-- Modal for enlarged profile image -->
-    <div id="profileImgModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
-        <div class="relative">
-            <button id="closeProfileImgModal" class="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-200">
-                <i class="fas fa-times text-xl text-gray-700"></i>
-            </button>
-            @if(isset($provider) && $provider->profile_photo)
-                <img src="{{ asset($provider->profile_photo) }}" alt="Profile Large" class="w-72 h-72 rounded-full object-cover border-4 border-white shadow-xl">
-            @else
-                <img src="https://i.pravatar.cc/150?img=3" alt="Profile Large" class="w-72 h-72 rounded-full object-cover border-4 border-white shadow-xl">
-            @endif
+        
+        <!-- Results Count -->
+        <div>
+            <span id="results-count" class="text-sm text-gray-500">
+                Showing {{ count($reviews) }} reviews
+            </span>
         </div>
     </div>
+</div>
+
+<!-- Reviews Container -->
+<div class="space-y-4" id="reviews-container">
+    @forelse($reviews as $review)
+    <div class="review-item border rounded-lg p-4 bg-white flex items-center gap-4" 
+         data-rating="{{ $review->rating }}" 
+         data-date="{{ $review->created_at->timestamp }}">
+        <div>
+            @if($review->user && $review->user->profile_photo)
+                <img src="{{ asset($review->user->profile_photo) }}" alt="User" class="w-12 h-12 rounded-full object-cover border border-blue-200">
+            @else
+                <img src="https://i.pravatar.cc/150?u={{ $review->user->id ?? 0 }}" alt="User" class="w-12 h-12 rounded-full object-cover border border-blue-200">
+            @endif
+        </div>
+        <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="font-semibold text-blue-700">{{ $review->user->name ?? 'User' }}</span>
+                <span class="text-xs text-gray-500">{{ $review->created_at->diffForHumans() }}</span>
+                <div class="flex gap-1 ml-2">
+                    @for($i=1; $i<=5; $i++)
+                        <i class="fas fa-star {{ $i <= $review->rating ? 'star-yellow' : 'text-gray-300' }}"></i>
+                    @endfor
+                </div>
+            </div>
+            <div class="text-gray-700 text-sm">{{ $review->comment }}</div>
+        </div>
+    </div>
+    @empty
+    <div class="text-gray-400 text-center py-6" id="no-reviews-message">No reviews yet.</div>
+    @endforelse
+</div>
+
+<!-- No Results Message (Hidden by default) -->
+<div id="no-results-message" class="text-gray-400 text-center py-6 hidden">
+    No reviews match the selected filter.
+</div>
+
+<div class="pb-12"></div>
+
+<!-- Modal for enlarged profile image -->
+<div id="profileImgModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+    <div class="relative">
+        <button id="closeProfileImgModal" class="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-200">
+            <i class="fas fa-times text-xl text-gray-700"></i>
+        </button>
+        @if(isset($provider) && $provider->profile_photo)
+            <img src="{{ asset($provider->profile_photo) }}" alt="Profile Large" class="w-72 h-72 rounded-full object-cover border-4 border-white shadow-xl">
+        @else
+            <img src="https://i.pravatar.cc/150?img=3" alt="Profile Large" class="w-72 h-72 rounded-full object-cover border-4 border-white shadow-xl">
+        @endif
+    </div>
+</div>
+
+<script>
+// Dropdown functionality
+function toggleDropdown() {
+    const dropdown = document.getElementById('filter-dropdown');
+    const arrow = document.getElementById('dropdown-arrow');
+    
+    dropdown.classList.toggle('hidden');
+    arrow.classList.toggle('rotate-180');
+}
+
+function selectFilter(filterType, filterLabel) {
+    // Update dropdown button text
+    document.getElementById('selected-filter').textContent = filterLabel;
+    
+    // Close dropdown
+    document.getElementById('filter-dropdown').classList.add('hidden');
+    document.getElementById('dropdown-arrow').classList.remove('rotate-180');
+    
+    // Apply filter
+    filterReviews(filterType);
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('filter-dropdown');
+    const button = document.getElementById('filter-dropdown-btn');
+    
+    if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+        dropdown.classList.add('hidden');
+        document.getElementById('dropdown-arrow').classList.remove('rotate-180');
+    }
+});
+
+function filterReviews(filterType) {
+    const reviewItems = document.querySelectorAll('.review-item');
+    const resultsCount = document.getElementById('results-count');
+    const noResultsMessage = document.getElementById('no-results-message');
+    const noReviewsMessage = document.getElementById('no-reviews-message');
+    
+    let visibleCount = 0;
+    const reviewsArray = Array.from(reviewItems);
+    
+    // Apply filter
+    switch(filterType) {
+        case 'all':
+            reviewItems.forEach(item => {
+                item.style.display = 'flex';
+                visibleCount++;
+            });
+            break;
+            
+        case 'newest':
+            // Sort by newest first (highest timestamp)
+            reviewsArray.sort((a, b) => 
+                parseInt(b.dataset.date) - parseInt(a.dataset.date)
+            );
+            reorderAndShow(reviewsArray);
+            visibleCount = reviewsArray.length;
+            break;
+            
+        case 'oldest':
+            // Sort by oldest first (lowest timestamp)
+            reviewsArray.sort((a, b) => 
+                parseInt(a.dataset.date) - parseInt(b.dataset.date)
+            );
+            reorderAndShow(reviewsArray);
+            visibleCount = reviewsArray.length;
+            break;
+            
+        case 'high_rating':
+            reviewItems.forEach(item => {
+                const rating = parseInt(item.dataset.rating);
+                if (rating >= 4) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            break;
+            
+        case 'low_rating':
+            reviewItems.forEach(item => {
+                const rating = parseInt(item.dataset.rating);
+                if (rating <= 3) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            break;
+    }
+    
+    // Update results count
+    resultsCount.textContent = `Showing ${visibleCount} reviews`;
+    
+    // Show/hide no results message
+    if (visibleCount === 0) {
+        noResultsMessage.classList.remove('hidden');
+        noReviewsMessage.classList.add('hidden');
+    } else {
+        noResultsMessage.classList.add('hidden');
+        noReviewsMessage.classList.add('hidden');
+    }
+}
+
+function reorderAndShow(sortedArray) {
+    const container = document.getElementById('reviews-container');
+    
+    // Remove all review items from container
+    sortedArray.forEach(item => {
+        container.removeChild(item);
+    });
+    
+    // Add them back in sorted order
+    sortedArray.forEach(item => {
+        item.style.display = 'flex';
+        container.appendChild(item);
+    });
+}
+
+// Initialize filter on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial count
+    const initialCount = document.querySelectorAll('.review-item').length;
+    document.getElementById('results-count').textContent = `Showing ${initialCount} reviews`;
+});
+</script>
+
+<style>
+.star-yellow {
+    color: #fbbf24;
+}
+
+.review-item {
+    transition: opacity 0.3s ease;
+}
+
+/* Dropdown styles */
+#filter-dropdown {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+#filter-dropdown button:hover {
+    background-color: rgb(239 246 255);
+    color: rgb(29 78 216);
+}
+
+#dropdown-arrow {
+    transition: transform 0.2s ease;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+</style>
 
     <style>
     .loader { border-top-color: transparent; animation: spin 1s linear infinite; }

@@ -148,11 +148,11 @@
           <div class="flex flex-wrap gap-4 justify-center mb-8">
               
               <!-- Country Dropdowns -->
-              <select id="languageSelect" class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
+              <!-- <select id="languageSelect" class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
                   @foreach($country as $lang)
                     <option value="{{ $lang }}">{{ $lang }}</option>
                   @endforeach
-              </select>
+              </select> -->
               <select id="countrySelect" class="border border-blue-200 rounded-lg px-4 py-2 min-w-[150px] text-blue-900 bg-white">
                   @foreach($country as $lang)
                     <option value="{{ $lang }}">{{ $lang }}</option>

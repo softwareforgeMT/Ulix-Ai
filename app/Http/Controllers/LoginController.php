@@ -57,6 +57,6 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login')->with('toast_success', 'You have been logged out.');
+        return redirect('/')->with('toast_success', 'You have been logged out.');
     }
 }

@@ -51,10 +51,10 @@
 
     <!-- Main Content -->
     <div class="max-w-6xl mx-auto px-4 py-6">
-        <!-- Provider Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Provider Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6  ">
             @forelse($providers as $provider)
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 relative">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 relative flex flex-col h-full">
                 <div class="text-center mb-4">
                     <div class="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden flex items-center justify-center">
                         @if($provider->profile_photo)
@@ -72,7 +72,7 @@
                         <span class="text-sm font-medium">{{ number_format($provider->reviews()->avg('rating') ?? 5, 1) }} / 5</span>
                     </div>
                 </div>
-                <div class="border-t pt-4">
+                <div class="border-t pt-4 flex-grow flex flex-col">
                     <div class="text-center mb-4">
                         <span class="text-xs text-gray-500 uppercase tracking-wider">
                             {{ strtoupper($provider->first_name . ' ' . $provider->last_name) }}
@@ -81,37 +81,41 @@
                             @endif
                         </span>
                     </div>
-                    <div class="space-y-3 text-sm mb-6">
-                        @php
-                        // Decode the stringified JSON into an actual array
-                        $services = $provider->services_to_offer ? json_decode($provider->services_to_offer, true) : [];
-                        @endphp
 
-                        @if(is_array($services) && count($services) > 0)
-                            @foreach($services as $service)
-                                @php
-                                    // Fetch the category by ID
-                                    $category = \App\Models\Category::find($service);
-                                @endphp
-                                @if($category)
-                                    <div class="flex items-center gap-2">
-                                        <i class="fas fa-briefcase text-blue-500"></i>{{ $category->name }}
-                                    </div>
-                                @else
-                                    <div class="flex items-center gap-2 text-gray-400">
-                                        <i class="fas fa-briefcase"></i>Category not found
-                                    </div>
+                    <div class="flex-grow"></div>
+                    
+                    @php
+                    // Decode the stringified JSON into an actual array
+                    $services = $provider->services_to_offer ? json_decode($provider->services_to_offer, true) : [];
+                    @endphp
+
+                    <div class="pt-3 border-t border-gray-100 mb-6">
+                        <div class="flex flex-wrap gap-1.5">
+                            @if(is_array($services) && count($services) > 0)
+                                @foreach(array_slice($services, 0, 1) as $service)
+                                    @php
+                                        // Fetch the category by ID
+                                        $category = \App\Models\Category::find($service);
+                                    @endphp
+                                    @if($category)
+                                        <span class="bg-blue-50 border border-blue-200 text-blue-700 px-2.5 py-1 rounded-md text-xs font-medium">
+                                            {{ $category->name }}
+                                        </span>
+                                    @endif
+                                @endforeach
+                                @if(count($services) > 1)
+                                    <span class="bg-gray-50 border border-gray-200 text-gray-600 px-2.5 py-1 rounded-md text-xs font-medium">
+                                        +{{ count($services) - 1 }}
+                                    </span>
                                 @endif
-                            @endforeach
-                        @else
-                            <div class="flex items-center gap-2 text-gray-400">
-                                <i class="fas fa-briefcase"></i>No services listed
-                            </div>
-                        @endif
-
-
+                            @else
+                                <span class="bg-gray-50 border border-gray-200 text-gray-400 px-2.5 py-1 rounded-md text-xs font-medium">
+                                    No services listed
+                                </span>
+                            @endif
+                        </div>
                     </div>
-                    <button class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors">
+                    <button class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors mt-auto">
                         <a href="{{ route('provider-details', ['id' => $provider->slug]) }}"> SEE MORE </a>
                     </button>
                 </div>

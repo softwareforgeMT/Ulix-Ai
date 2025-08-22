@@ -1550,7 +1550,7 @@ document.querySelectorAll('#step3 .lang-btn').forEach(btn => {
               ? `<div class="w-14 h-14 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform overflow-hidden">
                    <img src="${child.icon_image}" alt="${child.name}" class="w-full h-full object-cover rounded-full">
                  </div>`
-              : `<div class="w-14 h-14 bg-cyan-300 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform"></div>`;
+              : `<div class="w-14 h-14 bg-cyan-300 rounded-full flex items-center justify-center mr-4 group-hover:scale-110 transition-transform overflow-hidden"></div>`;
             
             div.innerHTML = `
               ${iconHtml}
