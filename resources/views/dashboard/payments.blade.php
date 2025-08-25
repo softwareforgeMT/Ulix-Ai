@@ -51,17 +51,29 @@
               <span class="text-sm">{{ $provider->first_name ?? 'Provider' }}</span>
               <span class="text-sm">{{ number_format($missionAmount, 2) }} €</span>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm">Service fees ({{ $clientFeePercent }}%)</span>
-              <span class="text-sm">{{ $clientFee }} €</span>
-            </div>
+         <div class="flex justify-between items-center">
+  <div class="flex items-center space-x-1 relative">
+    <span class="text-sm">Service fees</span>
+    
+    <!-- Info icon with hover percentage -->
+    <div class="relative group">
+      <i class="fas fa-info-circle text-gray-400 cursor-pointer"></i>
+      <div class="absolute left-1/2 -translate-x-1/2 top-full mt-1 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 shadow whitespace-nowrap">
+        {{ $clientFeePercent }}%
+      </div>
+    </div>
+  </div>
+
+  <span class="text-sm">{{ $clientFee }} €</span>
+</div>
+
             <div class="border-t pt-3 flex justify-between font-semibold">
               <span>TOTAL</span>
               <span>{{ number_format($total, 2) }} €</span>
             </div>
             <div class="flex justify-between text-xs text-gray-500 pt-2">
-              <span>Provider receives (after {{ $providerFeePercent }}% fee):</span>
-              <span>{{ number_format($netToProvider, 2) }} €</span>
+              {{-- <span>Provider receives (after {{ $providerFeePercent }}% fee):</span> --}}
+              {{-- <span>{{ number_format($netToProvider, 2) }} €</span> --}}
             </div>
             <form id="stripeCheckoutForm" method="POST" action="{{ route('payments.stripe.checkout') }}">
                 @csrf
@@ -76,13 +88,13 @@
                 </button>
               </form>
               <p class="text-xs text-gray-500 text-center">
-                This is a prepayment, the amount is refunded in the event of cancellation
+                This is a prepayment secured by stripe. payment will only be made to the service provider after the end of the mission
               </p>
           </div>
 
-          <div class="mt-4 text-right">
+          {{-- <div class="mt-4 text-right">
             <i class="fas fa-info-circle text-gray-400"></i>
-          </div>
+          </div> --}}
           </div>
         </div>
       </div>

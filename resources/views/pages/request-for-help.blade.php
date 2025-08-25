@@ -58,7 +58,7 @@
     <div class="form-step">
       <label for="countryNeed" class="block font-semibold mb-2 text-blue-800"></label>
       <select id="countryNeed" name="countryNeed" class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg mb-4" required>
-        <option value="">Select country</option>
+        <option value="" selected disabled hidden>Select Country</option>
         @foreach($countries as $country)
           <option value="{{ $country->country }}">{{ $country->country }}</option>
         @endforeach
@@ -69,7 +69,7 @@
     <div class="form-step hidden">
       <label for="originCountry" class="block font-semibold mb-2 text-blue-800"></label>
       <select id="originCountry" name="originCountry" class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg mb-6" required>
-        <option value="">Select country</option>
+        <option value=""selected disabled hidden>Select country</option>
         @foreach($countries as $country)
           <option value="{{ $country->country }}">{{ $country->country }}</option>
         @endforeach
@@ -84,7 +84,7 @@
     <div class="form-step hidden">
       <label for="currentCity" class="block font-semibold mb-2 text-blue-800"></label>
       <select id="currentCity" name="currentCity" class="w-full p-3 bg-gray-200 border border-blue-300 rounded-lg mb-4" required>
-        <option value="">Select city</option>
+        <option value=""selected disabled hidden>Select city</option>
         @foreach([
           'New York','London','Paris','Berlin','Tokyo','Sydney','Toronto','Los Angeles','Chicago','Madrid','Rome','Dubai','Singapore','Bangkok','Istanbul','Moscow','Beijing','Seoul','Mexico City','Mumbai','Cairo','Lagos','Johannesburg','Buenos Aires','Sao Paulo','Jakarta','Hong Kong','Barcelona','San Francisco','Amsterdam','Vienna','Prague','Budapest','Warsaw','Dublin','Brussels','Zurich','Geneva','Stockholm','Oslo','Copenhagen','Helsinki','Lisbon','Athens','Kuala Lumpur','Manila','Delhi','Shanghai','Riyadh','Tehran','Baghdad','Karachi','Lima','Bogota','Santiago','Montreal','Vancouver','Melbourne','Brisbane','Auckland','Cape Town','Casablanca','Doha','Abu Dhabi','Kuwait City','Muscat','Nairobi','Accra','Addis Ababa','Kampala','Dar es Salaam','Algiers','Tunis','Tripoli','Khartoum','Kigali','Luanda','Harare','Maputo','Antananarivo','Hanoi','Phnom Penh','Yangon','Kathmandu','Colombo','Dhaka','Islamabad','Amman','Jerusalem','Beirut','Damascus','Ankara','Bucharest','Sofia','Belgrade','Zagreb','Ljubljana','Bratislava','Tallinn','Riga','Vilnius','Luxembourg','Monaco','San Marino','Andorra la Vella','Vaduz','Reykjavik','Helsinky'
         ] as $city)

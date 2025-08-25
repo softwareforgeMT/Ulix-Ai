@@ -44,19 +44,21 @@
 
         <!-- Greeting Section -->
         <div class="flex items-center space-x-3 mb-8">
-            <!-- Shrek Avatar -->
-            <div class="w-12 h-12 shrek-face rounded-full border-2 border-green-300 flex items-center justify-center relative">
-                <div class="absolute -top-1 -left-1 w-3 h-4 bg-green-400 rounded-full transform rotate-45"></div>
-                <div class="absolute -top-1 -right-1 w-3 h-4 bg-green-400 rounded-full transform -rotate-45"></div>
-                <div class="absolute top-2 left-2 w-2 h-2 bg-white rounded-full">
-                    <div class="w-1 h-1 bg-black rounded-full mt-0.5 ml-0.5"></div>
-                </div>
-                <div class="absolute top-2 right-2 w-2 h-2 bg-white rounded-full">
-                    <div class="w-1 h-1 bg-black rounded-full mt-0.5 ml-0.5"></div>
-                </div>
-                <div class="absolute top-4 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-green-600 rounded-full"></div>
-                <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-3 h-1 bg-green-700 rounded-full"></div>
-            </div>
+@php
+    $provider = Auth::user()?->serviceProvider;
+@endphp
+
+<div class="w-12 h-12 rounded-full border-2 border-gray-300 overflow-hidden">
+    <img
+    src="{{ $provider && $provider->profile_photo
+            ? $provider->profile_photo   {{-- ✅ DB photo --}}
+            : asset('images/helpexpat.png') }}"            {{-- ✅ Fallback --}}
+    alt="Profile Photo"
+    class="w-full h-full object-cover">
+</div>
+
+
+
             <div>
     <h2 class="text-xl font-bold text-gray-800">
          {{ Auth::user()->name }}!

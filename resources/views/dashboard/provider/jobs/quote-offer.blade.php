@@ -20,20 +20,33 @@
         </p>
       </div>
       <!-- Image Thumbnails -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6 mt-6">
-        @php
-          $images = json_decode($mission->attachments ?? '[]', true);
-        @endphp
-        @forelse($images as $img)
-          <div class="bg-gray-200 h-32 rounded-xl flex items-center justify-center overflow-hidden">
-            <img src="{{ asset($img) }}" alt="Attachment" class="object-cover w-full h-full rounded-xl" />
-          </div>
-        @empty
-          @for ($i = 0; $i < 4; $i++)
-            <div class="bg-gray-200 h-32 rounded-xl"></div>
-          @endfor
-        @endforelse
-      </div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6 mt-6">
+  @php
+    $images = json_decode($mission->attachments ?? '[]', true);
+  @endphp
+
+  @forelse($images as $img)
+    <div
+      class="bg-gray-200 rounded-xl overflow-hidden flex items-center justify-center"
+      style="aspect-ratio: 4 / 3;"  {{-- keeps cards proportional & responsive --}}
+    >
+      <img
+        src="{{ asset($img) }}"
+        alt="Attachment"
+        class="w-full h-full object-cover block rounded-xl"
+        loading="lazy" decoding="async"
+      />
+    </div>
+  @empty
+    @for ($i = 0; $i < 4; $i++)
+      <div
+        class="bg-gray-200 rounded-xl"
+        style="aspect-ratio: 4 / 3;"
+      ></div>
+    @endfor
+  @endforelse
+</div>
+
 
       <div class="flex justify-end mb-4">
         @if(auth()->check() && $mission && $mission->requester_id != auth()->id())
@@ -131,7 +144,7 @@
       </div>
     </div>
     <h2 class="text-xl font-bold text-blue-800 mb-2">You're almost there! <span class="align-middle">🎯</span></h2>
-    <p class="text-gray-700 mb-2">You're about to work with <span class="font-semibold text-blue-700">PROVIDER</span>.<br>
+    <p class="text-gray-700 mb-2">You're about to work with <span class="font-semibold text-blue-700">{{$offer->provider->first_name }}</span>.<br>
       Here's what happens next:</p>
     <ul class="text-left text-sm text-gray-700 mb-6 space-y-3 mt-4">
       <li class="flex items-start gap-2">

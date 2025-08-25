@@ -31,9 +31,10 @@
             <div class="w-24 h-24 bg-gray-300 rounded-full mb-4 overflow-hidden">
               @if($mission->selected_provider && $mission->selected_provider->profile_photo)
                 <img src="{{ asset($mission->selected_provider->profile_photo) }}" alt="Provider Photo" class="w-full h-full object-cover rounded-full">
-              @endif
+                @endif
             </div>
-            <div class="text-blue-600 text-sm mb-1">✔ Profile verified</div>
+            <div class="text-blue-600 text-sm mb-1">{{$provider->first_name}}</div>
+          
             <div class="text-gray-700 text-sm mb-1">
               
               ⭐ {{ $reviews->avg('rating') ?? '5.0' }} / 5
@@ -69,9 +70,10 @@
                   @endif
                 </div>
               </div>
-              <div class="mt-2 text-gray-700 text-sm">
-                {{ $mission->description }}
-              </div>
+              <div class="mt-2 text-gray-700 text-sm break-words whitespace-pre-line">
+              {{ $mission->description }}
+            </div>
+
             </div>
 
             <div class="text-blue-600 text-sm underline cursor-pointer text-center">PHONE TO {{ $mission->selected_provider->first_name ?? 'Provider' }}</div>

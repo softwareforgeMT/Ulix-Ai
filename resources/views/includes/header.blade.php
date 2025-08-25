@@ -102,7 +102,9 @@
   /* Optional: hide floating tooltip/mini-toolbar */
   #goog-gt-tt, .goog-te-balloon-frame, .goog-te-gadget { display: none !important; }
 </style>
-
+{{-- keep these 2 lines somewhere globally once --}}
+<style>[x-cloak]{display:none !important}</style>
+<script src="https://unpkg.com/alpinejs@3.x.x" defer></script>
 <script>
   // Re-apply fixes because Google can re-inject on language change
   (function fixGoogleTranslateGap() {
@@ -422,15 +424,14 @@
 
       <!-- Desktop Right Side -->
       <div class="hidden lg:flex items-center space-x-6">
-  <!-- Language Selector with Google Translate -->
+<!-- Language Selector with Google Translate -->
 <div class="relative group inline-block">
   <button id="langBtn" type="button"
     class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white shadow hover:bg-gray-50 transition">
     <div class="w-6 h-6 rounded-full overflow-hidden border border-gray-300">
       <img id="langFlag" src="https://flagcdn.com/24x18/us.png" alt="EN" class="w-full h-full object-cover">
     </div>
-    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" stroke-width="2"
-      viewBox="0 0 24 24">
+    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
     </svg>
   </button>
@@ -462,6 +463,27 @@
     document.getElementById('langMenu').classList.toggle('hidden');
   });
 
+  // Helper: set language (retries until the combo is present)
+  function setLanguage(code) {
+    const trySet = () => {
+      const select = document.querySelector('#google_translate_element select.goog-te-combo, .goog-te-combo');
+      if (select) {
+        select.value = code;
+        select.dispatchEvent(new Event('change'));
+        return true;
+      }
+      return false;
+    };
+
+    if (!trySet()) {
+      const iv = setInterval(() => {
+        if (trySet()) clearInterval(iv);
+      }, 300);
+      // auto-stop after ~6s to avoid infinite loop
+      setTimeout(() => clearInterval(iv), 6000);
+    }
+  }
+
   // Handle clicks
   document.querySelectorAll('#langMenu li').forEach(item => {
     item.addEventListener('click', function () {
@@ -472,41 +494,43 @@
       document.getElementById('langFlag').src = flag;
 
       // set Google Translate
-      const select = document.querySelector('#google_translate_element select.goog-te-combo');
-      if (select) {
-        select.value = code;
-        select.dispatchEvent(new Event('change'));
-      }
+      setLanguage(code);
 
       document.getElementById('langMenu').classList.add('hidden');
     });
   });
 
-  // Google Translate init
-  function googleTranslateElementInit() {
+  // Google Translate init (make it GLOBAL for the callback)
+  window.googleTranslateElementInit = function () {
     new google.translate.TranslateElement(
       { pageLanguage: 'en', includedLanguages: 'en,fr,de', autoDisplay: false },
       'google_translate_element'
     );
-  }
+  };
 
-  // inject script once
+  // inject script once (use HTTPS)
   (function () {
     if (!document.getElementById('gt-script')) {
       const s = document.createElement('script');
       s.id = 'gt-script';
-      s.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      s.async = true;
+      s.defer = true;
       document.body.appendChild(s);
     }
   })();
 </script>
 
+
  <!-- Auth Buttons -->
 <div class="flex items-center space-x-3">
-  @php 
-    $isActive = Auth::check();
-  @endphp
-  @if(!$isActive)
+ 
+@php 
+  $isActive = Auth::check();
+@endphp
+
+@if(!$isActive)
+  {{-- ===== YOUR EXACT CODE (unchanged) ===== --}}
   <a href="/login" class="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-300 group">
    <i class="fas fa-user mr-2 text-lg text-blue-600"></i>
     <span class="font-medium text-blue-600"> Log in</span>
@@ -516,7 +540,132 @@
     <i class="fas fa-user-plus mr-2 text-lg "></i>
     <span>Sign Up</span>
   </button>
-  @endif
+  {{-- ======================================= --}}
+@else
+@php
+    $user = Auth::user();
+    $provider = $user?->serviceProvider;
+
+    if ($provider?->profile_photo) {
+        // If DB has profile_photo
+        $avatar = $provider->profile_photo;
+    } elseif ($user?->avatar) {
+        // If user has an avatar field (maybe from social login)
+        $avatar = $user->avatar;
+    } else {
+        // Default PNG fallback
+        $avatar = asset('images/helpexpat.png');
+
+        // 👉 If you prefer UI Avatars service instead of the PNG,
+        // uncomment the next line:
+        // $avatar = 'https://ui-avatars.com/api/?name=' . urlencode($user?->name ?? 'User');
+    }
+@endphp
+
+
+
+  {{-- dropdown lives in its own wrapper so it won't affect your buttons layout --}}
+  <div class="relative" x-data="{ open:false }">
+    <!-- Trigger -->
+    <button 
+      type="button"
+      @click="open = !open"
+      @keydown.escape.window="open = false"
+      class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100"
+      aria-haspopup="menu"
+      :aria-expanded="open.toString()"
+    >
+      <img src="{{ $avatar }}" alt="Avatar" class="w-8 h-8 rounded-full object-cover border">
+      <span class="font-medium text-gray-700 truncate max-w-[10rem]">{{ $user->name }}</span>
+      <i class="fas fa-chevron-down text-gray-500 text-sm"></i>
+    </button>
+
+    <!-- Menu (hidden by default, even if Alpine fails) -->
+    <div
+      x-cloak
+      x-show="open"
+      x-transition
+      @click.outside="open = false"
+      @keydown.escape.window="open = false"
+      style="display:none"
+      class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden z-50"
+      role="menu"
+    >
+      <div class="p-3 flex items-center gap-3 border-b">
+        <img src="{{ $avatar }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover border">
+        <div class="min-w-0">
+          <div class="font-semibold truncate mb-1">{{ $user->name }}</div>
+          @if($user?->email)
+            @php
+  $rawRole = (string)($user->user_role ?? '');
+  $key = strtolower(str_replace(['-', ' '], '_', $rawRole));
+
+  $roles = [
+    // Admin → bold, attention color
+    'admin' => [
+      'label' => 'Admin',
+      'cls'   => 'bg-rose-100 text-rose-700 ring-1 ring-rose-600/20',
+      'icon'  => 'fa-user-shield',
+    ],
+    // Service Provider → productive/“action” color
+    'service_provider' => [
+      'label' => 'Service Provider',
+      'cls'   => 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-600/20',
+      'icon'  => 'fa-toolbox',
+    ],
+    'provider' => [
+      'label' => 'Service Provider',
+      'cls'   => 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-600/20',
+      'icon'  => 'fa-toolbox',
+    ],
+    // Service Requester → trustworthy/communication color
+    'service_requester' => [
+      'label' => 'Service Requester',
+      'cls'   => 'bg-indigo-100 text-indigo-700 ring-1 ring-indigo-600/20',
+      'icon'  => 'fa-hand-holding',
+    ],
+    'requester' => [
+      'label' => 'Service Requester',
+      'cls'   => 'bg-indigo-100 text-indigo-700 ring-1 ring-indigo-600/20',
+      'icon'  => 'fa-hand-holding',
+    ],
+  ];
+
+  $role = $roles[$key] ?? [
+    'label' => ucfirst($rawRole ?: 'User'),
+    'cls'   => 'bg-gray-100 text-gray-700 ring-1 ring-gray-400/20',
+    'icon'  => 'fa-user',
+  ];
+@endphp
+
+<div class="text-xs">
+  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-medium {{ $role['cls'] }} truncate max-w-[12rem]">
+    <i class="fas {{ $role['icon'] }} text-[11px]"></i>
+    {{ $role['label'] }}
+  </span>
+</div>
+
+          @endif
+        </div>
+      </div>
+
+      <nav class="py-1">
+        <a href="{{ Route::has('dashboard') ? route('dashboard') : '/dashboard' }}" class="flex items-center gap-2 px-4 py-2.5 text-gray-700 hover:bg-gray-50" role="menuitem">
+          <i class="fas fa-gauge"></i>
+          <span>Dashboard</span>
+        </a>
+       
+        <form method="POST" action="{{ route('logout') }}" class="mt-1">
+          @csrf
+          <button type="submit" class="w-full text-left flex items-center gap-2 px-4 py-2.5 text-red-600 hover:bg-red-50" role="menuitem">
+            <i class="fas fa-right-from-bracket"></i>
+            <span>Log out</span>
+          </button>
+        </form>
+      </nav>
+    </div>
+  </div>
+@endif
 </div>
 
 <!-- Popup Overlay -->
